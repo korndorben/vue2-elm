@@ -11,22 +11,6 @@
 				<span class="title_text ellipsis">{{msietTitle}}</span>
 			</router-link>
     	</head-top>
-    	<nav class="msite_nav">
-    		<div class="swiper-container" v-if="foodTypes.length">
-		        <div class="swiper-wrapper">
-		            <div class="swiper-slide food_types_container" v-for="(item, index) in foodTypes" :key="index">
-	            		<router-link :to="{path: '/food', query: {geohash, title: foodItem.title, restaurant_category_id: getCategoryId(foodItem.link)}}" v-for="foodItem in item" :key="foodItem.id" class="link_to_food">
-	            			<figure>
-	            				<img :src="imgBaseUrl + foodItem.image_url">
-	            				<figcaption>{{foodItem.title}}</figcaption>
-	            			</figure>
-	            		</router-link>
-		            </div>
-		        </div>
-		        <div class="swiper-pagination"></div>
-		    </div>
-		    <img src="../../images/fl.svg" class="fl_back animation_opactiy" v-else>
-    	</nav>
     	<div class="shop_list_container">
 	    	<header class="shop_header">
 	    		<svg class="shop_icon">
@@ -37,7 +21,7 @@
 	    	<shop-list v-if="hasGetData" :geohash="geohash"></shop-list>
     	</div>
     	<foot-guide></foot-guide>
-    </div>    
+    </div>
 </template>
 
 <script>
@@ -179,8 +163,7 @@ export default {
 		}
 	}
 	.shop_list_container{
-		margin-top: .4rem;
-		border-top: 0.025rem solid $bc;
+		margin-top: 2rem;
 		background-color: #fff;
 		.shop_header{
 			.shop_icon{

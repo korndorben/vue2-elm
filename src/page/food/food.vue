@@ -38,7 +38,7 @@
 	    					</ul>
 	    				</section>
 	    			</section>
-	    		</transition>	
+	    		</transition>
     		</div>
     		<div class="sort_item" :class="{choose_type:sortBy == 'sort'}">
     			<div class="sort_item_container" @click="chooseType('sort')">
@@ -120,7 +120,7 @@
 	    					</li>
 	    				</ul>
 	    			</section>
-	    		</transition>	
+	    		</transition>
     		</div>
     		<div class="sort_item" :class="{choose_type:sortBy == 'activity'}">
     			<div class="sort_item_container" @click="chooseType('activity')">
@@ -168,7 +168,7 @@
     	<section class="shop_list_container">
 	    	<shop-list :geohash="geohash" :restaurantCategoryId="restaurant_category_id" :restaurantCategoryIds="restaurant_category_ids" :sortByType='sortByType' :deliveryMode="delivery_mode" :confirmSelect="confirmStatus" :supportIds="support_ids" v-if="latitude" @DidConfrim="clearAll"></shop-list>
     	</section>
-    </div>    
+    </div>
 </template>
 
 <script>
@@ -222,7 +222,7 @@ export default {
 			this.headTitle = this.$route.query.title;
 			this.foodTitle = this.headTitle;
 			this.restaurant_category_id = this.$route.query.restaurant_category_id;
-			//防止刷新页面时，vuex状态丢失，经度纬度需要重新获取，并存入vuex	
+			//防止刷新页面时，vuex状态丢失，经度纬度需要重新获取，并存入vuex
 			if (!this.latitude) {
 		    	//获取位置信息
 		    	let res = await msiteAdress(this.geohash);
@@ -378,7 +378,7 @@ export default {
 				transition: all .3s;
 				fill:#666;
 			}
-			
+
 		}
 		.choose_type{
 			.sort_item_container{

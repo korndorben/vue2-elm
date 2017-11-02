@@ -2,47 +2,37 @@
 	<div class="shoplist_container">
 		<ul v-load-more="loaderMore" v-if="shopListArr.length" type="1">
 			<router-link :to="{path: 'shop', query:{geohash, id: item.id}}" v-for="item in shopListArr" tag='li' :key="item.id" class="shop_li">
-				<section>
-					<img :src="imgBaseUrl + item.image_path" class="shop_img">
-				</section>
-				<hgroup class="shop_right">
-					<header class="shop_detail_header">
-						<h4 :class="item.is_premium? 'premium': ''" class="" class="shop_title ellipsis">{{item.name}}</h4>
-						<ul class="shop_detail_ul">
-							<li v-for="item in item.supports" :key="item.id" class="supports">{{item.icon_name}}</li>
-						</ul>
-					</header>
-					<h5 class="rating_order_num">
-						<section class="rating_order_num_left">
-							<section class="rating_section">
-								<rating-star :rating='item.rating'></rating-star>
-								<span class="rating_num">{{item.rating}}</span>
-							</section>
-							<section class="order_section">
-								月售{{item.recent_order_num}}单
-							</section>
-						</section>
-						<section class="rating_order_num_right">
-							<span class="delivery_style delivery_left" v-if="item.delivery_mode">{{item.delivery_mode.text}}</span>
-							<span class="delivery_style delivery_right" v-if="zhunshi(item.supports)">准时达</span>
-						</section>
-					</h5>
-					<h5 class="fee_distance">
-						<p class="fee">
-							¥{{item.float_minimum_order_amount}}起送 
-							<span class="segmentation">/</span>
-							{{item.piecewise_agent_fee.tips}}
-						</p>
-						<p class="distance_time">
-							<span v-if="Number(item.distance)">{{item.distance > 1000? (item.distance/1000).toFixed(2) + 'km': item.distance + 'm'}}
-								<span class="segmentation">/</span>
-							</span>
-							<span v-else>{{item.distance}}</span>
-							<span class="segmentation">/</span>
-							<span class="order_time">{{item.order_lead_time}}</span>
-						</p>
-					</h5>
-				</hgroup>
+				<div class="supplier">
+					<div class="logo">
+						<img src="../../images/supplier.jpg" alt="">
+						<svg class="stars">
+							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#location"></use>
+						</svg>
+						<div class="starscount">
+							32
+						</div>
+					</div>
+					<div class="detail">
+						<div class="left">
+							<div class="name">
+								麻辣面对面(北京-潘家园店)
+							</div>
+							<div class="address">
+								北京市北京市朝阳区潘家园东路12号
+							</div>
+						</div>
+						<div class="right">
+							<div class="activity">
+								+
+							</div>
+							<div class="distance">
+								<svg class="grey_fill">
+					                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#location"></use>
+					            </svg> 1.9km
+							</div>
+						</div>
+					</div>
+				</div>
 			</router-link>
 		</ul>
 		<ul v-else class="animation_opactiy">
@@ -123,7 +113,7 @@ export default {
 			}
 			//防止重复请求
 			if (this.preventRepeatReuqest) {
-				return 
+				return
 			}
 			this.showLoading = true;
 			this.preventRepeatReuqest = true;
@@ -192,125 +182,83 @@ export default {
 <style lang="scss" scoped>
 	@import 'src/style/mixin';
 	.shoplist_container{
-		background-color: #fff;
+		background-color: #f8f8f8;
 		margin-bottom: 2rem;
+		padding: .5rem;
 	}
-	.shop_li{
+	.supplier{
 		display: flex;
-		border-bottom: 0.025rem solid #f1f1f1;
-		padding: 0.7rem 0.4rem;
+		flex-direction: column;
+		background-color: #fff;
+		margin-bottom: .8rem;
+		border: 1px solid #efefef;
+		width: 100%;
+		.logo{
+			flex:1;
+			height: 120px;
+			overflow: hidden;
+			position: relative;
+			.stars{
+				position: absolute;
+				right: 30px;
+				top: 10px;
+				@include wh(.8rem, .8rem);
+				fill: #eee;
+				z-index: 100;
+			}
+			.starscount{
+				color: #eee;
+				font-size: 12px;
+				position: absolute;
+				right: 10px;
+				top: 10px;
+				@include wh(.8rem, .8rem);
+				fill: $blue;
+				z-index: 100;
+			}
+		}
+		.detail{
+			height: 65px;
+			line-height: 20px;
+			display: flex;
+			padding: .5rem;
+			flex-direction: row;
+			.left{
+				flex:1;
+				.name{
+					color: #333;
+					font-weight: 300;
+					font-size: 15px;
+				}
+				.address{
+					color: #666;
+					font-weight: 300;
+					font-size: 12px;
+				}
+
+			}
+			.right{
+				width:3rem;
+				text-align:right;
+				.activity{
+					min-height: 10px;
+					font-size: 14px;
+				}
+				.distance{
+					font-size: 12px;
+					.grey_fill{
+						@include wh(.8rem, .8rem);
+		                fill: $blue;
+					}
+				}
+			}
+		}
 	}
-	.shop_img{
-		@include wh(2.7rem, 2.7rem);
-		display: block;
-		margin-right: 0.4rem;
-	}
+
 	.list_back_li{
 		height: 4.85rem;
 		.list_back_svg{
 			@include wh(100%, 100%)
-		}
-	}
-	.shop_right{
-		flex: auto;
-		.shop_detail_header{
-			@include fj;
-			align-items: center;
-			.shop_title{
-				width: 8.5rem;
-				color: #333;
-				padding-top: .01rem;
-				@include font(0.65rem, 0.65rem, 'PingFangSC-Regular');
-				font-weight: 700;
-			}
-			.premium::before{
-				content: '品牌';
-				display: inline-block;
-				font-size: 0.5rem;
-				line-height: .6rem;
-				color: #333;
-				background-color: #ffd930;
-				padding: 0 0.1rem;
-				border-radius: 0.1rem;
-				margin-right: 0.2rem;
-			}
-			.shop_detail_ul{
-				display: flex;
-				transform: scale(.8);
-				margin-right: -0.3rem;
-				.supports{
-					@include sc(0.5rem, #999);
-					border: 0.025rem solid #f1f1f1;
-					padding: 0 0.04rem;
-					border-radius: 0.08rem;
-					margin-left: 0.05rem;
-				}
-			}
-		}
-		.rating_order_num{
-			@include fj(space-between);
-			height: 0.6rem;
-			margin-top: 0.52rem;
-			.rating_order_num_left{
-				@include fj(flex-start);
-				.rating_section{
-					display: flex;
-					.rating_num{
-						@include sc(0.4rem, #ff6000);
-						margin: 0 0.2rem;
-					}
-				}
-				.order_section{
-					transform: scale(.8);
-					margin-left: -0.2rem;
-					@include sc(0.4rem, #666);
-				}
-			}
-			.rating_order_num_right{
-				display: flex;
-				align-items: center;
-				transform: scale(.7);
-				min-width: 5rem;
-				justify-content: flex-end;
-				margin-right: -0.8rem;
-				.delivery_style{
-					font-size: 0.4rem;
-					padding: 0.04rem 0.08rem 0;
-					border-radius: 0.08rem;
-					margin-left: 0.08rem;
-					border: 1px;
-				}
-				.delivery_left{
-					color: #fff;
-					background-color: $blue;
-					border: 0.025rem solid $blue;
-				}
-				.delivery_right{
-					color: $blue;
-					border: 0.025rem solid $blue;
-				}
-			}
-		}
-		.fee_distance{
-			margin-top: 0.52rem;
-			@include fj;
-			@include sc(0.5rem, #333);
-			.fee{
-				transform: scale(.9);
-				@include sc(0.5rem, #666);
-			}
-			.distance_time{
-				transform: scale(.9);
-				span{
-					color: #999;
-				}
-				.order_time{
-					color: $blue;
-				}
-				.segmentation{
-					color: #ccc;
-				}
-			}
 		}
 	}
 	.loader_more{
