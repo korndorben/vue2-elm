@@ -1,6 +1,5 @@
 <template>
     <header id='head_top'>
-        <slot name='logo'></slot>
         <slot name='search'></slot>
         <section class="head_goback" v-if="goBack" @click="$router.go(-1)">
             <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" version="1.1">
@@ -13,10 +12,7 @@
         <section class="title_head ellipsis" v-if="headTitle">
             <span class="title_text">{{headTitle}}</span>
         </section>
-        <slot name="edit"></slot>
         <slot name="msite-title"></slot>
-        <slot name="changecity"></slot>
-        <slot name="changeLogin"></slot>
     </header>
 </template>
 
@@ -53,12 +49,13 @@
     @import '../../style/mixin';
 
     #head_top{
-        background-color: $blue;
+        background-color: #eee;
         position: fixed;
         z-index: 200;
         left: 0;
         top: 0px;
         @include wh(100%, 1.95rem);
+        color:#fff;
     }
     .head_goback{
         left: 0.4rem;
@@ -68,20 +65,20 @@
     }
     .head_login{
         right: 0.55rem;
-        @include sc(0.65rem, #fff);
+        // @include sc(0.65rem, #fff);
         @include ct;
         .login_span{
-            color: #fff;
+            // color: #fff;
         }
         .user_avatar{
-            fill: #fff;
+            // fill: #fff;
             @include wh(.8rem, .8rem);
         }
     }
     .title_head{
         @include center;
         width: 50%;
-        color: #fff;
+        // color: #fff;
         text-align: center;
         .title_text{
             @include sc(0.8rem, #fff);

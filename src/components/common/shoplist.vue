@@ -6,7 +6,7 @@
 					<div class="logo">
 						<img src="../../images/supplier.jpg" alt="">
 						<svg class="stars">
-							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#location"></use>
+							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#rating"></use>
 						</svg>
 						<div class="starscount">
 							32
@@ -23,11 +23,13 @@
 						</div>
 						<div class="right">
 							<div class="activity">
-								+
+								<svg class="hot">
+									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#hot"></use>
+								</svg>
 							</div>
 							<div class="distance">
 								<svg class="grey_fill">
-					                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#location"></use>
+					                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#distance"></use>
 					            </svg> 1.9km
 							</div>
 						</div>
@@ -183,43 +185,41 @@ export default {
 	@import 'src/style/mixin';
 	.shoplist_container{
 		background-color: #f8f8f8;
-		padding: .5rem;
+		padding: .4rem;
 	}
 	.supplier{
 		display: flex;
 		flex-direction: column;
 		background-color: #fff;
-		margin-bottom: .8rem;
+		margin-bottom: .5rem;
 		border: 1px solid #efefef;
 		width: 100%;
 		.logo{
 			flex:1;
-			height: 120px;
+			height: 6rem;
 			overflow: hidden;
 			position: relative;
 			.stars{
 				position: absolute;
-				right: 30px;
-				top: 10px;
-				@include wh(.8rem, .8rem);
-				fill: #eee;
+				right: 1.4rem;
+				top: .6rem;
+				@include wh(.5rem, .5rem);
 				z-index: 100;
 			}
 			.starscount{
 				color: #eee;
-				font-size: 12px;
+				font-size: .5rem;
 				position: absolute;
-				right: 10px;
-				top: 10px;
-				@include wh(.8rem, .8rem);
+				right: .6rem;
+				top: .4rem;
 				fill: $blue;
 				z-index: 100;
 			}
 		}
 		.detail{
-			line-height: 20px;
+			line-height: 1rem;
 			display: flex;
-			padding: .5rem;
+			padding: .4rem;
 			flex-direction: row;
 			.left{
 				flex:1;
@@ -239,11 +239,14 @@ export default {
 				.activity{
 					min-height: 10px;
 					font-size: 14px;
+					.hot{
+						@include wh(.4rem, .4rem);
+					}
 				}
 				.distance{
 					font-size: 12px;
 					.grey_fill{
-						@include wh(.8rem, .8rem);
+						@include wh(.4rem, .4rem);
 		                fill: $blue;
 					}
 				}
