@@ -20,7 +20,6 @@
 	    	</header>
 	    	<shop-list v-if="hasGetData" :geohash="geohash"></shop-list>
     	</div>
-    	<foot-guide></foot-guide>
     </div>
 </template>
 

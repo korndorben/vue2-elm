@@ -183,7 +183,6 @@ export default {
 	@import 'src/style/mixin';
 	.shoplist_container{
 		background-color: #f8f8f8;
-		margin-bottom: 2rem;
 		padding: .5rem;
 	}
 	.supplier{
@@ -218,7 +217,6 @@ export default {
 			}
 		}
 		.detail{
-			height: 65px;
 			line-height: 20px;
 			display: flex;
 			padding: .5rem;
@@ -227,13 +225,11 @@ export default {
 				flex:1;
 				.name{
 					color: #333;
-					font-weight: 300;
-					font-size: 15px;
+					font-size: .6rem;
 				}
 				.address{
 					color: #666;
-					font-weight: 300;
-					font-size: 12px;
+					font-size: .4rem;
 				}
 
 			}
