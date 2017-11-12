@@ -168,10 +168,10 @@
                 this.initData();
                 this.SAVE_GEOHASH(this.geohash);
             }
-            if (!(this.userInfo && this.userInfo.user_id)) {
-                this.showAlert = true;
-                this.alertText = '您还没有登录';
-            }
+            // if (!(this.userInfo && this.userInfo.user_id)) {
+            //     this.showAlert = true;
+            //     this.alertText = '您还没有登录';
+            // }
         },
         components: {
             headTop,

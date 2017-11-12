@@ -1,27 +1,29 @@
  <template>
     <div>
         <section v-if="!showLoading" class="shop_container">
-            <nav class="goback" @click="goback">
+            <!-- <nav class="goback" @click="goback">
                 <svg width="4rem" height="100%" xmlns="http://www.w3.org/2000/svg" version="1.1">
                     <polyline points="12,18 4,9 12,0" style="fill:none;stroke:rgb(255,255,255);stroke-width:3"/>
                 </svg>
-            </nav>
+            </nav> -->
             <header class="shop_detail_header" ref="shopheader" :style="{zIndex: showActivities? '14':'10'}">
-                <img :src="imgBaseUrl + shopDetailData.image_path" class="header_cover_img">
+                <img src="http://localhost:3000/upload/logo.1.png" class="header_cover_img">
                 <section class="description_header">
-                    <router-link to="/shop/shopDetail" class="description_top">
+                    <!-- <router-link to="/shop/shopDetail" class="description_top"> -->
+                    <div class="description_top">
                         <section class="description_left">
-                            <img :src="imgBaseUrl + shopDetailData.image_path">
+                            <img src="http://localhost:3000/upload/logo.1.png">
                         </section>
                         <section class="description_right">
-                            <h4 class="description_title ellipsis">{{shopDetailData.name}}</h4>
+                            <p class="description_title ellipsis">{{shopDetailData.name}}</p>
                             <p class="description_text">商家配送／{{shopDetailData.order_lead_time}}分钟送达／配送费¥{{shopDetailData.float_delivery_fee}}</p>
                             <p class="description_promotion ellipsis">公告：{{promotionInfo}}</p>
                         </section>
-                        <svg width="14" height="14" xmlns="http://www.w3.org/2000/svg" version="1.1" class="description_arrow" >
+                        <!-- <svg width="14" height="14" xmlns="http://www.w3.org/2000/svg" version="1.1" class="description_arrow" >
                             <path d="M0 0 L8 7 L0 14"  stroke="#fff" stroke-width="1" fill="none"/>
-                        </svg>
-                    </router-link>
+                        </svg> -->
+                    </div>
+                    <!-- </router-link> -->
                     <footer class="description_footer" v-if="shopDetailData.activities.length" @click="showActivitiesFun">
                         <p class="ellipsis">
                             <span class="tip_icon" :style="{backgroundColor: '#' + shopDetailData.activities[0].icon_color, borderColor: '#' + shopDetailData.activities[0].icon_color}">{{shopDetailData.activities[0].icon_name}}</span>
@@ -75,7 +77,7 @@
                         <section class="menu_left" id="wrapper_menu" ref="wrapperMenu">
                             <ul>
                                 <li v-for="(item,index) in menuList" :key="index" class="menu_left_li" :class="{activity_menu: index == menuIndex}" @click="chooseMenu(index)">
-                                    <img :src="getImgPath(item.icon_url)" v-if="item.icon_url">
+                                    <img src="http://localhost:3000/upload/logo.1.png" v-if="item.icon_url">
                                     <span>{{item.name}}</span>
                                     <span class="category_num" v-if="categoryNum[index]&&item.type==1">{{categoryNum[index]}}</span>
                                 </li>
@@ -86,7 +88,7 @@
                                 <li v-for="(item,index) in menuList" :key="index">
                                     <header class="menu_detail_header">
                                         <section class="menu_detail_header_left">
-                                            <strong class="menu_item_title">{{item.name}}</strong>
+                                            <span class="menu_item_title">{{item.name}}</span>
                                             <span class="menu_item_description">{{item.description}}</span>
                                         </section>
                                         <span class="menu_detail_header_right" @click="showTitleDetail(index)"></span>
@@ -98,25 +100,21 @@
                                     <section v-for="(foods,foodindex) in item.foods" :key="foodindex" class="menu_detail_list">
                                         <router-link  :to="{path: 'shop/foodDetail', query:{image_path:foods.image_path, description: foods.description, month_sales: foods.month_sales, name: foods.name, rating: foods.rating, rating_count: foods.rating_count, satisfy_rate: foods.satisfy_rate, foods, shopId}}" tag="div" class="menu_detail_link">
                                             <section class="menu_food_img">
-                                                <img :src="imgBaseUrl + foods.image_path">
+                                                <img src="http://localhost:3000/upload/logo.1.png">
                                             </section>
                                             <section class="menu_food_description">
                                                 <h3 class="food_description_head">
-                                                    <strong class="description_foodname">{{foods.name}}</strong>
+                                                    <span class="description_foodname">{{foods.name}}</span>
                                                     <ul v-if="foods.attributes.length" class="attributes_ul">
-                                                        <li v-for="(attribute, foodindex) in foods.attributes" :key="foodindex" :style="{color: '#' + attribute.icon_color,borderColor:'#' +attribute.icon_color}" :class="{attribute_new: attribute.icon_name == '新'}">
-                                                        <p :style="{color: attribute.icon_name == '新'? '#fff' : '#' + attribute.icon_color}">{{attribute.icon_name == '新'? '新品':attribute.icon_name}}</p>
-                                                        </li>
+                                                        <!-- 显示新品<li v-for="(attribute, foodindex) in foods.attributes" :key="foodindex" :style="{color: '#' + attribute.icon_color,borderColor:'#' +attribute.icon_color}" :class="{attribute_new: attribute.icon_name == '新'}"> -->
+                                                        <!-- <p :style="{color: attribute.icon_name == '新'? '#fff' : '#' + attribute.icon_color}">{{attribute.icon_name == '新'? '新品':attribute.icon_name}}</p> -->
+                                                        <!-- </li> -->
                                                     </ul>
-
                                                 </h3>
                                                 <p class="food_description_content">{{foods.description}}</p>
                                                 <p class="food_description_sale_rating">
                                                     <span>月售{{foods.month_sales}}份</span>
                                                     <span>好评率{{foods.satisfy_rate}}%</span>
-                                                </p>
-                                                <p v-if="foods.activity" class="food_activity">
-                                                <span :style="{color: '#' + foods.activity.image_text_color,borderColor:'#' +foods.activity.icon_color}">{{foods.activity.image_text}}</span>
                                                 </p>
                                             </section>
                                         </router-link>
@@ -145,7 +143,6 @@
                             </div>
                             <div class="cart_num">
                                 <div>¥ {{totalPrice}}</div>
-                                <div>配送费¥{{deliveryFee}}</div>
                             </div>
                         </section>
                         <section class="gotopay" :class="{gotopay_acitvity: minimumOrderAmount <= 0}">
@@ -156,7 +153,7 @@
                     <transition name="toggle-cart">
                         <section class="cart_food_list" v-show="showCartList&&cartFoodList.length">
                             <header>
-                                <h4>购物车</h4>
+                                <span>购物车</span>
                                 <div @click="clearCart">
                                     <svg>
                                         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-remove"></use>
@@ -316,1263 +313,1360 @@
 </template>
 
 <script>
-    import {mapState, mapMutations} from 'vuex'
-    import {msiteAdress, shopDetails, foodMenu, getRatingList, ratingScores, ratingTags} from 'src/service/getData'
-    import loading from 'src/components/common/loading'
-    import buyCart from 'src/components/common/buyCart'
-    import ratingStar from 'src/components/common/ratingStar'
-    import {loadMore, getImgPath} from 'src/components/common/mixin'
-    import {imgBaseUrl} from 'src/config/env'
-    import BScroll from 'better-scroll'
+import {
+  mapState,
+  mapMutations
+} from 'vuex'
+import {
+  msiteAdress,
+  shopDetails,
+  foodMenu,
+  getRatingList,
+  ratingScores,
+  ratingTags
+} from 'src/service/getData'
+import loading from 'src/components/common/loading'
+import buyCart from 'src/components/common/buyCart'
+import ratingStar from 'src/components/common/ratingStar'
+import {
+  loadMore,
+  getImgPath
+} from 'src/components/common/mixin'
+import {
+  imgBaseUrl
+} from 'src/config/env'
+import BScroll from 'better-scroll'
 
-    export default {
-        data(){
-            return{
-                geohash: '', //geohash位置信息
-                shopId: null, //商店id值
-                showLoading: true, //显示加载动画
-                changeShowType: 'food',//切换显示商品或者评价
-                shopDetailData: null, //商铺详情
-                showActivities: false, //是否显示活动详情
-                menuList: [], //食品列表
-                menuIndex: 0, //已选菜单索引值，默认为0
-                menuIndexChange: true,//解决选中index时，scroll监听事件重复判断设置index的bug
-                shopListTop: [], //商品列表的高度集合
-                TitleDetailIndex: null, //点击展示列表头部详情
-                categoryNum: [], //商品类型右上角已加入购物车的数量
-                totalPrice: 0, //总共价格
-                cartFoodList: [], //购物车商品列表
-                showCartList: false,//显示购物车列表
-                receiveInCart: false, //购物车组件下落的圆点是否到达目标位置
-                ratingList: null, //评价列表
-                ratingOffset: 0, //评价获取数据offset值
-                ratingScoresData: null, //评价总体分数
-                ratingTagsList: null, //评价分类列表
-                ratingTageIndex: 0, //评价分类索引
-                preventRepeatRequest: false,// 防止多次触发数据请求
-                ratingTagName: '',//评论的类型
-                loadRatings: false, //加载更多评论是显示加载组件
-                foodScroll: null,  //食品列表scroll
-                showSpecs: false,//控制显示食品规格
-                specsIndex: 0, //当前选中的规格索引值
-                choosedFoods: null, //当前选中视频数据
-                showDeleteTip: false, //多规格商品点击减按钮，弹出提示框
-                showMoveDot: [], //控制下落的小圆点显示隐藏
-                windowHeight: null, //屏幕的高度
-                elLeft: 0, //当前点击加按钮在网页中的绝对top值
-                elBottom: 0, //当前点击加按钮在网页中的绝对left值
-                ratingScroll: null, //评论页Scroll
-                imgBaseUrl,
-            }
-        },
-        created(){
-            this.geohash = this.$route.query.geohash;
-            this.shopId = this.$route.query.id;
-            this.INIT_BUYCART();
-        },
-        mounted(){
-            this.initData();
-            this.windowHeight = window.innerHeight;
-        },
-        beforeDestroy(){
-            // this.foodScroll.removeEventListener('scroll', )
-        },
-        mixins: [loadMore, getImgPath],
-        components: {
-            loading,
-            ratingStar,
-            buyCart,
-        },
-        computed: {
-            ...mapState([
-                'latitude','longitude','cartList'
-            ]),
-            promotionInfo: function (){
-                return this.shopDetailData.promotion_info || '欢迎光临，用餐高峰期请提前下单，谢谢。'
-            },
-            //配送费
-            deliveryFee: function () {
-                if (this.shopDetailData) {
-                    return this.shopDetailData.float_delivery_fee;
-                }else{
-                    return null;
-                }
-            },
-            //还差多少元起送，为负数时显示去结算按钮
-            minimumOrderAmount: function () {
-                if (this.shopDetailData) {
-                    return this.shopDetailData.float_minimum_order_amount - this.totalPrice;
-                }else{
-                    return null;
-                }
-            },
-            //当前商店购物信息
-            shopCart: function (){
-                return {...this.cartList[this.shopId]};
-            },
-            //购物车中总共商品的数量
-            totalNum: function (){
-                let num = 0;
-                this.cartFoodList.forEach(item => {
-                    num += item.num
-                })
-                return num
-            },
-        },
-        methods: {
-            ...mapMutations([
-                'RECORD_ADDRESS','ADD_CART','REDUCE_CART','INIT_BUYCART','CLEAR_CART','RECORD_SHOPDETAIL'
-            ]),
-            //初始化时获取基本数据
-            async initData(){
-                // if (!this.latitude) {
-                //     //获取位置信息
-                //     let res = await msiteAdress(this.geohash);
-                //     // 记录当前经度纬度进入vuex
-                //     this.RECORD_ADDRESS(res);
-                // }
-                //获取商铺信息
-                // this.shopDetailData = await shopDetails(this.shopId, this.latitude, this.longitude);
-                this.shopDetailData = JSON.parse(`{"name":"测试修22225","address":"北京市海淀区岭南路36号广东大厦5层","id":1148,"latitude":39.92775,"longitude":116.30162,"location":[121.49424,31.30122],"phone":"15761621234","category":"异国料理/西餐","supports":[{"description":"已加入“外卖保”计划，食品安全有保障","icon_color":"999999","icon_name":"保","id":7,"name":"外卖保","_id":"59a816cbebe2e53edc090e35"},{"description":"准时必达，超时秒赔","icon_color":"57A9FF","icon_name":"准","id":9,"name":"准时达","_id":"59a816cbebe2e53edc090e34"},{"description":"该商家支持开发票，请在下单时填写好发票抬头","icon_color":"999999","icon_name":"票","id":4,"name":"开发票","_id":"59a816cbebe2e53edc090e33"}],"status":0,"recent_order_num":827,"rating_count":485,"rating":4.1,"promotion_info":"dghgfdgf","piecewise_agent_fee":{"tips":"配送费约¥5"},"opening_hours":["8:30/20:30"],"license":{"catering_service_license_image":"15e3898ec2b5718.jpeg","business_license_image":"15e3898f5d05717.jpeg"},"is_new":true,"is_premium":true,"image_path":"15fa3a071f210067.jpg","identification":{"registered_number":"","registered_address":"","operation_period":"","licenses_scope":"","licenses_number":"","licenses_date":"","legal_person":"","identificate_date":null,"identificate_agency":"","company_name":""},"float_minimum_order_amount":20,"float_delivery_fee":5,"distance":"","order_lead_time":"","description":"vbn11","delivery_mode":{"color":"57A9FF","id":1,"is_solid":true,"text":"蜂鸟专送"},"activities":[{"icon_name":"减","name":"满减优惠","description":"满30减5，满60减8","icon_color":"f07373","id":1,"_id":"59a816cbebe2e53edc090e36"}],"__v":0}`)
-                //获取商铺食品列表
-                // this.menuList = await foodMenu(this.shopId);
-                this.menuList = JSON.parse(`[{"name":"热销榜","description":"大家喜欢吃，才叫真好吃。","id":878,"restaurant_id":1148,"foods":[{"_id":"59a822b0ebe2e53edc091364","tips":"454评价 月售666份","item_id":429,"category_id":878,"restaurant_id":1148,"activity":{"image_text_color":"f1884f","icon_color":"f07373","image_text":"电饭锅地方"},"image_path":"15e38c785a95721.jpeg","name":"水淀","__v":0,"specfoods":[{"specs_name":"默认","name":"水淀","item_id":429,"sku_id":1943,"food_id":1945,"restaurant_id":1148,"_id":"59ad3927ebe2e53edc0c08a4","specs":[],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":384,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":4.7,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":43,"satisfy_count":113,"attributes":[{"icon_color":"5ec452","icon_name":"新"},{"icon_color":"f07373","icon_name":"招牌"}],"is_essential":false,"server_utc":"2017-08-31T13:54:04.771Z","specifications":[],"rating_count":454,"month_sales":666,"description":"互粉咕叽咕叽个结果","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4.6},{"_id":"59a822d8ebe2e53edc0913b2","tips":"677评价 月售399份","item_id":430,"category_id":878,"restaurant_id":1148,"activity":{"image_text_color":"f1884f","icon_color":"f07373","image_text":"规范的损公肥私代购"},"image_path":"15e3b8952c85756.png","name":"xcv","__v":0,"specfoods":[{"specs_name":"默认","name":"xcv","item_id":430,"sku_id":1990,"food_id":1992,"restaurant_id":1148,"_id":"59b0bad51bf4526252609589","specs":[{"name":"规格","value":"默认","_id":"59b0bad51bf452625260958a"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":480,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":4.5,"packing_fee":0,"pinyin_name":"","original_price":0},{"specs_name":"","name":"xcv","item_id":430,"sku_id":1991,"food_id":1993,"restaurant_id":1148,"_id":"59b0bad51bf4526252609587","specs":[{"name":"规格","value":"","_id":"59b0bad51bf4526252609588"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":459,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":2,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":67,"satisfy_count":411,"attributes":[{"icon_color":"5ec452","icon_name":"新"},{"icon_color":"f07373","icon_name":"招牌"}],"is_essential":false,"server_utc":"2017-08-31T13:54:04.771Z","specifications":[{"name":"规格","values":["默认",""]}],"rating_count":677,"month_sales":399,"description":"该电饭锅的规范代购广告电饭锅","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4.3},{"_id":"59b8035e26794d095c6719f8","tips":"940评价 月售589份","item_id":468,"category_id":878,"restaurant_id":1148,"activity":null,"image_path":"15e76c918086664.jpg","name":"312","__v":0,"specfoods":[{"specs_name":"默认","name":"312","item_id":468,"sku_id":2032,"food_id":2034,"restaurant_id":1148,"_id":"59b8035e26794d095c6719f9","specs":[],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":632,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":4.8,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":19,"satisfy_count":988,"attributes":[],"is_essential":false,"server_utc":"2017-09-12T08:09:38.055Z","specifications":[],"rating_count":940,"month_sales":589,"description":"","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4.1},{"_id":"59b807c126794d095c671bdd","tips":"891评价 月售846份","item_id":470,"category_id":878,"restaurant_id":1148,"activity":null,"image_path":"15e76de465d6666.jpg","name":"翔","__v":0,"specfoods":[{"specs_name":"默认","name":"翔","item_id":470,"sku_id":2036,"food_id":2038,"restaurant_id":1148,"_id":"59b807c126794d095c671bde","specs":[],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":665,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":3.2,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":34,"satisfy_count":102,"attributes":[],"is_essential":false,"server_utc":"2017-09-12T08:09:38.055Z","specifications":[],"rating_count":891,"month_sales":846,"description":"","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4.8},{"_id":"59ccb4f0287971031352e9c0","tips":"540评价 月售434份","item_id":559,"category_id":878,"restaurant_id":1148,"activity":null,"image_path":"15ec7a2c6a97527.jpg","name":"11","__v":0,"specfoods":[{"specs_name":"默认","name":"11","item_id":559,"sku_id":2263,"food_id":2264,"restaurant_id":1148,"_id":"59cdb369287971031353a8e6","specs":[{"name":"规格","value":"默认","_id":"59cdb369287971031353a8e7"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":656,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":3.4,"packing_fee":0,"pinyin_name":"","original_price":0},{"specs_name":"sss","name":"11","item_id":559,"sku_id":2264,"food_id":2265,"restaurant_id":1148,"_id":"59cdb369287971031353a8e4","specs":[{"name":"规格","value":"sss","_id":"59cdb369287971031353a8e5"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":780,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":3.5,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":20,"satisfy_count":843,"attributes":[],"is_essential":false,"server_utc":"2017-09-22T03:33:26.067Z","specifications":[{"name":"规格","values":["默认","sss"]}],"rating_count":540,"month_sales":434,"description":"","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4.1}],"type":1,"icon_url":"5da3872d782f707b4c82ce4607c73d1ajpeg","is_selected":true,"__v":22},{"name":"优惠","description":"美味又实惠, 大家快来抢!","id":879,"restaurant_id":1148,"foods":[{"_id":"59c868de28797103134dec8b","tips":"75评价 月售46份","item_id":521,"category_id":879,"restaurant_id":1148,"activity":{"image_text":"放的歌和人途径ლ(′◉❥◉｀ლ)","icon_color":"f07373","image_text_color":"f1884f"},"image_path":"15f3592f1ea8747.jpeg","name":"很干净规范化","__v":0,"specfoods":[{"specs_name":"默认","name":"很干净规范化","item_id":521,"sku_id":2437,"food_id":2438,"restaurant_id":1148,"_id":"59e8d9e98b0b3516d5860789","specs":[{"name":"规格","value":"默认","_id":"59e8d9e98b0b3516d586078a"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":88,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":4.9,"packing_fee":0,"pinyin_name":"","original_price":0},{"specs_name":"换个房太阳","name":"很干净规范化","item_id":521,"sku_id":2438,"food_id":2439,"restaurant_id":1148,"_id":"59e8d9e98b0b3516d5860787","specs":[{"name":"规格","value":"换个房太阳","_id":"59e8d9e98b0b3516d5860788"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":440,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":3.9,"packing_fee":2,"pinyin_name":"","original_price":0},{"specs_name":"ssssss","name":"很干净规范化","item_id":521,"sku_id":2439,"food_id":2440,"restaurant_id":1148,"_id":"59e8d9e98b0b3516d5860785","specs":[{"name":"规格","value":"ssssss","_id":"59e8d9e98b0b3516d5860786"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":29,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":4.9,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":48,"satisfy_count":1,"attributes":[{"icon_name":"招牌","icon_color":"f07373"}],"is_essential":false,"server_utc":"2017-09-22T03:33:26.067Z","specifications":[{"values":["默认","换个房太阳","ssssss"],"name":"规格"}],"rating_count":75,"month_sales":46,"description":"更符合规范","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4.6},{"_id":"59ddd736a164195e1dd8a9a4","tips":"342评价 月售137份","item_id":614,"category_id":879,"restaurant_id":1148,"activity":{"image_text":"1111111111","icon_color":"f07373","image_text_color":"f1884f"},"image_path":"15f0a908e508324.png","name":"1111111111111111111","__v":0,"specfoods":[{"specs_name":"默认","name":"1111111111111111111","item_id":614,"sku_id":2479,"food_id":2479,"restaurant_id":1148,"_id":"59f002cd8b0b3516d58c0fc5","specs":[],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":806,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":0.8,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":40,"satisfy_count":274,"attributes":[{"icon_name":"新","icon_color":"5ec452"},{"icon_name":"招牌","icon_color":"f07373"}],"is_essential":false,"server_utc":"2017-10-11T07:27:32.656Z","specifications":[],"rating_count":342,"month_sales":137,"description":"111111111","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4}],"type":1,"icon_url":"4735c4342691749b8e1a531149a46117jpeg","is_selected":true,"__v":7},{"name":"888","description":"4","restaurant_id":1148,"id":1138,"foods":[{"_id":"59c9fb7428797103134f9305","tips":"525评价 月售490份","item_id":534,"category_id":1138,"restaurant_id":1148,"activity":null,"image_path":"15ebcfdfc887318.jpg","name":"44","__v":0,"specfoods":[{"specs_name":"默认","name":"44","item_id":534,"sku_id":2216,"food_id":2217,"restaurant_id":1148,"_id":"59c9fb7428797103134f9308","specs":[{"name":"规格","value":"默认","_id":"59c9fb7428797103134f9309"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":310,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":1.4,"packing_fee":0,"pinyin_name":"","original_price":0},{"specs_name":"33","name":"44","item_id":534,"sku_id":2217,"food_id":2218,"restaurant_id":1148,"_id":"59c9fb7428797103134f9306","specs":[{"name":"规格","value":"33","_id":"59c9fb7428797103134f9307"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":922,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":2.1,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":68,"satisfy_count":191,"attributes":[{"icon_color":"5ec452","icon_name":"新"},{"icon_color":"f07373","icon_name":"招牌"}],"is_essential":false,"server_utc":"2017-09-22T03:33:26.067Z","specifications":[{"values":["默认","33"],"name":"规格"}],"rating_count":525,"month_sales":490,"description":"","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4.2}],"type":1,"icon_url":"","is_selected":true,"__v":1}]`)
-                //评论列表
-                // this.ratingList = await getRatingList(this.shopId, this.ratingOffset);
-                this.ratingList = JSON.parse(`[{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"按时送达","_id":"59a816cbebe2e53edc090e56","username":"4*******b","tags":[],"item_ratings":[{"food_id":508807792,"food_name":"超级至尊比萨-铁盘","_id":"59a816cbebe2e53edc090e58","is_valid":1,"image_hash":"dc864033625905f0a15a2d181d53a425jpeg"},{"food_id":508808743,"food_name":"韩式浓情风味鸡（标准份）","_id":"59a816cbebe2e53edc090e57","is_valid":1,"image_hash":"074e0e203f613deff4e456c31e4177d1jpeg"}],"highlights":[],"avatar":""},{"rated_at":"2017-02-09","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e53","username":"t****n","tags":[],"item_ratings":[{"food_id":508809467,"food_name":"香草凤尾虾-5只装","_id":"59a816cbebe2e53edc090e55","is_valid":1,"image_hash":""},{"food_id":508808754,"food_name":"鸡茸蘑菇汤","_id":"59a816cbebe2e53edc090e54","is_valid":1,"image_hash":"5388b26ad173389d89e0e015dbf295fcjpeg"}],"highlights":[],"avatar":"15f6cf782b0c9cd5ca8daa7f76ab05aejpeg"},{"rated_at":"2017-01-18","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e51","username":"，******C","tags":[],"item_ratings":[{"food_id":508809480,"food_name":"冰柠檬红茶（标准份）","_id":"59a816cbebe2e53edc090e52","is_valid":1,"image_hash":""}],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e50","username":"试******春","tags":[],"item_ratings":[],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e4d","username":"王******a","tags":[],"item_ratings":[{"food_id":529149980,"food_name":"富贵“鸡”祥大吉大利比萨","_id":"59a816cbebe2e53edc090e4f","is_valid":1,"image_hash":""},{"food_id":144654782,"food_name":"热柠檬红茶","_id":"59a816cbebe2e53edc090e4e","is_valid":1,"image_hash":""}],"highlights":[],"avatar":"1b523ca27369a0eed1ce0c3fc0a5ba8bjpeg"},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e49","username":"3*******7","tags":[],"item_ratings":[{"food_id":508808726,"food_name":"加州风情香烤牛肉比萨-铁盘","_id":"59a816cbebe2e53edc090e4c","is_valid":1,"image_hash":""},{"food_id":508810265,"food_name":"海鲜至尊比萨-铁盘","_id":"59a816cbebe2e53edc090e4b","is_valid":1,"image_hash":""},{"food_id":508807792,"food_name":"超级至尊比萨-铁盘","_id":"59a816cbebe2e53edc090e4a","is_valid":1,"image_hash":""}],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e46","username":"3*******6","tags":[],"item_ratings":[{"food_id":529149980,"food_name":"富贵“鸡”祥大吉大利比萨","_id":"59a816cbebe2e53edc090e48","is_valid":1,"image_hash":""},{"food_id":508808743,"food_name":"韩式浓情风味鸡（标准份）","_id":"59a816cbebe2e53edc090e47","is_valid":1,"image_hash":""}],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"送餐速度很快！","time_spent_desc":"","_id":"59a816cbebe2e53edc090e45","username":"3*******7","tags":[],"item_ratings":[],"highlights":[],"avatar":"818cf0c977c77ca365557230db619a18jpeg"},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e44","username":"3*******b","tags":[],"item_ratings":[],"highlights":[],"avatar":""},{"rated_at":"2017-02-09","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e43","username":"景***0","tags":[],"item_ratings":[],"highlights":[],"avatar":""}]`)
-                //商铺评论详情
-                // this.ratingScoresData = await ratingScores(this.shopId);
-                this.ratingScoresData = JSON.parse(`{"compare_rating":0.76869,"deliver_time":40,"food_score":4.76378,"order_rating_amount":473,"overall_score":4.72836,"service_score":4.69295}`)
-                //评论Tag列表
-                // this.ratingTagsList = await ratingTags(this.shopId);
-                this.ratingTagsList = JSON.parse(`[{"name":"全部","_id":"59a816cbebe2e53edc090e42","unsatisfied":false,"count":473},{"name":"满意","_id":"59a816cbebe2e53edc090e41","unsatisfied":false,"count":453},{"name":"不满意","_id":"59a816cbebe2e53edc090e40","unsatisfied":true,"count":20},{"name":"有图","_id":"59a816cbebe2e53edc090e3f","unsatisfied":false,"count":2},{"name":"味道好","_id":"59a816cbebe2e53edc090e3e","unsatisfied":false,"count":47},{"name":"送货快","_id":"59a816cbebe2e53edc090e3d","unsatisfied":false,"count":32},{"name":"分量足","_id":"59a816cbebe2e53edc090e3c","unsatisfied":false,"count":18},{"name":"包装精美","_id":"59a816cbebe2e53edc090e3b","unsatisfied":false,"count":15},{"name":"干净卫生","_id":"59a816cbebe2e53edc090e3a","unsatisfied":false,"count":15},{"name":"食材新鲜","_id":"59a816cbebe2e53edc090e39","unsatisfied":false,"count":15},{"name":"服务不错","_id":"59a816cbebe2e53edc090e38","unsatisfied":false,"count":11}]`)
-                this.RECORD_SHOPDETAIL(this.shopDetailData)
-                //隐藏加载动画
-                this.hideLoading();
-            },
-            //获取食品列表的高度，存入shopListTop
-            getFoodListHeight(){
-                const listContainer = this.$refs.menuFoodList;
-                const listArr = Array.from(listContainer.children[0].children);
-                listArr.forEach((item, index) => {
-                    this.shopListTop[index] = item.offsetTop;
-                });
-                this.listenScroll(listContainer)
-            },
-            //当滑动食品列表时，监听其scrollTop值来设置对应的食品列表标题的样式
-            listenScroll(element){
-                this.foodScroll = new BScroll(element, {
-                    probeType: 3,
-                    deceleration: 0.001,
-                    bounce: false,
-                    swipeTime: 2000,
-                    click: true,
-                });
-
-                const wrapperMenu = new BScroll('#wrapper_menu', {
-                    click: true,
-                });
-
-                const wrapMenuHeight = this.$refs.wrapperMenu.clientHeight;
-                this.foodScroll.on('scroll', (pos) => {
-                    if (!this.$refs.wrapperMenu) {
-                        return
-                    }
-                    this.shopListTop.forEach((item, index) => {
-                        if (this.menuIndexChange && Math.abs(Math.round(pos.y)) >= item) {
-                            this.menuIndex = index;
-                            const menuList=this.$refs.wrapperMenu.querySelectorAll('.activity_menu');
-                            const el = menuList[0];
-                            wrapperMenu.scrollToElement(el, 800, 0, -(wrapMenuHeight/2 - 50));
-                        }
-                    })
-                })
-            },
-            //控制活动详情页的显示隐藏
-            showActivitiesFun(){
-                this.showActivities = !this.showActivities;
-            },
-            //点击左侧食品列表标题，相应列表移动到最顶层
-            chooseMenu(index){
-                this.menuIndex = index;
-                //menuIndexChange解决运动时listenScroll依然监听的bug
-                this.menuIndexChange = false;
-                this.foodScroll.scrollTo(0, -this.shopListTop[index], 400);
-                this.foodScroll.on('scrollEnd', () => {
-                    this.menuIndexChange = true;
-                })
-            },
-            showTitleDetail(index){
-                if (this.TitleDetailIndex == index) {
-                    this.TitleDetailIndex = null;
-                }else{
-                    this.TitleDetailIndex = index;
-                }
-            },
-            //加入购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
-            addToCart(category_id, item_id, food_id, name, price, specs){
-                this.ADD_CART({shopid: this.shopId, category_id, item_id, food_id, name, price, specs});
-            },
-            //移出购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
-            removeOutCart(category_id, item_id, food_id, name, price, specs){
-                this.REDUCE_CART({shopid: this.shopId, category_id, item_id, food_id, name, price, specs});
-            },
-            /**
-             * 初始化和shopCart变化时，重新获取购物车改变过的数据，赋值 categoryNum，totalPrice，cartFoodList，整个数据流是自上而下的形式，所有的购物车数据都交给vuex统一管理，包括购物车组件中自身的商品数量，使整个数据流更加清晰
-             */
-            initCategoryNum(){
-                let newArr = [];
-                let cartFoodNum = 0;
-                this.totalPrice = 0;
-                this.cartFoodList = [];
-                this.menuList.forEach((item, index) => {
-                    if (this.shopCart&&this.shopCart[item.foods[0].category_id]) {
-                        let num = 0;
-                        Object.keys(this.shopCart[item.foods[0].category_id]).forEach(itemid => {
-                            Object.keys(this.shopCart[item.foods[0].category_id][itemid]).forEach(foodid => {
-                                let foodItem = this.shopCart[item.foods[0].category_id][itemid][foodid];
-                                num += foodItem.num;
-                                if (item.type == 1) {
-                                    this.totalPrice += foodItem.num*foodItem.price;
-                                    if (foodItem.num > 0) {
-                                        this.cartFoodList[cartFoodNum] = {};
-                                        this.cartFoodList[cartFoodNum].category_id = item.foods[0].category_id;
-                                        this.cartFoodList[cartFoodNum].item_id = itemid;
-                                        this.cartFoodList[cartFoodNum].food_id = foodid;
-                                        this.cartFoodList[cartFoodNum].num = foodItem.num;
-                                        this.cartFoodList[cartFoodNum].price = foodItem.price;
-                                        this.cartFoodList[cartFoodNum].name = foodItem.name;
-                                        this.cartFoodList[cartFoodNum].specs = foodItem.specs;
-                                        cartFoodNum ++;
-                                    }
-                                }
-                            })
-                        })
-                        newArr[index] = num;
-                    }else{
-                        newArr[index] = 0;
-                    }
-                })
-                this.totalPrice = this.totalPrice.toFixed(2);
-                this.categoryNum = [...newArr];
-            },
-            //控制购物列表是否显示
-            toggleCartList(){
-                this.cartFoodList.length ? this.showCartList = !this.showCartList : true;
-            },
-            //清除购物车
-            clearCart(){
-                this.toggleCartList();
-                this.CLEAR_CART(this.shopId);
-            },
-            //监听圆点是否进入购物车
-            listenInCart(){
-                if (!this.receiveInCart) {
-                    this.receiveInCart = true;
-                    this.$refs.cartContainer.addEventListener('animationend', () => {
-                        this.receiveInCart = false;
-                    })
-                    this.$refs.cartContainer.addEventListener('webkitAnimationEnd', () => {
-                        this.receiveInCart = false;
-                    })
-                }
-            },
-            //获取不同类型的评论列表
-            async changeTgeIndex(index, name){
-                this.ratingTageIndex = index;
-                this.ratingOffset = 0;
-                this.ratingTagName = name;
-                let res = await getRatingList(this.shopId, this.ratingOffset, name);
-                this.ratingList = [...res];
-                this.$nextTick(() => {
-                    this.ratingScroll.refresh();
-                })
-            },
-            //加载更多评论
-            async loaderMoreRating(){
-                if (this.preventRepeatRequest) {
-                    return
-                }
-                this.loadRatings = true;
-                this.preventRepeatRequest = true;
-                this.ratingOffset += 10;
-                let ratingDate = await getRatingList(this.shopId, this.ratingOffset, this.ratingTagName);
-                this.ratingList = [...this.ratingList,...ratingDate];
-                this.loadRatings = false;
-                if (ratingDate.length >= 10) {
-                    this.preventRepeatRequest = false;
-                }
-            },
-            //隐藏动画
-            hideLoading(){
-                this.showLoading = false;
-            },
-            //显示规格列表
-            showChooseList(foods){
-                if (foods) {
-                    this.choosedFoods = foods;
-                }
-                this.showSpecs = !this.showSpecs;
-                this.specsIndex = 0;
-            },
-            //记录当前所选规格的索引值
-            chooseSpecs(index){
-                this.specsIndex = index;
-            },
-            //多规格商品加入购物车
-            addSpecs(category_id, item_id, food_id, name, price, specs, packing_fee, sku_id, stock){
-                this.ADD_CART({shopid: this.shopId, category_id, item_id, food_id, name, price, specs, packing_fee, sku_id, stock});
-                this.showChooseList();
-            },
-            //显示提示，无法减去商品
-            showReduceTip(){
-                this.showDeleteTip = true;
-                clearTimeout(this.timer);
-                this.timer = setTimeout(() => {
-                    clearTimeout(this.timer);
-                    this.showDeleteTip = false;
-                }, 3000);
-            },
-            //显示下落圆球
-            showMoveDotFun(showMoveDot, elLeft, elBottom){
-                this.showMoveDot = [...this.showMoveDot, ...showMoveDot];
-                this.elLeft = elLeft;
-                this.elBottom = elBottom;
-            },
-            beforeEnter(el){
-                el.style.transform = `translate3d(0,${37 + this.elBottom - this.windowHeight}px,0)`;
-                el.children[0].style.transform = `translate3d(${this.elLeft - 30}px,0,0)`;
-                el.children[0].style.opacity = 0;
-            },
-            afterEnter(el){
-                el.style.transform = `translate3d(0,0,0)`;
-                el.children[0].style.transform = `translate3d(0,0,0)`;
-                el.style.transition = 'transform .55s cubic-bezier(0.3, -0.25, 0.7, -0.15)';
-                el.children[0].style.transition = 'transform .55s linear';
-                this.showMoveDot = this.showMoveDot.map(item => false);
-                el.children[0].style.opacity = 1;
-                el.children[0].addEventListener('transitionend', () => {
-                    this.listenInCart();
-                })
-                el.children[0].addEventListener('webkitAnimationEnd', () => {
-                    this.listenInCart();
-                })
-            },
-            goback(){
-                this.$router.go(-1);
-            }
-        },
-        watch: {
-            //showLoading变化时说明组件已经获取初始化数据，在下一帧nextTick进行后续操作
-            showLoading: function (value){
-                if (!value) {
-                    this.$nextTick(() => {
-                        this.getFoodListHeight();
-                        this.initCategoryNum();
-                    })
-                }
-            },
-            shopCart: function (value){
-                this.initCategoryNum();
-            },
-            //购物车列表发生变化，没有商铺时，隐藏
-            cartFoodList: function (value){
-                if(!value.length){
-                    this.showCartList = false;
-                }
-            },
-            //商品、评论切换状态
-            changeShowType: function (value){
-                if (value === 'rating') {
-                    this.$nextTick(() => {
-                        this.ratingScroll = new BScroll('#ratingContainer', {
-                            probeType: 3,
-                            deceleration: 0.003,
-                            bounce: false,
-                            swipeTime: 2000,
-                            click: true,
-                        });
-                        this.ratingScroll.on('scroll', (pos) => {
-                            if (Math.abs(Math.round(pos.y)) >=  Math.abs(Math.round(this.ratingScroll.maxScrollY))) {
-                                this.loaderMoreRating();
-                                this.ratingScroll.refresh();
-                            }
-                        })
-                    })
-                }
-            }
-        }
+export default {
+  data() {
+    return {
+      showLoading: true, //显示加载动画
+      changeShowType: 'food', //切换显示商品或者评价
+      shopDetailData: null, //商铺详情
+      showActivities: false, //是否显示活动详情
+      menuList: [], //食品列表
+      menuIndex: 0, //已选菜单索引值，默认为0
+      menuIndexChange: true, //解决选中index时，scroll监听事件重复判断设置index的bug
+      shopListTop: [], //商品列表的高度集合
+      TitleDetailIndex: null, //点击展示列表头部详情
+      categoryNum: [], //商品类型右上角已加入购物车的数量
+      totalPrice: 0, //总共价格
+      cartFoodList: [], //购物车商品列表
+      showCartList: false, //显示购物车列表
+      receiveInCart: false, //购物车组件下落的圆点是否到达目标位置
+      ratingList: null, //评价列表
+      ratingOffset: 0, //评价获取数据offset值
+      ratingScoresData: null, //评价总体分数
+      ratingTagsList: null, //评价分类列表
+      ratingTageIndex: 0, //评价分类索引
+      preventRepeatRequest: false, // 防止多次触发数据请求
+      ratingTagName: '', //评论的类型
+      loadRatings: false, //加载更多评论是显示加载组件
+      foodScroll: null, //食品列表scroll
+      showSpecs: false, //控制显示食品规格
+      specsIndex: 0, //当前选中的规格索引值
+      choosedFoods: null, //当前选中视频数据
+      showDeleteTip: false, //多规格商品点击减按钮，弹出提示框
+      showMoveDot: [], //控制下落的小圆点显示隐藏
+      windowHeight: null, //屏幕的高度
+      elLeft: 0, //当前点击加按钮在网页中的绝对top值
+      elBottom: 0, //当前点击加按钮在网页中的绝对left值
+      ratingScroll: null, //评论页Scroll
+      imgBaseUrl,
     }
+  },
+  created() {
+    this.geohash = this.$route.query.geohash;
+    this.shopId = this.$route.query.id;
+    this.INIT_BUYCART();
+  },
+  mounted() {
+    this.initData();
+    this.windowHeight = window.innerHeight;
+  },
+  beforeDestroy() {
+    // this.foodScroll.removeEventListener('scroll', )
+  },
+  mixins: [loadMore, getImgPath],
+  components: {
+    loading,
+    ratingStar,
+    buyCart,
+  },
+  computed: {
+    ...mapState([
+      'latitude', 'longitude', 'cartList'
+    ]),
+    promotionInfo: function() {
+      return this.shopDetailData.promotion_info || '欢迎光临，用餐高峰期请提前下单，谢谢。'
+    },
+
+    //还差多少元起送，为负数时显示去结算按钮
+    minimumOrderAmount: function() {
+      if (this.shopDetailData) {
+        return this.shopDetailData.float_minimum_order_amount - this.totalPrice;
+      } else {
+        return null;
+      }
+    },
+    //当前商店购物信息
+    shopCart: function() {
+      return { ...this.cartList[this.shopId]
+      };
+    },
+    //购物车中总共商品的数量
+    totalNum: function() {
+      let num = 0;
+      this.cartFoodList.forEach(item => {
+        num += item.num
+      })
+      return num
+    },
+  },
+  methods: {
+    ...mapMutations([
+      'RECORD_ADDRESS', 'ADD_CART', 'REDUCE_CART', 'INIT_BUYCART', 'CLEAR_CART', 'RECORD_SHOPDETAIL'
+    ]),
+    //初始化时获取基本数据
+    async initData() {
+      // if (!this.latitude) {
+      //     //获取位置信息
+      //     let res = await msiteAdress(this.geohash);
+      //     // 记录当前经度纬度进入vuex
+      //     this.RECORD_ADDRESS(res);
+      // }
+      //获取商铺信息
+      // this.shopDetailData = await shopDetails(this.shopId, this.latitude, this.longitude);
+      this.shopDetailData = JSON.parse(
+        `{"name":"测试修22225","address":"北京市海淀区岭南路36号广东大厦5层","id":1148,"latitude":39.92775,"longitude":116.30162,"location":[121.49424,31.30122],"phone":"15761621234","category":"异国料理/西餐","supports":[{"description":"已加入“外卖保”计划，食品安全有保障","icon_color":"999999","icon_name":"保","id":7,"name":"外卖保","_id":"59a816cbebe2e53edc090e35"},{"description":"准时必达，超时秒赔","icon_color":"57A9FF","icon_name":"准","id":9,"name":"准时达","_id":"59a816cbebe2e53edc090e34"},{"description":"该商家支持开发票，请在下单时填写好发票抬头","icon_color":"999999","icon_name":"票","id":4,"name":"开发票","_id":"59a816cbebe2e53edc090e33"}],"status":0,"recent_order_num":827,"rating_count":485,"rating":4.1,"promotion_info":"dghgfdgf","piecewise_agent_fee":{"tips":"配送费约¥5"},"opening_hours":["8:30/20:30"],"license":{"catering_service_license_image":"15e3898ec2b5718.jpeg","business_license_image":"15e3898f5d05717.jpeg"},"is_new":true,"is_premium":true,"image_path":"15fa3a071f210067.jpg","identification":{"registered_number":"","registered_address":"","operation_period":"","licenses_scope":"","licenses_number":"","licenses_date":"","legal_person":"","identificate_date":null,"identificate_agency":"","company_name":""},"float_minimum_order_amount":20,"float_delivery_fee":5,"distance":"","order_lead_time":"","description":"vbn11","delivery_mode":{"color":"57A9FF","id":1,"is_solid":true,"text":"蜂鸟专送"},"activities":[{"icon_name":"减","name":"满减优惠","description":"满30减5，满60减8","icon_color":"f07373","id":1,"_id":"59a816cbebe2e53edc090e36"}],"__v":0}`
+      )
+      //获取商铺食品列表
+      // this.menuList = await foodMenu(this.shopId);
+      this.menuList = JSON.parse(
+        `[{"name":"热销榜","description":"大家喜欢吃，才叫真好吃。","id":878,"restaurant_id":1148,"foods":[{"_id":"59a822b0ebe2e53edc091364","tips":"454评价 月售666份","item_id":429,"category_id":878,"restaurant_id":1148,"activity":{"image_text_color":"f1884f","icon_color":"f07373","image_text":"电饭锅地方"},"image_path":"15e38c785a95721.jpeg","name":"水淀","__v":0,"specfoods":[{"specs_name":"默认","name":"水淀","item_id":429,"sku_id":1943,"food_id":1945,"restaurant_id":1148,"_id":"59ad3927ebe2e53edc0c08a4","specs":[],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":384,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":4.7,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":43,"satisfy_count":113,"attributes":[{"icon_color":"5ec452","icon_name":"新"},{"icon_color":"f07373","icon_name":"招牌"}],"is_essential":false,"server_utc":"2017-08-31T13:54:04.771Z","specifications":[],"rating_count":454,"month_sales":666,"description":"互粉咕叽咕叽个结果","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4.6},{"_id":"59a822d8ebe2e53edc0913b2","tips":"677评价 月售399份","item_id":430,"category_id":878,"restaurant_id":1148,"activity":{"image_text_color":"f1884f","icon_color":"f07373","image_text":"规范的损公肥私代购"},"image_path":"15e3b8952c85756.png","name":"xcv","__v":0,"specfoods":[{"specs_name":"默认","name":"xcv","item_id":430,"sku_id":1990,"food_id":1992,"restaurant_id":1148,"_id":"59b0bad51bf4526252609589","specs":[{"name":"规格","value":"默认","_id":"59b0bad51bf452625260958a"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":480,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":4.5,"packing_fee":0,"pinyin_name":"","original_price":0},{"specs_name":"","name":"xcv","item_id":430,"sku_id":1991,"food_id":1993,"restaurant_id":1148,"_id":"59b0bad51bf4526252609587","specs":[{"name":"规格","value":"","_id":"59b0bad51bf4526252609588"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":459,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":2,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":67,"satisfy_count":411,"attributes":[{"icon_color":"5ec452","icon_name":"新"},{"icon_color":"f07373","icon_name":"招牌"}],"is_essential":false,"server_utc":"2017-08-31T13:54:04.771Z","specifications":[{"name":"规格","values":["默认",""]}],"rating_count":677,"month_sales":399,"description":"该电饭锅的规范代购广告电饭锅","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4.3},{"_id":"59b8035e26794d095c6719f8","tips":"940评价 月售589份","item_id":468,"category_id":878,"restaurant_id":1148,"activity":null,"image_path":"15e76c918086664.jpg","name":"312","__v":0,"specfoods":[{"specs_name":"默认","name":"312","item_id":468,"sku_id":2032,"food_id":2034,"restaurant_id":1148,"_id":"59b8035e26794d095c6719f9","specs":[],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":632,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":4.8,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":19,"satisfy_count":988,"attributes":[],"is_essential":false,"server_utc":"2017-09-12T08:09:38.055Z","specifications":[],"rating_count":940,"month_sales":589,"description":"","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4.1},{"_id":"59b807c126794d095c671bdd","tips":"891评价 月售846份","item_id":470,"category_id":878,"restaurant_id":1148,"activity":null,"image_path":"15e76de465d6666.jpg","name":"翔","__v":0,"specfoods":[{"specs_name":"默认","name":"翔","item_id":470,"sku_id":2036,"food_id":2038,"restaurant_id":1148,"_id":"59b807c126794d095c671bde","specs":[],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":665,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":3.2,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":34,"satisfy_count":102,"attributes":[],"is_essential":false,"server_utc":"2017-09-12T08:09:38.055Z","specifications":[],"rating_count":891,"month_sales":846,"description":"","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4.8},{"_id":"59ccb4f0287971031352e9c0","tips":"540评价 月售434份","item_id":559,"category_id":878,"restaurant_id":1148,"activity":null,"image_path":"15ec7a2c6a97527.jpg","name":"11","__v":0,"specfoods":[{"specs_name":"默认","name":"11","item_id":559,"sku_id":2263,"food_id":2264,"restaurant_id":1148,"_id":"59cdb369287971031353a8e6","specs":[{"name":"规格","value":"默认","_id":"59cdb369287971031353a8e7"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":656,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":3.4,"packing_fee":0,"pinyin_name":"","original_price":0},{"specs_name":"sss","name":"11","item_id":559,"sku_id":2264,"food_id":2265,"restaurant_id":1148,"_id":"59cdb369287971031353a8e4","specs":[{"name":"规格","value":"sss","_id":"59cdb369287971031353a8e5"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":780,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":3.5,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":20,"satisfy_count":843,"attributes":[],"is_essential":false,"server_utc":"2017-09-22T03:33:26.067Z","specifications":[{"name":"规格","values":["默认","sss"]}],"rating_count":540,"month_sales":434,"description":"","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4.1}],"type":1,"icon_url":"5da3872d782f707b4c82ce4607c73d1ajpeg","is_selected":true,"__v":22},{"name":"优惠","description":"美味又实惠, 大家快来抢!","id":879,"restaurant_id":1148,"foods":[{"_id":"59c868de28797103134dec8b","tips":"75评价 月售46份","item_id":521,"category_id":879,"restaurant_id":1148,"activity":{"image_text":"放的歌和人途径ლ(′◉❥◉｀ლ)","icon_color":"f07373","image_text_color":"f1884f"},"image_path":"15f3592f1ea8747.jpeg","name":"很干净规范化","__v":0,"specfoods":[{"specs_name":"默认","name":"很干净规范化","item_id":521,"sku_id":2437,"food_id":2438,"restaurant_id":1148,"_id":"59e8d9e98b0b3516d5860789","specs":[{"name":"规格","value":"默认","_id":"59e8d9e98b0b3516d586078a"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":88,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":4.9,"packing_fee":0,"pinyin_name":"","original_price":0},{"specs_name":"换个房太阳","name":"很干净规范化","item_id":521,"sku_id":2438,"food_id":2439,"restaurant_id":1148,"_id":"59e8d9e98b0b3516d5860787","specs":[{"name":"规格","value":"换个房太阳","_id":"59e8d9e98b0b3516d5860788"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":440,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":3.9,"packing_fee":2,"pinyin_name":"","original_price":0},{"specs_name":"ssssss","name":"很干净规范化","item_id":521,"sku_id":2439,"food_id":2440,"restaurant_id":1148,"_id":"59e8d9e98b0b3516d5860785","specs":[{"name":"规格","value":"ssssss","_id":"59e8d9e98b0b3516d5860786"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":29,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":4.9,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":48,"satisfy_count":1,"attributes":[{"icon_name":"招牌","icon_color":"f07373"}],"is_essential":false,"server_utc":"2017-09-22T03:33:26.067Z","specifications":[{"values":["默认","换个房太阳","ssssss"],"name":"规格"}],"rating_count":75,"month_sales":46,"description":"更符合规范","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4.6},{"_id":"59ddd736a164195e1dd8a9a4","tips":"342评价 月售137份","item_id":614,"category_id":879,"restaurant_id":1148,"activity":{"image_text":"1111111111","icon_color":"f07373","image_text_color":"f1884f"},"image_path":"15f0a908e508324.png","name":"1111111111111111111","__v":0,"specfoods":[{"specs_name":"默认","name":"1111111111111111111","item_id":614,"sku_id":2479,"food_id":2479,"restaurant_id":1148,"_id":"59f002cd8b0b3516d58c0fc5","specs":[],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":806,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":0.8,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":40,"satisfy_count":274,"attributes":[{"icon_name":"新","icon_color":"5ec452"},{"icon_name":"招牌","icon_color":"f07373"}],"is_essential":false,"server_utc":"2017-10-11T07:27:32.656Z","specifications":[],"rating_count":342,"month_sales":137,"description":"111111111","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4}],"type":1,"icon_url":"4735c4342691749b8e1a531149a46117jpeg","is_selected":true,"__v":7},{"name":"888","description":"4","restaurant_id":1148,"id":1138,"foods":[{"_id":"59c9fb7428797103134f9305","tips":"525评价 月售490份","item_id":534,"category_id":1138,"restaurant_id":1148,"activity":null,"image_path":"15ebcfdfc887318.jpg","name":"44","__v":0,"specfoods":[{"specs_name":"默认","name":"44","item_id":534,"sku_id":2216,"food_id":2217,"restaurant_id":1148,"_id":"59c9fb7428797103134f9308","specs":[{"name":"规格","value":"默认","_id":"59c9fb7428797103134f9309"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":310,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":1.4,"packing_fee":0,"pinyin_name":"","original_price":0},{"specs_name":"33","name":"44","item_id":534,"sku_id":2217,"food_id":2218,"restaurant_id":1148,"_id":"59c9fb7428797103134f9306","specs":[{"name":"规格","value":"33","_id":"59c9fb7428797103134f9307"}],"stock":1000,"checkout_mode":1,"is_essential":false,"recent_popularity":922,"sold_out":false,"price":20,"promotion_stock":-1,"recent_rating":2.1,"packing_fee":0,"pinyin_name":"","original_price":0}],"satisfy_rate":68,"satisfy_count":191,"attributes":[{"icon_color":"5ec452","icon_name":"新"},{"icon_color":"f07373","icon_name":"招牌"}],"is_essential":false,"server_utc":"2017-09-22T03:33:26.067Z","specifications":[{"values":["默认","33"],"name":"规格"}],"rating_count":525,"month_sales":490,"description":"","attrs":[],"display_times":[],"pinyin_name":"","is_featured":0,"rating":4.2}],"type":1,"icon_url":"","is_selected":true,"__v":1}]`
+      )
+      //评论列表
+      // this.ratingList = await getRatingList(this.shopId, this.ratingOffset);
+      this.ratingList = JSON.parse(
+        `[{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"按时送达","_id":"59a816cbebe2e53edc090e56","username":"4*******b","tags":[],"item_ratings":[{"food_id":508807792,"food_name":"超级至尊比萨-铁盘","_id":"59a816cbebe2e53edc090e58","is_valid":1,"image_hash":"dc864033625905f0a15a2d181d53a425jpeg"},{"food_id":508808743,"food_name":"韩式浓情风味鸡（标准份）","_id":"59a816cbebe2e53edc090e57","is_valid":1,"image_hash":"074e0e203f613deff4e456c31e4177d1jpeg"}],"highlights":[],"avatar":""},{"rated_at":"2017-02-09","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e53","username":"t****n","tags":[],"item_ratings":[{"food_id":508809467,"food_name":"香草凤尾虾-5只装","_id":"59a816cbebe2e53edc090e55","is_valid":1,"image_hash":""},{"food_id":508808754,"food_name":"鸡茸蘑菇汤","_id":"59a816cbebe2e53edc090e54","is_valid":1,"image_hash":"5388b26ad173389d89e0e015dbf295fcjpeg"}],"highlights":[],"avatar":"15f6cf782b0c9cd5ca8daa7f76ab05aejpeg"},{"rated_at":"2017-01-18","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e51","username":"，******C","tags":[],"item_ratings":[{"food_id":508809480,"food_name":"冰柠檬红茶（标准份）","_id":"59a816cbebe2e53edc090e52","is_valid":1,"image_hash":""}],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e50","username":"试******春","tags":[],"item_ratings":[],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e4d","username":"王******a","tags":[],"item_ratings":[{"food_id":529149980,"food_name":"富贵“鸡”祥大吉大利比萨","_id":"59a816cbebe2e53edc090e4f","is_valid":1,"image_hash":""},{"food_id":144654782,"food_name":"热柠檬红茶","_id":"59a816cbebe2e53edc090e4e","is_valid":1,"image_hash":""}],"highlights":[],"avatar":"1b523ca27369a0eed1ce0c3fc0a5ba8bjpeg"},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e49","username":"3*******7","tags":[],"item_ratings":[{"food_id":508808726,"food_name":"加州风情香烤牛肉比萨-铁盘","_id":"59a816cbebe2e53edc090e4c","is_valid":1,"image_hash":""},{"food_id":508810265,"food_name":"海鲜至尊比萨-铁盘","_id":"59a816cbebe2e53edc090e4b","is_valid":1,"image_hash":""},{"food_id":508807792,"food_name":"超级至尊比萨-铁盘","_id":"59a816cbebe2e53edc090e4a","is_valid":1,"image_hash":""}],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e46","username":"3*******6","tags":[],"item_ratings":[{"food_id":529149980,"food_name":"富贵“鸡”祥大吉大利比萨","_id":"59a816cbebe2e53edc090e48","is_valid":1,"image_hash":""},{"food_id":508808743,"food_name":"韩式浓情风味鸡（标准份）","_id":"59a816cbebe2e53edc090e47","is_valid":1,"image_hash":""}],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"送餐速度很快！","time_spent_desc":"","_id":"59a816cbebe2e53edc090e45","username":"3*******7","tags":[],"item_ratings":[],"highlights":[],"avatar":"818cf0c977c77ca365557230db619a18jpeg"},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e44","username":"3*******b","tags":[],"item_ratings":[],"highlights":[],"avatar":""},{"rated_at":"2017-02-09","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"59a816cbebe2e53edc090e43","username":"景***0","tags":[],"item_ratings":[],"highlights":[],"avatar":""}]`
+      )
+      //商铺评论详情
+      // this.ratingScoresData = await ratingScores(this.shopId);
+      this.ratingScoresData = JSON.parse(`{"compare_rating":0.76869,"deliver_time":40,"food_score":4.76378,"order_rating_amount":473,"overall_score":4.72836,"service_score":4.69295}`)
+      //评论Tag列表
+      // this.ratingTagsList = await ratingTags(this.shopId);
+      this.ratingTagsList = JSON.parse(
+        `[{"name":"全部","_id":"59a816cbebe2e53edc090e42","unsatisfied":false,"count":473},{"name":"满意","_id":"59a816cbebe2e53edc090e41","unsatisfied":false,"count":453},{"name":"不满意","_id":"59a816cbebe2e53edc090e40","unsatisfied":true,"count":20},{"name":"有图","_id":"59a816cbebe2e53edc090e3f","unsatisfied":false,"count":2},{"name":"味道好","_id":"59a816cbebe2e53edc090e3e","unsatisfied":false,"count":47},{"name":"送货快","_id":"59a816cbebe2e53edc090e3d","unsatisfied":false,"count":32},{"name":"分量足","_id":"59a816cbebe2e53edc090e3c","unsatisfied":false,"count":18},{"name":"包装精美","_id":"59a816cbebe2e53edc090e3b","unsatisfied":false,"count":15},{"name":"干净卫生","_id":"59a816cbebe2e53edc090e3a","unsatisfied":false,"count":15},{"name":"食材新鲜","_id":"59a816cbebe2e53edc090e39","unsatisfied":false,"count":15},{"name":"服务不错","_id":"59a816cbebe2e53edc090e38","unsatisfied":false,"count":11}]`
+      )
+      this.RECORD_SHOPDETAIL(this.shopDetailData)
+      //隐藏加载动画
+      this.hideLoading();
+    },
+    //获取食品列表的高度，存入shopListTop
+    getFoodListHeight() {
+      const listContainer = this.$refs.menuFoodList;
+      const listArr = Array.from(listContainer.children[0].children);
+      listArr.forEach((item, index) => {
+        this.shopListTop[index] = item.offsetTop;
+      });
+      this.listenScroll(listContainer)
+    },
+    //当滑动食品列表时，监听其scrollTop值来设置对应的食品列表标题的样式
+    listenScroll(element) {
+      this.foodScroll = new BScroll(element, {
+        probeType: 3,
+        deceleration: 0.001,
+        bounce: false,
+        swipeTime: 2000,
+        click: true,
+      });
+
+      const wrapperMenu = new BScroll('#wrapper_menu', {
+        click: true,
+      });
+
+      const wrapMenuHeight = this.$refs.wrapperMenu.clientHeight;
+      this.foodScroll.on('scroll', (pos) => {
+        if (!this.$refs.wrapperMenu) {
+          return
+        }
+        this.shopListTop.forEach((item, index) => {
+          if (this.menuIndexChange && Math.abs(Math.round(pos.y)) >= item) {
+            this.menuIndex = index;
+            const menuList = this.$refs.wrapperMenu.querySelectorAll('.activity_menu');
+            const el = menuList[0];
+            wrapperMenu.scrollToElement(el, 800, 0, -(wrapMenuHeight / 2 - 50));
+          }
+        })
+      })
+    },
+    //控制活动详情页的显示隐藏
+    showActivitiesFun() {
+      this.showActivities = !this.showActivities;
+    },
+    //点击左侧食品列表标题，相应列表移动到最顶层
+    chooseMenu(index) {
+      this.menuIndex = index;
+      //menuIndexChange解决运动时listenScroll依然监听的bug
+      this.menuIndexChange = false;
+      this.foodScroll.scrollTo(0, -this.shopListTop[index], 400);
+      this.foodScroll.on('scrollEnd', () => {
+        this.menuIndexChange = true;
+      })
+    },
+    showTitleDetail(index) {
+      if (this.TitleDetailIndex == index) {
+        this.TitleDetailIndex = null;
+      } else {
+        this.TitleDetailIndex = index;
+      }
+    },
+    //加入购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
+    addToCart(category_id, item_id, food_id, name, price, specs) {
+      console.log('specs');
+      console.log(specs);
+      this.ADD_CART({
+        shopid: this.shopId,
+        category_id,
+        item_id,
+        food_id,
+        name,
+        price,
+        specs
+      });
+    },
+    //移出购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
+    removeOutCart(category_id, item_id, food_id, name, price, specs) {
+      console.log('specs');
+      console.log(specs);
+      this.REDUCE_CART({
+        shopid: this.shopId,
+        category_id,
+        item_id,
+        food_id,
+        name,
+        price,
+        specs
+      });
+    },
+    /**
+     * 初始化和shopCart变化时，重新获取购物车改变过的数据，赋值 categoryNum，totalPrice，cartFoodList，整个数据流是自上而下的形式，所有的购物车数据都交给vuex统一管理，包括购物车组件中自身的商品数量，使整个数据流更加清晰
+     */
+    initCategoryNum() {
+      let newArr = [];
+      let cartFoodNum = 0;
+      this.totalPrice = 0;
+      this.cartFoodList = [];
+      this.menuList.forEach((item, index) => {
+        if (this.shopCart && this.shopCart[item.foods[0].category_id]) {
+          let num = 0;
+          Object.keys(this.shopCart[item.foods[0].category_id]).forEach(itemid => {
+            Object.keys(this.shopCart[item.foods[0].category_id][itemid]).forEach(foodid => {
+              let foodItem = this.shopCart[item.foods[0].category_id][itemid][foodid];
+              num += foodItem.num;
+              if (item.type == 1) {
+                this.totalPrice += foodItem.num * foodItem.price;
+                if (foodItem.num > 0) {
+                  this.cartFoodList[cartFoodNum] = {};
+                  this.cartFoodList[cartFoodNum].category_id = item.foods[0].category_id;
+                  this.cartFoodList[cartFoodNum].item_id = itemid;
+                  this.cartFoodList[cartFoodNum].food_id = foodid;
+                  this.cartFoodList[cartFoodNum].num = foodItem.num;
+                  this.cartFoodList[cartFoodNum].price = foodItem.price;
+                  this.cartFoodList[cartFoodNum].name = foodItem.name;
+                  this.cartFoodList[cartFoodNum].specs = foodItem.specs;
+                  cartFoodNum++;
+                }
+              }
+            })
+          })
+          newArr[index] = num;
+        } else {
+          newArr[index] = 0;
+        }
+      })
+      this.totalPrice = this.totalPrice.toFixed(2);
+      this.categoryNum = [...newArr];
+    },
+    //控制购物列表是否显示
+    toggleCartList() {
+      this.cartFoodList.length ? this.showCartList = !this.showCartList : true;
+    },
+    //清除购物车
+    clearCart() {
+      this.toggleCartList();
+      this.CLEAR_CART(this.shopId);
+    },
+    //监听圆点是否进入购物车
+    listenInCart() {
+      if (!this.receiveInCart) {
+        this.receiveInCart = true;
+        this.$refs.cartContainer.addEventListener('animationend', () => {
+          this.receiveInCart = false;
+        })
+        this.$refs.cartContainer.addEventListener('webkitAnimationEnd', () => {
+          this.receiveInCart = false;
+        })
+      }
+    },
+    //获取不同类型的评论列表
+    async changeTgeIndex(index, name) {
+      this.ratingTageIndex = index;
+      this.ratingOffset = 0;
+      this.ratingTagName = name;
+      let res = await getRatingList(this.shopId, this.ratingOffset, name);
+      this.ratingList = [...res];
+      this.$nextTick(() => {
+        this.ratingScroll.refresh();
+      })
+    },
+    //加载更多评论
+    async loaderMoreRating() {
+      if (this.preventRepeatRequest) {
+        return
+      }
+      this.loadRatings = true;
+      this.preventRepeatRequest = true;
+      this.ratingOffset += 10;
+      let ratingDate = await getRatingList(this.shopId, this.ratingOffset, this.ratingTagName);
+      this.ratingList = [...this.ratingList, ...ratingDate];
+      this.loadRatings = false;
+      if (ratingDate.length >= 10) {
+        this.preventRepeatRequest = false;
+      }
+    },
+    //隐藏动画
+    hideLoading() {
+      this.showLoading = false;
+    },
+    //显示规格列表
+    showChooseList(foods) {
+      if (foods) {
+        this.choosedFoods = foods;
+      }
+      this.showSpecs = !this.showSpecs;
+      this.specsIndex = 0;
+    },
+    //记录当前所选规格的索引值
+    chooseSpecs(index) {
+      this.specsIndex = index;
+    },
+    //多规格商品加入购物车
+    addSpecs(category_id, item_id, food_id, name, price, specs, packing_fee, sku_id, stock) {
+      this.ADD_CART({
+        shopid: this.shopId,
+        category_id,
+        item_id,
+        food_id,
+        name,
+        price,
+        specs,
+        packing_fee,
+        sku_id,
+        stock
+      });
+      this.showChooseList();
+    },
+    //显示提示，无法减去商品
+    showReduceTip() {
+      this.showDeleteTip = true;
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        clearTimeout(this.timer);
+        this.showDeleteTip = false;
+      }, 3000);
+    },
+    //显示下落圆球
+    showMoveDotFun(showMoveDot, elLeft, elBottom) {
+      this.showMoveDot = [...this.showMoveDot, ...showMoveDot];
+      this.elLeft = elLeft;
+      this.elBottom = elBottom;
+    },
+    beforeEnter(el) {
+      el.style.transform = `translate3d(0,${37 + this.elBottom - this.windowHeight}px,0)`;
+      el.children[0].style.transform = `translate3d(${this.elLeft - 30}px,0,0)`;
+      el.children[0].style.opacity = 0;
+    },
+    afterEnter(el) {
+      el.style.transform = `translate3d(0,0,0)`;
+      el.children[0].style.transform = `translate3d(0,0,0)`;
+      el.style.transition = 'transform .55s cubic-bezier(0.3, -0.25, 0.7, -0.15)';
+      el.children[0].style.transition = 'transform .55s linear';
+      this.showMoveDot = this.showMoveDot.map(item => false);
+      el.children[0].style.opacity = 1;
+      el.children[0].addEventListener('transitionend', () => {
+        this.listenInCart();
+      })
+      el.children[0].addEventListener('webkitAnimationEnd', () => {
+        this.listenInCart();
+      })
+    },
+    goback() {
+      this.$router.go(-1);
+    }
+  },
+  watch: {
+    //showLoading变化时说明组件已经获取初始化数据，在下一帧nextTick进行后续操作
+    showLoading: function(value) {
+      if (!value) {
+        this.$nextTick(() => {
+          this.getFoodListHeight();
+          this.initCategoryNum();
+        })
+      }
+    },
+    shopCart: function(value) {
+      this.initCategoryNum();
+    },
+    //购物车列表发生变化，没有商铺时，隐藏
+    cartFoodList: function(value) {
+      if (!value.length) {
+        this.showCartList = false;
+      }
+    },
+    //商品、评论切换状态
+    changeShowType: function(value) {
+      if (value === 'rating') {
+        this.$nextTick(() => {
+          this.ratingScroll = new BScroll('#ratingContainer', {
+            probeType: 3,
+            deceleration: 0.003,
+            bounce: false,
+            swipeTime: 2000,
+            click: true,
+          });
+          this.ratingScroll.on('scroll', (pos) => {
+            if (Math.abs(Math.round(pos.y)) >= Math.abs(Math.round(this.ratingScroll.maxScrollY))) {
+              this.loaderMoreRating();
+              this.ratingScroll.refresh();
+            }
+          })
+        })
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
-    @import 'src/style/mixin';
-    @keyframes mymove{
-       0%   { transform: scale(1) }
-       25%  { transform: scale(.8) }
-       50%  { transform: scale(1.1) }
-       75%  { transform: scale(.9) }
-       100% { transform: scale(1) }
+@import 'src/style/mixin';
+@keyframes mymove {
+    0% {
+        transform: scale(1);
     }
-    @-moz-keyframes mymove{
-       0%   { transform: scale(1) }
-       25%  { transform: scale(.8) }
-       50%  { transform: scale(1.1) }
-       75%  { transform: scale(.9) }
-       100% { transform: scale(1) }
+    25% {
+        transform: scale(.8);
     }
-    @-webkit-keyframes mymove{
-       0%   { transform: scale(1) }
-       25%  { transform: scale(.8) }
-       50%  { transform: scale(1.1) }
-       75%  { transform: scale(.9) }
-       100% { transform: scale(1) }
+    50% {
+        transform: scale(1.1);
     }
-    @-o-keyframes mymove{
-       0%   { transform: scale(1) }
-       25%  { transform: scale(.8) }
-       50%  { transform: scale(1.1) }
-       75%  { transform: scale(.9) }
-       100% { transform: scale(1) }
+    75% {
+        transform: scale(.9);
     }
-    .shop_back_svg_container{
-        position: fixed;
+    100% {
+        transform: scale(1);
+    }
+}
+@-moz-keyframes mymove {
+    0% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(.8);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    75% {
+        transform: scale(.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+@-webkit-keyframes mymove {
+    0% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(.8);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    75% {
+        transform: scale(.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+@-o-keyframes mymove {
+    0% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(.8);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    75% {
+        transform: scale(.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+.shop_back_svg_container {
+    position: fixed;
+    @include wh(100%, 100%);
+    img {
         @include wh(100%, 100%);
-        img{
-            @include wh(100%, 100%);
-        }
     }
-    .shop_container{
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        right: 0;
-        left: 0;
-        height: 100%;
-    }
-    .goback{
-        position: fixed;
-        top: 0;
-        left: 0;
+}
+.shop_container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 0;
+    left: 0;
+    height: 100%;
+}
+.goback {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2rem;
+    z-index: 11;
+    padding-top: 0.2rem;
+    padding-left: 0.2rem;
+}
+.shop_detail_header {
+    overflow: hidden;
+    position: relative;
+    .header_cover_img {
         width: 100%;
-        height: 2rem;
-        z-index: 11;
-        padding-top: 0.2rem;
-        padding-left: 0.2rem;
-    }
-    .shop_detail_header{
-        overflow: hidden;
-        position: relative;
-        .header_cover_img{
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 9;
-            filter: blur(10px);
-        }
-        .description_header{
-            position: relative;
-            z-index: 10;
-            background-color: rgba(119,103,137,.43);
-            padding: 0.4rem 0 0.4rem 0.4rem;
-            width: 100%;
-            overflow: hidden;
-            .description_top{
-                display: flex;
-                .description_left{
-                    margin-right: 0.3rem;
-                    img{
-                        @include wh(2.9rem, 2.9rem);
-                        display: block;
-                        border-radius: 0.15rem;
-                    }
-                }
-                .description_right{
-                    flex: 1;
-                    .description_title{
-                        @include sc(.8rem, #fff);
-                        font-weight: bold;
-                        width: 100%;
-                        margin-bottom: 0.3rem;
-                    }
-                    .description_text{
-                        @include sc(.5rem, #fff);
-                        margin-bottom: 0.3rem;
-                    }
-                    .description_promotion{
-                        @include sc(.5rem, #fff);
-                        width: 11.5rem;
-                    }
-                }
-                .description_arrow{
-                    @include ct;
-                    right: 0.3rem;
-                    z-index: 11;
-                }
-            }
-            .description_footer{
-                @include fj;
-                margin-top: 0.5rem;
-                padding-right: 1rem;
-                p{
-                    @include sc(.5rem, #fff);
-                    span{
-                        color: #fff;
-                    }
-                    .tip_icon{
-                        padding: 0 .04rem;
-                        border: 0.025rem solid #fff;
-                        border-radius: 0.1rem;
-                        font-size: .4rem;
-                        display: inline-block;
-                    }
-                }
-                .ellipsis{
-                    width: 84%;
-                }
-                .footer_arrow{
-                    @include wh(.45rem, .45rem);
-                    position: absolute;
-                    right: .3rem;
-                }
-            }
-        }
-    }
-    .activities_details{
-        position: fixed;
+        position: absolute;
         top: 0;
         left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #262626;
-        z-index: 200;
-        padding: 1.25rem;
-        .activities_shoptitle{
-            text-align: center;
-            @include sc(.8rem, #fff);
-        }
-        .activities_ratingstar{
+        z-index: 9;
+        filter: blur(10px);
+    }
+    .description_header {
+        position: relative;
+        z-index: 10;
+        background-color: rgba(119,103,137,.43);
+        padding: 0.4rem 0 0.4rem 0.4rem;
+        width: 100%;
+        overflow: hidden;
+        .description_top {
             display: flex;
-            justify-content: center;
-            transform: scale(2.2);
-            margin-top: .7rem;
+            .description_left {
+                margin-right: 0.3rem;
+                img {
+                    @include wh(2.9rem, 2.9rem);
+                    display: block;
+                    border-radius: 0.15rem;
+                }
+            }
+            .description_right {
+                flex: 1;
+                .description_title {
+                    @include sc(0.8rem, #fff);
+                    // font-weight:300;
+                    width: 100%;
+                    margin-bottom: 0.3rem;
+                }
+                .description_text {
+                    @include sc(0.5rem, #fff);
+                    margin-bottom: 0.3rem;
+                }
+                .description_promotion {
+                    @include sc(0.5rem, #fff);
+                    width: 11.5rem;
+                }
+            }
+            .description_arrow {
+                @include ct;
+                right: 0.3rem;
+                z-index: 11;
+            }
         }
-        .activities_list{
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
-            @include sc(.5rem, #fff);
-            li{
-                margin-bottom: .2rem;
-                .activities_icon{
-                    padding: 0 .02rem;
-                    display: inline-block;
+        .description_footer {
+            @include fj;
+            margin-top: 0.5rem;
+            padding-right: 1rem;
+            p {
+                @include sc(0.5rem, #fff);
+                span {
+                    color: #fff;
+                }
+                .tip_icon {
+                    padding: 0 0.04rem;
                     border: 0.025rem solid #fff;
                     border-radius: 0.1rem;
-                }
-                span{
-                    color: #fff;
-                    line-height: .6rem;
+                    font-size: 0.4rem;
+                    display: inline-block;
                 }
             }
-        }
-        .activities_shopinfo{
-            p{
-                line-height: .7rem;
-                @include sc(.5rem, #fff);
+            .ellipsis {
+                width: 84%;
             }
-        }
-        .activities_title_style{
-            text-align: center;
-            margin-bottom: 1rem;
-            span{
-                @include sc(.5rem, #fff);
-                border: 0.025rem solid #555;
-                padding: .2rem .4rem;
-                border-radius: 0.5rem;
-            }
-
-        }
-        .close_activities{
-            position: absolute;
-            bottom: 1rem;
-            @include cl;
-        }
-    }
-
-    .food_container{
-        display: flex;
-        flex: 1;
-        padding-bottom: 2rem;
-    }
-    .menu_container{
-        display: flex;
-        flex: 1;
-        overflow-y: hidden;
-        position: relative;
-        .menu_left{
-            width: 3.8rem;
-            .menu_left_li{
-                padding: .7rem .3rem;
-                border-bottom: 0.025rem solid #ededed;
-                box-sizing: border-box;
-                border-left: 0.15rem solid #f8f8f8;
-                position: relative;
-                img{
-                    @include wh(.5rem, .6rem);
-                }
-                span{
-                    @include sc(.6rem, #666);
-                }
-                .category_num{
-                    position: absolute;
-                    top: .1rem;
-                    right: .1rem;
-                    background-color: #ff461d;
-                    line-height: .6rem;
-                    text-align: center;
-                    border-radius: 50%;
-                    border: 0.025rem solid #ff461d;
-                    min-width: .6rem;
-                    height: .6rem;
-                    @include sc(.5rem, #fff);
-                    font-family: Helvetica Neue,Tahoma,Arial;
-                }
-            }
-            .activity_menu{
-                border-left: 0.15rem solid #3190e8;
-                background-color: #fff;
-                span:nth-of-type(1){
-                    font-weight: bold;
-                }
-            }
-        }
-        .menu_right{
-            flex: 4;
-            overflow-y: auto;
-            .menu_detail_header{
-                width: 100%;
-                padding: .4rem;
-                position: relative;
-                @include fj;
-                align-items: center;
-                .menu_detail_header_left{
-                    width: 11rem;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    .menu_item_title{
-                        @include sc(.7rem, #666);
-                        font-weight: bold;
-                    }
-                    .menu_item_description{
-                        @include sc(.5rem, #999);
-                        width: 30%;
-                        overflow: hidden;
-                    }
-                }
-                .menu_detail_header_right{
-                    @include wh(.5rem, 1rem);
-                    display: block;
-                    @include bis('../../images/icon_point.png');
-                    background-size: 100% .4rem;
-                    background-position: left center;
-                }
-                .description_tip{
-                    background-color: #39373a;
-                    opacity: 0.95;
-                    @include sc(.5rem, #fff);
-                    position: absolute;
-                    top: 1.5rem;
-                    z-index: 14;
-                    width: 8rem;
-                    right: .2rem;
-                    padding: .5rem .4rem;
-                    border: 1px;
-                    border-radius: .2rem;
-                    span{
-                        color: #fff;
-                        line-height: .6rem;
-                        font-size: .55rem;
-                    }
-                }
-                .description_tip::after{
-                    content: '';
-                    position: absolute;
-                    @include wh(.4rem, .4rem);
-                    background-color: #39373a;
-                    top: -.5rem;
-                    right: .7rem;
-                    transform: rotate(-45deg) translateY(.41rem);
-                }
-            }
-            .menu_detail_list{
-                background-color: #fff;
-                padding: .6rem .4rem;
-                border-bottom: 1px solid #f8f8f8;
-                position: relative;
-                overflow: hidden;
-                .menu_detail_link{
-                    display:flex;
-                    .menu_food_img{
-                        margin-right: .4rem;
-                        img{
-                            @include wh(2rem, 2rem);
-                            display: block;
-                        }
-                    }
-                    .menu_food_description{
-                        width: 100%;
-                        .food_description_head{
-                            @include fj;
-                            margin-bottom: .2rem;
-                            .description_foodname{
-                                @include sc(.7rem, #333);
-                            }
-                            .attributes_ul{
-                                display: flex;
-                                li{
-                                    font-size: .3rem;
-                                    height: .6rem;
-                                    line-height: .35rem;
-                                    padding: .1rem;
-                                    border: 1px solid #666;
-                                    border-radius: 0.3rem;
-                                    margin-right: .1rem;
-                                    transform: scale(.8);
-                                    p{
-                                        white-space: nowrap;
-                                    }
-                                }
-                                .attribute_new{
-                                    position: absolute;
-                                    top: 0;
-                                    left: 0;
-                                    background-color: #4cd964;
-                                    @include wh(2rem, 2rem);
-                                    display: flex;
-                                    align-items: flex-end;
-                                    transform: rotate(-45deg) translate(-.1rem, -1.5rem);
-                                    border: none;
-                                    border-radius: 0;
-                                    p{
-                                        @include sc(.4rem, #fff);
-                                        text-align: center;
-                                        flex: 1;
-                                    }
-                                }
-                            }
-                        }
-                        .food_description_content{
-                            @include sc(.5rem, #999);
-                            line-height: .6rem;
-                        }
-                        .food_description_sale_rating{
-                            line-height: .8rem;
-                            span{
-                                @include sc(.5rem, #333);
-                            }
-                        }
-                        .food_activity{
-                            line-height: .4rem;
-                            span{
-                                font-size: .3rem;
-                                border: 1px solid currentColor;
-                                border-radius: 0.3rem;
-                                padding: .08rem;
-                                display: inline-block;
-                                transform: scale(.8);
-                                margin-left: -0.35rem;
-
-                            }
-                        }
-                    }
-                }
-                .menu_detail_footer{
-                    margin-left: 2.4rem;
-                    font-size: 0;
-                    margin-top: .3rem;
-                    @include fj;
-                    .food_price{
-                        span{
-                            font-family: 'Helvetica Neue',Tahoma,Arial;
-                        }
-                        span:nth-of-type(1){
-                            @include sc(.5rem, #f60);
-                            margin-right: .05rem;
-                        }
-                        span:nth-of-type(2){
-                            @include sc(.7rem, #f60);
-                            font-weight: bold;
-                            margin-right: .3rem;
-                        }
-                        span:nth-of-type(3){
-                            @include sc(.5rem, #666);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    .buy_cart_container{
-        position: absolute;
-        background-color: #3d3d3f;
-        bottom: 0;
-        left: 0;
-        z-index: 13;
-        display: flex;
-        @include wh(100%, 2rem);
-        .cart_icon_num{
-            flex: 1;
-            .cart_icon_container{
-                display: flex;
-                background-color: #3d3d3f;
+            .footer_arrow {
+                @include wh(0.45rem, 0.9rem);
                 position: absolute;
-                padding: .4rem;
-                border: 0.18rem solid #444;
-                border-radius: 50%;
-                left: .5rem;
-                top: -.7rem;
-                .cart_icon{
-                    @include wh(1.2rem, 1.2rem);
-                }
-                .cart_list_length{
-                    position: absolute;
-                    top: -.25rem;
-                    right: -.25rem;
-                    background-color: #ff461d;
-                    line-height: .7rem;
-                    text-align: center;
-                    border-radius: 50%;
-                    border: 0.025rem solid #ff461d;
-                    min-width: .7rem;
-                    height: .7rem;
-                    @include sc(.5rem, #fff);
-                    font-family: Helvetica Neue,Tahoma,Arial;
-                }
+                right: 0.3rem;
             }
-            .move_in_cart{
-                animation: mymove .5s ease-in-out;
-            }
-            .cart_icon_activity{
-                 background-color: #3190e8;
-            }
-            .cart_num{
-                @include ct;
-                left: 3.5rem;
-
-                div{
-                    color: #fff;
-                }
-                div:nth-of-type(1){
-                    font-size: .8rem;
-                    font-weight: bold;
-                    margin-bottom: .1rem;
-                }
-                div:nth-of-type(2){
-                    font-size: .4rem;
-                }
-            }
-        }
-        .gotopay{
-            position: absolute;
-            right: 0;
-            background-color: #535356;
-            @include wh(5rem, 100%);
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            .gotopay_button_style{
-                @include sc(.7rem, #fff);
-                font-weight: bold;
-            }
-        }
-        .gotopay_acitvity{
-            background-color: #4cd964;
         }
     }
-    .cart_food_list{
-        position: fixed;
-        width: 100%;
-        padding-bottom: 2rem;
-        z-index: 12;
-        bottom: 0;
-        left: 0;
-        background-color: #fff;
-        header{
+}
+.activities_details {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #262626;
+    z-index: 200;
+    padding: 1.25rem;
+    .activities_shoptitle {
+        text-align: center;
+        @include sc(0.8rem, #fff);
+    }
+    .activities_ratingstar {
+        display: flex;
+        justify-content: center;
+        transform: scale(2.2);
+        margin-top: 0.7rem;
+    }
+    .activities_list {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        @include sc(0.5rem, #fff);
+        li {
+            margin-bottom: 0.2rem;
+            .activities_icon {
+                padding: 0 0.02rem;
+                display: inline-block;
+                border: 0.025rem solid #fff;
+                border-radius: 0.1rem;
+            }
+            span {
+                color: #fff;
+                line-height: 0.6rem;
+            }
+        }
+    }
+    .activities_shopinfo {
+        p {
+            line-height: 0.7rem;
+            @include sc(0.5rem, #fff);
+        }
+    }
+    .activities_title_style {
+        text-align: center;
+        margin-bottom: 1rem;
+        span {
+            @include sc(0.5rem, #fff);
+            border: 0.025rem solid #555;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.5rem;
+        }
+
+    }
+    .close_activities {
+        position: absolute;
+        bottom: 1rem;
+        @include cl;
+    }
+}
+
+.food_container {
+    display: flex;
+    flex: 1;
+    padding-bottom: 2rem;
+}
+.menu_container {
+    display: flex;
+    flex: 1;
+    overflow-y: hidden;
+    position: relative;
+    .menu_left {
+        width: 3.8rem;
+        .menu_left_li {
+            padding: 0.7rem 0.3rem;
+            border-bottom: 0.025rem solid #ededed;
+            box-sizing: border-box;
+            border-left: 0.15rem solid #f8f8f8;
+            position: relative;
+            img {
+                @include wh(0.5rem, 0.6rem);
+            }
+            span {
+                @include sc(0.6rem, #666);
+            }
+            .category_num {
+                position: absolute;
+                top: 0.1rem;
+                right: 0.1rem;
+                background-color: #ff461d;
+                line-height: 0.6rem;
+                text-align: center;
+                border-radius: 50%;
+                border: 0.025rem solid #ff461d;
+                min-width: 0.6rem;
+                height: 0.6rem;
+                @include sc(0.5rem, #fff);
+                font-family: Helvetica Neue,Tahoma,Arial;
+            }
+        }
+        .activity_menu {
+            border-left: 0.15rem solid #3190e8;
+            background-color: #fff;
+            span:nth-of-type(1) {
+                // font-weight: 400;
+            }
+        }
+    }
+    .menu_right {
+        flex: 4;
+        overflow-y: auto;
+        .menu_detail_header {
+            width: 100%;
+            padding: 0.4rem;
+            position: relative;
             @include fj;
             align-items: center;
-            padding: .3rem .6rem;
-            background-color: #eceff1;
-            svg{
-                @include wh(.6rem,.6rem);
-                vertical-align: middle;
-            }
-            h4{
-                @include sc(.7rem, #666);
-            }
-            .clear_cart{
-                @include sc(.6rem, #666);
-            }
-        }
-        .cart_food_details{
-            background-color: #fff;
-            max-height: 20rem;
-            overflow-y: auto;
-            .cart_food_li{
-                @include fj;
-                padding: .6rem .5rem;
-                .cart_list_num{
-                    width: 55%;
-                    p:nth-of-type(1){
-                        @include sc(.7rem, #666);
-                        font-weight: bold;
-                    }
-                    p:nth-of-type(2){
-                        @include sc(.4rem, #666);
-                    }
+            .menu_detail_header_left {
+                width: 11rem;
+                white-space: nowrap;
+                overflow: hidden;
+                .menu_item_title {
+                    @include sc(0.7rem, #666);
+                    // font-weight: bold;
                 }
-                .cart_list_price{
-                    font-size: 0;
-                    span:nth-of-type(1){
-                        @include sc(.6rem, #f60);
-                        font-family: Helvetica Neue,Tahoma;
-
-                    }
-                    span:nth-of-type(2){
-                        @include sc(.7rem, #f60);
-                        font-family: Helvetica Neue,Tahoma;
-                        font-weight: bold;
-                    }
-                }
-                .cart_list_control{
-                    display: flex;
-                    align-items: center;
-                    span{
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                    }
-                    svg{
-                        @include wh(.9rem, .9rem);
-                        fill: #3190e8;
-                    }
-                    .specs_reduce_icon{
-                        fill: #999;
-                    }
-                    .cart_num{
-                        @include sc(.65rem, #666);
-                        min-width: 1rem;
-                        text-align: center;
-                        font-family: Helvetica Neue,Tahoma;
-                    }
+                .menu_item_description {
+                    @include sc(0.5rem, #999);
+                    width: 30%;
+                    overflow: hidden;
                 }
             }
-        }
-    }
-    .screen_cover{
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: rgba(0,0,0,.3);
-        z-index: 11;
-    }
-    .change_show_type{
-        display: flex;
-        background-color: #fff;
-        padding: .3rem 0 .6rem;
-        border-bottom: 1px solid #ebebeb;
-        div{
-            flex: 1;
-            text-align: center;
-            span{
-                @include sc(.65rem, #666);
-                padding: .2rem .1rem;
-                border-bottom: 0.12rem solid #fff;
+            .menu_detail_header_right {
+                @include wh(0.5rem, 1rem);
+                display: block;
+                @include bis('../../images/icon_point.png');
+                background-size: 100% 0.4rem;
+                background-position: left center;
             }
-            .activity_show{
-                color: #3190e8;
-                border-color: #3190e8;
-            }
-        }
-    }
-    .rating_container{
-        flex: 1;
-        overflow-y: hidden;
-        flex-direction: column;
-        p, span, li, time{
-            font-family: Helvetica Neue,Tahoma,Arial;
-        }
-        .rating_header{
-            display: flex;
-            background-color: #fff;
-            padding: .8rem .5rem;
-            margin-bottom: 0.5rem;
-            .rating_header_left{
-                flex: 3;
-                text-align: center;
-                p:nth-of-type(1){
-                    @include sc(1.2rem, #f60);
-                }
-                p:nth-of-type(2){
-                    @include sc(.65rem, #666);
-                    margin-bottom: .1rem;
-                }
-                p:nth-of-type(3){
-                    @include sc(.4rem, #999);
-                }
-            }
-            .rating_header_right{
-                flex: 4;
-                p{
-                    font-size: .65rem;
-                    line-height: 1rem;
-                    display: flex;
-                    align-items: center;
-                    justify-content: flex-start;
-                    span:nth-of-type(1){
-                        color: #666;
-                        margin-right: .5rem;
-                    }
-                    .rating_num{
-                        width: 3rem;
-                        @include sc(.55rem, #f60);
-                    }
-                    .delivery_time{
-                        @include sc(.4rem, #999);
-                    }
-                }
-            }
-        }
-        .tag_list_ul{
-            display: flex;
-            flex-wrap: wrap;
-            background-color: #fff;
-            padding: .5rem;
-            li{
-                @include sc(.6rem, #6d7885);
-                padding: .3rem .3rem;
-                background-color: #ebf5ff;
-                border-radius: 0.2rem;
+            .description_tip {
+                background-color: #39373a;
+                opacity: 0.95;
+                @include sc(0.5rem, #fff);
+                position: absolute;
+                top: 1.5rem;
+                z-index: 14;
+                width: 8rem;
+                right: 0.2rem;
+                padding: 0.5rem 0.4rem;
                 border: 1px;
-                margin: 0 .4rem .2rem 0;
+                border-radius: 0.2rem;
+                span {
+                    color: #fff;
+                    line-height: 0.6rem;
+                    font-size: 0.55rem;
+                }
             }
-            .unsatisfied{
-                background-color: #f5f5f5;
-                color: #aaa;
+            .description_tip::after {
+                content: '';
+                position: absolute;
+                @include wh(0.4rem, 0.4rem);
+                background-color: #39373a;
+                top: -.5rem;
+                right: 0.7rem;
+                transform: rotate(-45deg) translateY(.41rem);
             }
-            .tagActivity{
-                background-color: #3190e8;
+        }
+        .menu_detail_list {
+            background-color: #fff;
+            padding: 0.6rem 0.4rem;
+            border-bottom: 1px solid #f8f8f8;
+            position: relative;
+            overflow: hidden;
+            .menu_detail_link {
+                display: flex;
+                .menu_food_img {
+                    margin-right: 0.4rem;
+                    img {
+                        @include wh(2rem, 2rem);
+                        display: block;
+                    }
+                }
+                .menu_food_description {
+                    width: 100%;
+                    .food_description_head {
+                        @include fj;
+                        margin-bottom: 0.2rem;
+                        .description_foodname {
+                            font-weight: 300;
+                            @include sc(0.7rem, #333);
+                        }
+                        .attributes_ul {
+                            display: flex;
+                            li {
+                                font-size: 0.3rem;
+                                height: 0.6rem;
+                                line-height: 0.35rem;
+                                padding: 0.1rem;
+                                border: 1px solid #666;
+                                border-radius: 0.3rem;
+                                margin-right: 0.1rem;
+                                transform: scale(.8);
+                                p {
+                                    white-space: nowrap;
+                                }
+                            }
+                            .attribute_new {
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                background-color: #4cd964;
+                                @include wh(2rem, 2rem);
+                                display: flex;
+                                align-items: flex-end;
+                                transform: rotate(-45deg) translate(-.1rem, -1.5rem);
+                                border: none;
+                                border-radius: 0;
+                                p {
+                                    @include sc(0.4rem, #fff);
+                                    text-align: center;
+                                    flex: 1;
+                                }
+                            }
+                        }
+                    }
+                    .food_description_content {
+                        @include sc(0.5rem, #999);
+                        line-height: 0.6rem;
+                    }
+                    .food_description_sale_rating {
+                        line-height: 0.8rem;
+                        span {
+                            @include sc(0.5rem, #333);
+                        }
+                    }
+                    .food_activity {
+                        line-height: 0.4rem;
+                        span {
+                            font-size: 0.3rem;
+                            border: 1px solid currentColor;
+                            border-radius: 0.3rem;
+                            padding: 0.08rem;
+                            display: inline-block;
+                            transform: scale(.8);
+                            margin-left: -0.35rem;
+
+                        }
+                    }
+                }
+            }
+            .menu_detail_footer {
+                margin-left: 2.4rem;
+                font-size: 0;
+                margin-top: 0.3rem;
+                @include fj;
+                .food_price {
+                    span {
+                        font-family: 'Helvetica Neue',Tahoma,Arial;
+                    }
+                    span:nth-of-type(1) {
+                        @include sc(0.5rem, #f60);
+                        margin-right: 0.05rem;
+                    }
+                    span:nth-of-type(2) {
+                        @include sc(0.7rem, #f60);
+                        // font-weight: bold;
+                        margin-right: 0.3rem;
+                    }
+                    span:nth-of-type(3) {
+                        @include sc(0.5rem, #666);
+                    }
+                }
+            }
+        }
+    }
+}
+.buy_cart_container {
+    position: absolute;
+    background-color: #3d3d3f;
+    bottom: 0;
+    left: 0;
+    z-index: 13;
+    display: flex;
+    @include wh(100%, 2rem);
+    .cart_icon_num {
+        flex: 1;
+        .cart_icon_container {
+            display: flex;
+            background-color: #3d3d3f;
+            position: absolute;
+            padding: 0.4rem;
+            border: 0.18rem solid #444;
+            border-radius: 50%;
+            left: 0.5rem;
+            top: -.7rem;
+            .cart_icon {
+                @include wh(1.2rem, 1.2rem);
+            }
+            .cart_list_length {
+                position: absolute;
+                top: -.25rem;
+                right: -.25rem;
+                background-color: #ff461d;
+                line-height: 0.7rem;
+                text-align: center;
+                border-radius: 50%;
+                border: 0.025rem solid #ff461d;
+                min-width: 0.7rem;
+                height: 0.7rem;
+                @include sc(0.5rem, #fff);
+                font-family: Helvetica Neue,Tahoma,Arial;
+            }
+        }
+        .move_in_cart {
+            animation: mymove 0.5s ease-in-out;
+        }
+        .cart_icon_activity {
+            background-color: #3190e8;
+        }
+        .cart_num {
+            @include ct;
+            left: 3.5rem;
+
+            div {
                 color: #fff;
             }
-        }
-        .rating_list_ul{
-            background-color: #fff;
-            padding: 0 .5rem;
-            .rating_list_li{
-                border-top: 1px solid #f1f1f1;
-                display: flex;
-                padding: .6rem 0;
-                .user_avatar{
-                    @include wh(1.5rem, 1.5rem);
-                    border: 0.025rem;
-                    border-radius: 50%;
-                    margin-right: .8rem;
-                }
-                .rating_list_details{
-                    flex: 1;
-                    header{
-                        display: flex;
-                        flex: 1;
-                        justify-content: space-between;
-                        margin-bottom: .3rem;
-                        .username_star{
-                            @include sc(.55rem, #666);
-                            .username{
-                                color: #666;
-                                margin-bottom: .2rem;
-                            }
-                            .star_desc{
-                                display: flex;
-                                align-items: center;
-                                .time_spent_desc{
-                                    @include sc(.55rem, #666)
-                                    margin-left: .15rem;
-                                }
-                            }
-                        }
-                        .rated_at{
-                            @include sc(.4rem, #999);
-                        }
-                    }
-                    .food_img_ul{
-                        display: flex;
-                        flex-wrap: wrap;
-                        margin-bottom: .4rem;
-                        li{
-                            img{
-                                @include wh(3rem, 3rem);
-                                margin-right: .4rem;
-                                display: block;
-                            }
-                        }
-                    }
-                    .food_name_ul{
-                        display: flex;
-                        flex-wrap: wrap;
-                        li{
-                            @include sc(.55rem, #999);
-                            width: 2.2rem;
-                            padding: .2rem;
-                            border: 0.025rem solid #ebebeb;
-                            border-radius: 0.15rem;
-                            margin-right: .3rem;
-                            margin-bottom: 4px;
-                        }
-                    }
-                }
+            div:nth-of-type(1) {
+                font-size: 0.8rem;
+                font-weight: bold;
+                // margin-bottom: .1rem;
+            }
+            div:nth-of-type(2) {
+                font-size: 0.4rem;
             }
         }
     }
-    .specs_cover{
-        position: fixed;
-        top: 0;
-        left: 0;
+    .gotopay {
+        position: absolute;
         right: 0;
-        bottom: 0;
-        background-color: rgba(0,0,0,.4);
-        z-index: 17;
+        background-color: #535356;
+        @include wh(5rem, 100%);
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .gotopay_button_style {
+            @include sc(0.7rem, #fff);
+            font-weight: bold;
+        }
     }
-    .specs_list{
-        position: fixed;
-        top: 35%;
-        left: 15%;
-        width: 70%;
+    .gotopay_acitvity {
+        background-color: #4cd964;
+    }
+}
+.cart_food_list {
+    position: fixed;
+    width: 100%;
+    padding-bottom: 3rem;
+    z-index: 12;
+    bottom: 0;
+    left: 0;
+    background-color: #fff;
+    header {
+        @include fj;
+        align-items: center;
+        padding: 0.3rem 0.6rem;
+        background-color: #eceff1;
+        svg {
+            @include wh(0.6rem,.6rem);
+            vertical-align: middle;
+        }
+        h4 {
+            @include sc(0.7rem, #666);
+        }
+        .clear_cart {
+            @include sc(0.6rem, #666);
+        }
+    }
+    .cart_food_details {
         background-color: #fff;
-        z-index: 18;
-        border: 1px;
-        border-radius: 0.2rem;
-        .specs_list_header{
-            h4{
-                @include sc(.7rem, #222);
-                font-weight: normal;
-                text-align: center;
-                padding: .5rem;
-            }
-            .specs_cancel{
-                position: absolute;
-                right: .5rem;
-                top: .5rem;
-            }
-        }
-        .specs_details{
-            padding: .5rem;
-            .specs_details_title{
-                @include sc(.6rem, #666);
-            }
-            ul{
-                display: flex;
-                flex-wrap: wrap;
-                padding: .4rem 0;
-                li{
-                    font-size: .6rem;
-                    padding: .3rem .5rem;
-                    border: 0.025rem solid #ddd;
-                    border-radius: .2rem;
-                    margin-right: .5rem;
-                    margin-bottom: .2rem;
-                }
-                .specs_activity{
-                    border-color: #3199e8;
-                    color: #3199e8;
-                }
-            }
-        }
-        .specs_footer{
+        max-height: 20rem;
+        overflow-y: auto;
+        .cart_food_li {
             @include fj;
-            align-items: center;
-            background-color: #f9f9f9;
-            padding: 0.5rem;
-            border: 1px;
-            border-bottom-left-radius: .2rem;
-            border-bottom-right-radius: .2rem;
-            .specs_price{
-                span{
-                    color: #ff6000;
+            padding: 0.6rem 0.5rem;
+            .cart_list_num {
+                width: 55%;
+                p:nth-of-type(1) {
+                    @include sc(0.7rem, #666);
+                    // font-weight: bold;
                 }
-                span:nth-of-type(1){
-                    font-size: .5rem;
+                p:nth-of-type(2) {
+                    @include sc(0.4rem, #666);
                 }
-                span:nth-of-type(2){
-                    font-size: .8rem;
-                    font-weight: bold;
+            }
+            .cart_list_price {
+                font-size: 0;
+                span:nth-of-type(1) {
+                    @include sc(0.6rem, #f60);
+                    font-family: Helvetica Neue,Tahoma;
+
+                }
+                span:nth-of-type(2) {
+                    @include sc(0.7rem, #f60);
+                    font-family: Helvetica Neue,Tahoma;
+                    // font-weight: bold;
+                }
+            }
+            .cart_list_control {
+                display: flex;
+                align-items: center;
+                span {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                svg {
+                    @include wh(0.9rem, 0.9rem);
+                    fill: #3190e8;
+                }
+                .specs_reduce_icon {
+                    fill: #999;
+                }
+                .cart_num {
+                    @include sc(0.65rem, #666);
+                    min-width: 1rem;
+                    text-align: center;
                     font-family: Helvetica Neue,Tahoma;
                 }
             }
-            .specs_addto_cart{
-                @include wh(4rem, 1.3rem);
-                background-color: #3199e8;
-                border: 1px;
-                border-radius: 0.15rem;
-                @include sc(.6rem, #fff);
-                text-align: center;
-                line-height: 1.3rem;
+        }
+    }
+}
+.screen_cover {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0,0,0,.3);
+    z-index: 11;
+}
+.change_show_type {
+    display: flex;
+    background-color: #fff;
+    padding: 0.3rem 0 0.6rem;
+    border-bottom: 1px solid #ebebeb;
+    div {
+        flex: 1;
+        text-align: center;
+        span {
+            @include sc(0.65rem, #666);
+            padding: 0.2rem 0.1rem;
+            border-bottom: 0.12rem solid #fff;
+        }
+        .activity_show {
+            color: #3190e8;
+            border-color: #3190e8;
+        }
+    }
+}
+.rating_container {
+    flex: 1;
+    overflow-y: hidden;
+    flex-direction: column;
+    li,
+    p,
+    span,
+    time {
+        font-family: Helvetica Neue,Tahoma,Arial;
+    }
+    .rating_header {
+        display: flex;
+        background-color: #fff;
+        padding: 0.8rem 0.5rem;
+        margin-bottom: 0.5rem;
+        .rating_header_left {
+            flex: 3;
+            text-align: center;
+            p:nth-of-type(1) {
+                @include sc(1.2rem, #f60);
+            }
+            p:nth-of-type(2) {
+                @include sc(0.65rem, #666);
+                margin-bottom: 0.1rem;
+            }
+            p:nth-of-type(3) {
+                @include sc(0.4rem, #999);
+            }
+        }
+        .rating_header_right {
+            flex: 4;
+            p {
+                font-size: 0.65rem;
+                line-height: 1rem;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                span:nth-of-type(1) {
+                    color: #666;
+                    margin-right: 0.5rem;
+                }
+                .rating_num {
+                    width: 3rem;
+                    @include sc(0.55rem, #f60);
+                }
+                .delivery_time {
+                    @include sc(0.4rem, #999);
+                }
             }
         }
     }
-    .show_delete_tip{
-        position: fixed;
-        top: 50%;
-        left: 15%;
-        width: 70%;
-        transform: translateY(-50%);
-        background-color: rgba(0,0,0,.8);
-        z-index: 18;
-        @include sc(.65rem, #fff);
-        text-align: center;
-        padding: .5rem 0;
-        border: 1px;
-        border-radius: 0.25rem;
-    }
-    .move_dot{
-        position: fixed;
-        bottom: 30px;
-        left: 30px;
-
-        svg{
-            @include wh(.9rem, .9rem);
-            fill: #3190e8;
+    .tag_list_ul {
+        display: flex;
+        flex-wrap: wrap;
+        background-color: #fff;
+        padding: 0.5rem;
+        li {
+            @include sc(0.6rem, #6d7885);
+            padding: 0.3rem;
+            background-color: #ebf5ff;
+            border-radius: 0.2rem;
+            border: 1px;
+            margin: 0 0.4rem 0.2rem 0;
+        }
+        .unsatisfied {
+            background-color: #f5f5f5;
+            color: #aaa;
+        }
+        .tagActivity {
+            background-color: #3190e8;
+            color: #fff;
         }
     }
-    .fade-enter-active, .fade-leave-active {
-        transition: opacity .5s;
+    .rating_list_ul {
+        background-color: #fff;
+        padding: 0 0.5rem;
+        .rating_list_li {
+            border-top: 1px solid #f1f1f1;
+            display: flex;
+            padding: 0.6rem 0;
+            .user_avatar {
+                @include wh(1.5rem, 1.5rem);
+                border: 0.025rem;
+                border-radius: 50%;
+                margin-right: 0.8rem;
+            }
+            .rating_list_details {
+                flex: 1;
+                header {
+                    display: flex;
+                    flex: 1;
+                    justify-content: space-between;
+                    margin-bottom: 0.3rem;
+                    .username_star {
+                        @include sc(0.55rem, #666);
+                        .username {
+                            color: #666;
+                            margin-bottom: 0.2rem;
+                        }
+                        .star_desc {
+                            display: flex;
+                            align-items: center;
+                            .time_spent_desc {
+                                @include sc(.55rem, #666) margin-left: 0.15rem;
+                            }
+                        }
+                    }
+                    .rated_at {
+                        @include sc(0.4rem, #999);
+                    }
+                }
+                .food_img_ul {
+                    display: flex;
+                    flex-wrap: wrap;
+                    margin-bottom: 0.4rem;
+                    li {
+                        img {
+                            @include wh(3rem, 3rem);
+                            margin-right: 0.4rem;
+                            display: block;
+                        }
+                    }
+                }
+                .food_name_ul {
+                    display: flex;
+                    flex-wrap: wrap;
+                    li {
+                        @include sc(0.55rem, #999);
+                        width: 2.2rem;
+                        padding: 0.2rem;
+                        border: 0.025rem solid #ebebeb;
+                        border-radius: 0.15rem;
+                        margin-right: 0.3rem;
+                        margin-bottom: 4px;
+                    }
+                }
+            }
+        }
     }
-    .fade-enter, .fade-leave-active {
-        opacity: 0;
+}
+.specs_cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,.4);
+    z-index: 17;
+}
+.specs_list {
+    position: fixed;
+    top: 35%;
+    left: 15%;
+    width: 70%;
+    background-color: #fff;
+    z-index: 18;
+    border: 1px;
+    border-radius: 0.2rem;
+    .specs_list_header {
+        h4 {
+            @include sc(0.7rem, #222);
+            // font-weight: normal;
+            text-align: center;
+            padding: 0.5rem;
+        }
+        .specs_cancel {
+            position: absolute;
+            right: 0.5rem;
+            top: 0.5rem;
+        }
     }
-    .fade-choose-enter-active, .fade-choose-leave-active {
-        transition: opacity .5s;
+    .specs_details {
+        padding: 0.5rem;
+        .specs_details_title {
+            @include sc(0.6rem, #666);
+        }
+        ul {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 0.4rem 0;
+            li {
+                font-size: 0.6rem;
+                padding: 0.3rem 0.5rem;
+                border: 0.025rem solid #ddd;
+                border-radius: 0.2rem;
+                margin-right: 0.5rem;
+                margin-bottom: 0.2rem;
+            }
+            .specs_activity {
+                border-color: #3199e8;
+                color: #3199e8;
+            }
+        }
     }
-    .fade-choose-leave, .fade-choose-leave-active {
-        display: none;
+    .specs_footer {
+        @include fj;
+        align-items: center;
+        background-color: #f9f9f9;
+        padding: 0.5rem;
+        border: 1px;
+        border-bottom-left-radius: 0.2rem;
+        border-bottom-right-radius: 0.2rem;
+        .specs_price {
+            span {
+                color: #ff6000;
+            }
+            span:nth-of-type(1) {
+                font-size: 0.5rem;
+            }
+            span:nth-of-type(2) {
+                font-size: 0.8rem;
+                // font-weight: bold;
+                font-family: Helvetica Neue,Tahoma;
+            }
+        }
+        .specs_addto_cart {
+            @include wh(4rem, 1.3rem);
+            background-color: #3199e8;
+            border: 1px;
+            border-radius: 0.15rem;
+            @include sc(0.6rem, #fff);
+            text-align: center;
+            line-height: 1.3rem;
+        }
     }
-    .fade-choose-enter, .fade-choose-leave-active {
-        opacity: 0;
-    }
-    .router-slid-enter-active, .router-slid-leave-active {
-        transition: all .4s;
-    }
-    .router-slid-enter, .router-slid-leave-active {
-        transform: translate3d(2rem, 0, 0);
-        opacity: 0;
-    }
-    .toggle-cart-enter-active, .toggle-cart-leave-active {
-        transition: all .3s ease-out;
-    }
-    .toggle-cart-enter, .toggle-cart-leave-active {
-        transform: translateY(100%);
-    }
+}
+.show_delete_tip {
+    position: fixed;
+    top: 50%;
+    left: 15%;
+    width: 70%;
+    transform: translateY(-50%);
+    background-color: rgba(0,0,0,.8);
+    z-index: 18;
+    @include sc(0.65rem, #fff);
+    text-align: center;
+    padding: 0.5rem 0;
+    border: 1px;
+    border-radius: 0.25rem;
+}
+.move_dot {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
 
+    svg {
+        @include wh(0.9rem, 0.9rem);
+        fill: #3190e8;
+    }
+}
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-active {
+    opacity: 0;
+}
+.fade-choose-enter-active,
+.fade-choose-leave-active {
+    transition: opacity 0.5s;
+}
+.fade-choose-leave,
+.fade-choose-leave-active {
+    display: none;
+}
+.fade-choose-enter,
+.fade-choose-leave-active {
+    opacity: 0;
+}
+.router-slid-enter-active,
+.router-slid-leave-active {
+    transition: all 0.4s;
+}
+.router-slid-enter,
+.router-slid-leave-active {
+    transform: translate3d(2rem, 0, 0);
+    opacity: 0;
+}
+.toggle-cart-enter-active,
+.toggle-cart-leave-active {
+    transition: all 0.3s ease-out;
+}
+.toggle-cart-enter,
+.toggle-cart-leave-active {
+    transform: translateY(100%);
+}
 </style>
