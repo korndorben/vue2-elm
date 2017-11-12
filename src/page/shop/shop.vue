@@ -28,7 +28,6 @@
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-left"></use>
                         </svg>
                     </footer>
-
                 </section>
             </header>
             <transition name="fade">
@@ -141,7 +140,7 @@
                     <transition name="toggle-cart">
                         <section class="cart_food_list" v-show="showCartList&&cartFoodList.length">
                             <header>
-                                <h4>购物车</h4>
+                                <h4>购物车11</h4>
                                 <div @click="clearCart">
                                     <svg>
                                         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-remove"></use>
@@ -161,13 +160,13 @@
                                             <span>{{item.attr.price}}</span>
                                         </div>
                                         <section class="cart_list_control">
-                                            <span @click="removeOutCart(item.dish.supplierid, item.dish.categoryid,item.dish, item.attr)">
+                                            <span @click="removeOutCart(item.dish.supplierid, item.dish.dishcategoryid,item.dish, item.attr)">
                                                 <svg>
                                                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-minus"></use>
                                                 </svg>
                                             </span>
-                                            <span class="cart_num">{{item.num}}</span>
-                                            <svg class="cart_add" @click="addToCart(item.dish.supplierid, item.dish.categoryid,item.dish, item.attr)">
+                                            <span class="cart_num">{{item.attr}}</span>
+                                            <svg class="cart_add" @click="addToCart(item.dish.supplierid, item.dish.dishcategoryid,item.dish, item.attr)">
                                                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-add"></use>
                                             </svg>
                                         </section>
@@ -282,8 +281,7 @@
         appear
         @after-appear = 'afterEnter'
         @before-appear="beforeEnter"
-        v-for="(item,index) in showMoveDot"
-        >
+        v-for="(item,index) in showMoveDot">
             <span class="move_dot" v-if="item">
                 <svg class="move_liner">
                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-add"></use>
@@ -302,430 +300,433 @@
 
 <script>
 import {
-  mapState,
-  mapMutations
+	mapState,
+	mapMutations
 } from 'vuex'
 import {
-  msiteAdress,
-  supplier,
-  foodMenu,
-  getRatingList,
-  ratingScores,
-  ratingTags
+	msiteAdress,
+	supplier,
+	foodMenu,
+	getRatingList,
+	ratingScores,
+	ratingTags
 } from 'src/service/getData'
 import loading from 'src/components/common/loading'
 import buyCart from 'src/components/common/buyCart'
 import ratingStar from 'src/components/common/ratingStar'
 import {
-  loadMore,
-  getImgPath
+	loadMore,
+	getImgPath
 } from 'src/components/common/mixin'
 import {
-  imgBaseUrl
+	imgBaseUrl
 } from 'src/config/env'
 import BScroll from 'better-scroll'
 import fetchql from '../../fetchql'
 export default {
-  data() { //39.908484,116.515367
-    return {
-      geohash: '', //geohash位置信息
-      shopId: null, //商店id值
-      showLoading: true, //显示加载动画
-      changeShowType: 'food', //切换显示商品或者评价
-      supplier: {
-        intro: ''
-      }, //商铺详情
-      showActivities: false, //是否显示活动详情
-      menuList: [], //食品列表
-      menuIndex: 0, //已选菜单索引值，默认为0
-      menuIndexChange: true, //解决选中index时，scroll监听事件重复判断设置index的bug
-      shopListTop: [], //商品列表的高度集合
-      TitleDetailIndex: null, //点击展示列表头部详情
-      categoryNum: [], //商品类型右上角已加入购物车的数量
-      totalPrice: 0, //总共价格
-      cartFoodList: [], //购物车商品列表
-      showCartList: false, //显示购物车列表
-      receiveInCart: false, //购物车组件下落的圆点是否到达目标位置
-      ratingList: null, //评价列表
-      ratingOffset: 0, //评价获取数据offset值
-      ratingScoresData: null, //评价总体分数
-      ratingTagsList: null, //评价分类列表
-      ratingTageIndex: 0, //评价分类索引
-      preventRepeatRequest: false, // 防止多次触发数据请求
-      ratingTagName: '', //评论的类型
-      loadRatings: false, //加载更多评论是显示加载组件
-      foodScroll: null, //食品列表scroll
-      showSpecs: false, //控制显示食品规格
-      specsIndex: 0, //当前选中的规格索引值
-      selecteddish: null, //当前选中视频数据
-      showDeleteTip: false, //多规格商品点击减按钮，弹出提示框
-      showMoveDot: [], //控制下落的小圆点显示隐藏
-      windowHeight: null, //屏幕的高度
-      elLeft: 0, //当前点击加按钮在网页中的绝对top值
-      elBottom: 0, //当前点击加按钮在网页中的绝对left值
-      ratingScroll: null, //评论页Scroll
-      imgBaseUrl,
-    }
-  },
-  created() {
-    this.geohash = this.$route.query.geohash;
-    this.supplier.id = this.$route.query.id;
-    this.INIT_BUYCART();
-  },
-  mounted() {
-    this.initData();
-    this.windowHeight = window.innerHeight;
-  },
-  beforeDestroy() {
-    // this.foodScroll.removeEventListener('scroll', )
-  },
-  mixins: [loadMore, getImgPath],
-  components: {
-    loading,
-    ratingStar,
-    buyCart,
-  },
-  computed: {
-    ...mapState([
-      'latitude', 'longitude', 'cartList'
-    ]),
-    promotionInfo: function() {
-      return this.supplier.intro || '欢迎光临，用餐高峰期请提前下单，谢谢。'
-    },
-    logo: function() {
-      console.log(this.supplier.id);
-      return `/upload/logo.${this.supplier.id}.png`
-    },
-    //配送费
-    deliveryFee: function() {
-      if (this.supplier) {
-        return this.supplier.float_delivery_fee;
-      } else {
-        return null;
-      }
-    },
-    //还差多少元起送，为负数时显示去结算按钮
-    minimumOrderAmount: function() {
-      if (this.supplier) {
-        return this.supplier.float_minimum_order_amount - this.totalPrice;
-      } else {
-        return null;
-      }
-    },
-    //当前商店购物信息
-    shopCart: function() {
-      return { ...this.cartList[this.supplier.id]
-      };
-    },
-    //购物车中总共商品的数量
-    totalNum: function() {
-      let num = 0;
-      this.cartFoodList.forEach(item => {
-        num += item.num
-      })
-      return num
-    },
-  },
-  methods: {
-    ...mapMutations([
-      'RECORD_ADDRESS', 'ADD_CART', 'REDUCE_CART', 'INIT_BUYCART', 'CLEAR_CART', 'RECORD_SUPPLIER'
-    ]),
-    //初始化时获取基本数据
-    async initData() {
-      //获取商铺信息
+	data() { //39.908484,116.515367
+		return {
+			geohash: '', //geohash位置信息
+			shopId: null, //商店id值
+			showLoading: true, //显示加载动画
+			changeShowType: 'food', //切换显示商品或者评价
+			supplier: {
+				id: 1,
+				intro: ''
+			}, //商铺详情
+			showActivities: false, //是否显示活动详情
+			menuList: [], //食品列表
+			menuIndex: 0, //已选菜单索引值，默认为0
+			menuIndexChange: true, //解决选中index时，scroll监听事件重复判断设置index的bug
+			shopListTop: [], //商品列表的高度集合
+			TitleDetailIndex: null, //点击展示列表头部详情
+			categoryNum: [], //商品类型右上角已加入购物车的数量
+			totalPrice: 0, //总共价格
+			cartFoodList: [], //购物车商品列表
+			showCartList: false, //显示购物车列表
+			receiveInCart: false, //购物车组件下落的圆点是否到达目标位置
+			ratingList: null, //评价列表
+			ratingOffset: 0, //评价获取数据offset值
+			ratingScoresData: null, //评价总体分数
+			ratingTagsList: null, //评价分类列表
+			ratingTageIndex: 0, //评价分类索引
+			preventRepeatRequest: false, // 防止多次触发数据请求
+			ratingTagName: '', //评论的类型
+			loadRatings: false, //加载更多评论是显示加载组件
+			foodScroll: null, //食品列表scroll
+			showSpecs: false, //控制显示食品规格
+			specsIndex: 0, //当前选中的规格索引值
+			selecteddish: null, //当前选中视频数据
+			showDeleteTip: false, //多规格商品点击减按钮，弹出提示框
+			showMoveDot: [], //控制下落的小圆点显示隐藏
+			windowHeight: null, //屏幕的高度
+			elLeft: 0, //当前点击加按钮在网页中的绝对top值
+			elBottom: 0, //当前点击加按钮在网页中的绝对left值
+			ratingScroll: null, //评论页Scroll
+			imgBaseUrl,
+		}
+	},
+	created() {
+		this.geohash = this.$route.query.geohash;
+		this.supplier.id = this.$route.query.id;
+		this.INIT_BUYCART();
+	},
+	mounted() {
+		this.initData();
+		this.windowHeight = window.innerHeight;
+	},
+	beforeDestroy() {
+		this.foodScroll.removeEventListener('scroll', )
+	},
+	mixins: [loadMore, getImgPath],
+	components: {
+		loading,
+		ratingStar,
+		buyCart,
+	},
+	computed: {
+		...mapState([
+			'latitude', 'longitude', 'cartList'
+		]),
+		promotionInfo: function() {
+			return this.supplier.intro || '欢迎光临，用餐高峰期请提前下单，谢谢。'
+		},
+		logo: function() {
+			console.log(this.supplier.id);
+			return `/upload/logo.${this.supplier.id}.png`
+		},
+		//配送费
+		deliveryFee: function() {
+			if (this.supplier) {
+				return this.supplier.float_delivery_fee;
+			} else {
+				return null;
+			}
+		},
+		//还差多少元起送，为负数时显示去结算按钮
+		minimumOrderAmount: function() {
+			if (this.supplier) {
+				return this.supplier.float_minimum_order_amount - this.totalPrice;
+			} else {
+				return null;
+			}
+		},
+		//当前商店购物信息
+		shopCart: function() {
+			if (this.cartList[this.supplier.id]) {
+				return { ...this.cartList[this.supplier.id]
+				};
+			}
+		},
+		//购物车中总共商品的数量
+		totalNum: function() {
+			let num = 0;
+			this.cartFoodList.forEach(item => {
+				num += item.num
+			})
+			return num
+		},
+	},
+	methods: {
+		...mapMutations([
+			'RECORD_ADDRESS', 'ADD_CART', 'REDUCE_CART', 'INIT_BUYCART', 'CLEAR_CART', 'RECORD_SUPPLIER'
+		]),
+		//初始化时获取基本数据
+		async initData() {
+			//获取商铺信息
 
-      let result = await supplier(1);
-      this.supplier = result.data.supplier[0]
-      // this.supplier = JSON.parse(
-      //   `{"name":"效果演示","address":"上海市静安区巨鹿路536-1","id":1,"latitude":31.22166,"longitude":121.45591,"location":[121.45591,31.22166],"phone":"12356765432","category":"快餐便当/简餐","supports":[{"description":"已加入“外卖保”计划，食品安全有保障","icon_color":"999999","icon_name":"保","id":7,"name":"外卖保","_id":"59a80c0dff11582da6e2c697"},{"description":"准时必达，超时秒赔","icon_color":"57A9FF","icon_name":"准","id":9,"name":"准时达","_id":"59a80c0dff11582da6e2c696"},{"description":"该商家支持开发票，请在下单时填写好发票抬头","icon_color":"999999","icon_name":"票","id":4,"name":"开发票","_id":"59a80c0dff11582da6e2c695"}],"status":0,"recent_order_num":612,"rating_count":610,"rating":4.4,"promotion_info":"好好吃好好吃","piecewise_agent_fee":{"tips":"配送费约¥5"},"opening_hours":["8:30/20:30"],"license":{"catering_service_license_image":"15e386eff0d5699.jpeg","business_license_image":""},"is_new":true,"is_premium":true,"image_path":"15e386ec1875697.jpeg","identification":{"registered_number":"","registered_address":"","operation_period":"","licenses_scope":"","licenses_number":"","licenses_date":"","legal_person":"","identificate_date":null,"identificate_agency":"","company_name":""},"float_minimum_order_amount":20,"float_delivery_fee":5,"distance":"","order_lead_time":"","description":"好吃的","delivery_mode":{"color":"57A9FF","id":1,"is_solid":true,"text":"蜂鸟专送"},"activities":[{"icon_name":"减","name":"满减优惠","description":"满30减5，满60减8","icon_color":"f07373","id":1,"_id":"59a80c0dff11582da6e2c698"}],"__v":0}`
-      // );
-      //获取商铺食品列表
-      // this.menuList = await foodMenu(this.supplier.id);
-      this.menuList = this.supplier.dishcategorys;
+			let result = await supplier(1);
+			this.supplier = result.data.supplier[0]
+			// this.supplier = JSON.parse(
+			//   `{"name":"效果演示","address":"上海市静安区巨鹿路536-1","id":1,"latitude":31.22166,"longitude":121.45591,"location":[121.45591,31.22166],"phone":"12356765432","category":"快餐便当/简餐","supports":[{"description":"已加入“外卖保”计划，食品安全有保障","icon_color":"999999","icon_name":"保","id":7,"name":"外卖保","_id":"59a80c0dff11582da6e2c697"},{"description":"准时必达，超时秒赔","icon_color":"57A9FF","icon_name":"准","id":9,"name":"准时达","_id":"59a80c0dff11582da6e2c696"},{"description":"该商家支持开发票，请在下单时填写好发票抬头","icon_color":"999999","icon_name":"票","id":4,"name":"开发票","_id":"59a80c0dff11582da6e2c695"}],"status":0,"recent_order_num":612,"rating_count":610,"rating":4.4,"promotion_info":"好好吃好好吃","piecewise_agent_fee":{"tips":"配送费约¥5"},"opening_hours":["8:30/20:30"],"license":{"catering_service_license_image":"15e386eff0d5699.jpeg","business_license_image":""},"is_new":true,"is_premium":true,"image_path":"15e386ec1875697.jpeg","identification":{"registered_number":"","registered_address":"","operation_period":"","licenses_scope":"","licenses_number":"","licenses_date":"","legal_person":"","identificate_date":null,"identificate_agency":"","company_name":""},"float_minimum_order_amount":20,"float_delivery_fee":5,"distance":"","order_lead_time":"","description":"好吃的","delivery_mode":{"color":"57A9FF","id":1,"is_solid":true,"text":"蜂鸟专送"},"activities":[{"icon_name":"减","name":"满减优惠","description":"满30减5，满60减8","icon_color":"f07373","id":1,"_id":"59a80c0dff11582da6e2c698"}],"__v":0}`
+			// );
+			//获取商铺食品列表
+			// this.menuList = await foodMenu(this.supplier.id);
+			this.menuList = this.supplier.dishcategorys;
 
-      //评论列表
-      // this.ratingList = await getRatingList(this.supplier.id, this.ratingOffset);
-      this.ratingList = JSON.parse(
-        `[{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"按时送达","_id":"592d348d6f51bc083e47e444","username":"4*******b","tags":[],"item_ratings":[{"food_id":508807792,"food_name":"超级至尊比萨-铁盘","_id":"592d348d6f51bc083e47e446","is_valid":1,"image_hash":"dc864033625905f0a15a2d181d53a425jpeg"},{"food_id":508808743,"food_name":"韩式浓情风味鸡（标准份）","_id":"592d348d6f51bc083e47e445","is_valid":1,"image_hash":"074e0e203f613deff4e456c31e4177d1jpeg"}],"highlights":[],"avatar":""},{"rated_at":"2017-02-09","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e441","username":"t****n","tags":[],"item_ratings":[{"food_id":508809467,"food_name":"香草凤尾虾-5只装","_id":"592d348d6f51bc083e47e443","is_valid":1,"image_hash":""},{"food_id":508808754,"food_name":"鸡茸蘑菇汤","_id":"592d348d6f51bc083e47e442","is_valid":1,"image_hash":"5388b26ad173389d89e0e015dbf295fcjpeg"}],"highlights":[],"avatar":"15f6cf782b0c9cd5ca8daa7f76ab05aejpeg"},{"rated_at":"2017-01-18","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e43f","username":"，******C","tags":[],"item_ratings":[{"food_id":508809480,"food_name":"冰柠檬红茶（标准份）","_id":"592d348d6f51bc083e47e440","is_valid":1,"image_hash":""}],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e43e","username":"试******春","tags":[],"item_ratings":[],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e43b","username":"王******a","tags":[],"item_ratings":[{"food_id":529149980,"food_name":"富贵“鸡”祥大吉大利比萨","_id":"592d348d6f51bc083e47e43d","is_valid":1,"image_hash":""},{"food_id":144654782,"food_name":"热柠檬红茶","_id":"592d348d6f51bc083e47e43c","is_valid":1,"image_hash":""}],"highlights":[],"avatar":"1b523ca27369a0eed1ce0c3fc0a5ba8bjpeg"},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e437","username":"3*******7","tags":[],"item_ratings":[{"food_id":508808726,"food_name":"加州风情香烤牛肉比萨-铁盘","_id":"592d348d6f51bc083e47e43a","is_valid":1,"image_hash":""},{"food_id":508810265,"food_name":"海鲜至尊比萨-铁盘","_id":"592d348d6f51bc083e47e439","is_valid":1,"image_hash":""},{"food_id":508807792,"food_name":"超级至尊比萨-铁盘","_id":"592d348d6f51bc083e47e438","is_valid":1,"image_hash":""}],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e434","username":"3*******6","tags":[],"item_ratings":[{"food_id":529149980,"food_name":"富贵“鸡”祥大吉大利比萨","_id":"592d348d6f51bc083e47e436","is_valid":1,"image_hash":""},{"food_id":508808743,"food_name":"韩式浓情风味鸡（标准份）","_id":"592d348d6f51bc083e47e435","is_valid":1,"image_hash":""}],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"送餐速度很快！","time_spent_desc":"","_id":"592d348d6f51bc083e47e433","username":"3*******7","tags":[],"item_ratings":[],"highlights":[],"avatar":"818cf0c977c77ca365557230db619a18jpeg"},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e432","username":"3*******b","tags":[],"item_ratings":[],"highlights":[],"avatar":""},{"rated_at":"2017-02-09","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e431","username":"景***0","tags":[],"item_ratings":[],"highlights":[],"avatar":""}]`
-      );
-      //商铺评论详情
-      // this.ratingScoresData = await ratingScores(this.supplier.id);
-      this.ratingScoresData = JSON.parse(`{"compare_rating":0.76869,"deliver_time":40,"food_score":4.76378,"order_rating_amount":473,"overall_score":4.72836,"service_score":4.69295}`);
-      //评论Tag列表
-      // this.ratingTagsList = await ratingTags(this.supplier.id);
-      this.ratingTagsList = JSON.parse(
-        `[{"name":"全部","_id":"592d348d6f51bc083e47e430","unsatisfied":false,"count":473},{"name":"满意","_id":"592d348d6f51bc083e47e42f","unsatisfied":false,"count":453},{"name":"不满意","_id":"592d348d6f51bc083e47e42e","unsatisfied":true,"count":20},{"name":"有图","_id":"592d348d6f51bc083e47e42d","unsatisfied":false,"count":2},{"name":"味道好","_id":"592d348d6f51bc083e47e42c","unsatisfied":false,"count":47},{"name":"送货快","_id":"592d348d6f51bc083e47e42b","unsatisfied":false,"count":32},{"name":"分量足","_id":"592d348d6f51bc083e47e42a","unsatisfied":false,"count":18},{"name":"包装精美","_id":"592d348d6f51bc083e47e429","unsatisfied":false,"count":15},{"name":"干净卫生","_id":"592d348d6f51bc083e47e428","unsatisfied":false,"count":15},{"name":"食材新鲜","_id":"592d348d6f51bc083e47e427","unsatisfied":false,"count":15},{"name":"服务不错","_id":"592d348d6f51bc083e47e426","unsatisfied":false,"count":11}]`
-      );
-      this.RECORD_SUPPLIER(this.supplier)
-      //隐藏加载动画
-      this.hideLoading();
-    },
-    //获取食品列表的高度，存入shopListTop
-    getFoodListHeight() {
-      const listContainer = this.$refs.menuFoodList;
-      const listArr = Array.from(listContainer.children[0].children);
-      listArr.forEach((item, index) => {
-        this.shopListTop[index] = item.offsetTop;
-      });
-      this.listenScroll(listContainer)
-    },
-    //当滑动食品列表时，监听其scrollTop值来设置对应的食品列表标题的样式
-    listenScroll(element) {
-      this.foodScroll = new BScroll(element, {
-        probeType: 3,
-        deceleration: 0.001,
-        bounce: false,
-        swipeTime: 2000,
-        click: true,
-      });
+			//评论列表
+			// this.ratingList = await getRatingList(this.supplier.id, this.ratingOffset);
+			this.ratingList = JSON.parse(
+				`[{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"按时送达","_id":"592d348d6f51bc083e47e444","username":"4*******b","tags":[],"item_ratings":[{"food_id":508807792,"food_name":"超级至尊比萨-铁盘","_id":"592d348d6f51bc083e47e446","is_valid":1,"image_hash":"dc864033625905f0a15a2d181d53a425jpeg"},{"food_id":508808743,"food_name":"韩式浓情风味鸡（标准份）","_id":"592d348d6f51bc083e47e445","is_valid":1,"image_hash":"074e0e203f613deff4e456c31e4177d1jpeg"}],"highlights":[],"avatar":""},{"rated_at":"2017-02-09","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e441","username":"t****n","tags":[],"item_ratings":[{"food_id":508809467,"food_name":"香草凤尾虾-5只装","_id":"592d348d6f51bc083e47e443","is_valid":1,"image_hash":""},{"food_id":508808754,"food_name":"鸡茸蘑菇汤","_id":"592d348d6f51bc083e47e442","is_valid":1,"image_hash":"5388b26ad173389d89e0e015dbf295fcjpeg"}],"highlights":[],"avatar":"15f6cf782b0c9cd5ca8daa7f76ab05aejpeg"},{"rated_at":"2017-01-18","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e43f","username":"，******C","tags":[],"item_ratings":[{"food_id":508809480,"food_name":"冰柠檬红茶（标准份）","_id":"592d348d6f51bc083e47e440","is_valid":1,"image_hash":""}],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e43e","username":"试******春","tags":[],"item_ratings":[],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e43b","username":"王******a","tags":[],"item_ratings":[{"food_id":529149980,"food_name":"富贵“鸡”祥大吉大利比萨","_id":"592d348d6f51bc083e47e43d","is_valid":1,"image_hash":""},{"food_id":144654782,"food_name":"热柠檬红茶","_id":"592d348d6f51bc083e47e43c","is_valid":1,"image_hash":""}],"highlights":[],"avatar":"1b523ca27369a0eed1ce0c3fc0a5ba8bjpeg"},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e437","username":"3*******7","tags":[],"item_ratings":[{"food_id":508808726,"food_name":"加州风情香烤牛肉比萨-铁盘","_id":"592d348d6f51bc083e47e43a","is_valid":1,"image_hash":""},{"food_id":508810265,"food_name":"海鲜至尊比萨-铁盘","_id":"592d348d6f51bc083e47e439","is_valid":1,"image_hash":""},{"food_id":508807792,"food_name":"超级至尊比萨-铁盘","_id":"592d348d6f51bc083e47e438","is_valid":1,"image_hash":""}],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e434","username":"3*******6","tags":[],"item_ratings":[{"food_id":529149980,"food_name":"富贵“鸡”祥大吉大利比萨","_id":"592d348d6f51bc083e47e436","is_valid":1,"image_hash":""},{"food_id":508808743,"food_name":"韩式浓情风味鸡（标准份）","_id":"592d348d6f51bc083e47e435","is_valid":1,"image_hash":""}],"highlights":[],"avatar":""},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"送餐速度很快！","time_spent_desc":"","_id":"592d348d6f51bc083e47e433","username":"3*******7","tags":[],"item_ratings":[],"highlights":[],"avatar":"818cf0c977c77ca365557230db619a18jpeg"},{"rated_at":"2017-02-10","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e432","username":"3*******b","tags":[],"item_ratings":[],"highlights":[],"avatar":""},{"rated_at":"2017-02-09","rating_star":5,"rating_text":"","time_spent_desc":"","_id":"592d348d6f51bc083e47e431","username":"景***0","tags":[],"item_ratings":[],"highlights":[],"avatar":""}]`
+			);
+			//商铺评论详情
+			// this.ratingScoresData = await ratingScores(this.supplier.id);
+			this.ratingScoresData = JSON.parse(`{"compare_rating":0.76869,"deliver_time":40,"food_score":4.76378,"order_rating_amount":473,"overall_score":4.72836,"service_score":4.69295}`);
+			//评论Tag列表
+			// this.ratingTagsList = await ratingTags(this.supplier.id);
+			this.ratingTagsList = JSON.parse(
+				`[{"name":"全部","_id":"592d348d6f51bc083e47e430","unsatisfied":false,"count":473},{"name":"满意","_id":"592d348d6f51bc083e47e42f","unsatisfied":false,"count":453},{"name":"不满意","_id":"592d348d6f51bc083e47e42e","unsatisfied":true,"count":20},{"name":"有图","_id":"592d348d6f51bc083e47e42d","unsatisfied":false,"count":2},{"name":"味道好","_id":"592d348d6f51bc083e47e42c","unsatisfied":false,"count":47},{"name":"送货快","_id":"592d348d6f51bc083e47e42b","unsatisfied":false,"count":32},{"name":"分量足","_id":"592d348d6f51bc083e47e42a","unsatisfied":false,"count":18},{"name":"包装精美","_id":"592d348d6f51bc083e47e429","unsatisfied":false,"count":15},{"name":"干净卫生","_id":"592d348d6f51bc083e47e428","unsatisfied":false,"count":15},{"name":"食材新鲜","_id":"592d348d6f51bc083e47e427","unsatisfied":false,"count":15},{"name":"服务不错","_id":"592d348d6f51bc083e47e426","unsatisfied":false,"count":11}]`
+			);
+			this.RECORD_SUPPLIER(this.supplier)
+			//隐藏加载动画
+			this.hideLoading();
+		},
+		//获取食品列表的高度，存入shopListTop
+		getFoodListHeight() {
+			const listContainer = this.$refs.menuFoodList;
+			const listArr = Array.from(listContainer.children[0].children);
+			listArr.forEach((item, index) => {
+				this.shopListTop[index] = item.offsetTop;
+			});
+			this.listenScroll(listContainer)
+		},
+		//当滑动食品列表时，监听其scrollTop值来设置对应的食品列表标题的样式
+		listenScroll(element) {
+			this.foodScroll = new BScroll(element, {
+				probeType: 3,
+				deceleration: 0.001,
+				bounce: false,
+				swipeTime: 2000,
+				click: true,
+			});
 
-      const wrapperMenu = new BScroll('#wrapper_menu', {
-        click: true,
-      });
+			const wrapperMenu = new BScroll('#wrapper_menu', {
+				click: true,
+			});
 
-      const wrapMenuHeight = this.$refs.wrapperMenu.clientHeight;
-      this.foodScroll.on('scroll', (pos) => {
-        if (!this.$refs.wrapperMenu) {
-          return
-        }
-        this.shopListTop.forEach((item, index) => {
-          if (this.menuIndexChange && Math.abs(Math.round(pos.y)) >= item) {
-            this.menuIndex = index;
-            const menuList = this.$refs.wrapperMenu.querySelectorAll('.activity_menu');
-            const el = menuList[0];
-            wrapperMenu.scrollToElement(el, 800, 0, -(wrapMenuHeight / 2 - 50));
-          }
-        })
-      })
-    },
-    //控制活动详情页的显示隐藏
-    showActivitiesFun() {
-      this.showActivities = !this.showActivities;
-    },
-    //点击左侧食品列表标题，相应列表移动到最顶层
-    chooseMenu(index) {
-      this.menuIndex = index;
-      //menuIndexChange解决运动时listenScroll依然监听的bug
-      this.menuIndexChange = false;
-      this.foodScroll.scrollTo(0, -this.shopListTop[index], 400);
-      this.foodScroll.on('scrollEnd', () => {
-        this.menuIndexChange = true;
-      })
-    },
-    showTitleDetail(index) {
-      if (this.TitleDetailIndex == index) {
-        this.TitleDetailIndex = null;
-      } else {
-        this.TitleDetailIndex = index;
-      }
-    },
-    //加入购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
-    addToCart(supplierid, dishcategoryid, dishid, attrid) {
-      this.ADD_CART({
-        supplierid: supplierid,
-        dishcategoryid: dishcategoryid,
-        dishid: dishid,
-        attrid: attrid,
-      });
-    },
-    //移出购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
-    removeOutCart(supplierid, dishcategoryid, dishid, attrid) {
-      this.REDUCE_CART({
-        supplierid: supplierid,
-        dishcategoryid: dishcategoryid,
-        dishid: dishid,
-        attrid: attrid,
-      });
-    },
-    /**
-     * 初始化和shopCart变化时，
-     重新获取购物车改变过的数据，
-     赋值 categoryNum，totalPrice，cartFoodList，
-     整个数据流是自上而下的形式，所有的购物车数据都交给vuex统一管理，
-     包括购物车组件中自身的商品数量，使整个数据流更加清晰
-     */
-    initCategoryNum() {
-      let self = this
-      let newArr = [];
-      let cartFoodNum = 0;
-      self.totalPrice = 0;
-      self.cartFoodList = [];
-      if (self.shopCart) {
-        for (let category of this.supplier.dishcategorys) {
-          if (!self.shopCart[category.id]) {
-            continue;
-          }
-          for (let dish of category.dishs) {
-            if (!self.shopCart[category.id][dish.id]) {
-              continue
-            }
-            for (let attr of dish.dishattrs) {
-              if (!self.shopCart[category.id][dish.id][attr.id]) {
-                continue
-              }
-              if (!self.shopCart[category.id][dish.id][attr.id]['selected']) {
-                continue
-              }
-              let item = self.shopCart[category.id][dish.id][attr.id]['selected'];
-              self.cartFoodList.push(item)
-            }
-          }
-        }
-      }
-      this.totalPrice = this.totalPrice.toFixed(2);
-      this.categoryNum = [...newArr];
-    },
-    //控制购物列表是否显示
-    toggleCartList() {
-      this.cartFoodList.length ? this.showCartList = !this.showCartList : true;
-    },
-    //清除购物车
-    clearCart() {
-      this.toggleCartList();
-      this.CLEAR_CART(this.supplier.id);
-    },
-    //监听圆点是否进入购物车
-    listenInCart() {
-      if (!this.receiveInCart) {
-        this.receiveInCart = true;
-        this.$refs.cartContainer.addEventListener('animationend', () => {
-          this.receiveInCart = false;
-        })
-        this.$refs.cartContainer.addEventListener('webkitAnimationEnd', () => {
-          this.receiveInCart = false;
-        })
-      }
-    },
-    //获取不同类型的评论列表
-    async changeTgeIndex(index, name) {
-      this.ratingTageIndex = index;
-      this.ratingOffset = 0;
-      this.ratingTagName = name;
-      let res = await getRatingList(this.supplier.id, this.ratingOffset, name);
-      this.ratingList = [...res];
-      this.$nextTick(() => {
-        this.ratingScroll.refresh();
-      })
-    },
-    //加载更多评论
-    async loaderMoreRating() {
-      if (this.preventRepeatRequest) {
-        return
-      }
-      this.loadRatings = true;
-      this.preventRepeatRequest = true;
-      this.ratingOffset += 10;
-      let ratingDate = await getRatingList(this.supplier.id, this.ratingOffset, this.ratingTagName);
-      this.ratingList = [...this.ratingList, ...ratingDate];
-      this.loadRatings = false;
-      if (ratingDate.length >= 10) {
-        this.preventRepeatRequest = false;
-      }
-    },
-    //隐藏动画
-    hideLoading() {
-      this.showLoading = false;
-    },
-    //显示规格列表
-    showChooseList(dish) {
-      if (dish) {
-        this.selecteddish = dish;
-      }
-      this.showSpecs = !this.showSpecs;
-      this.specsIndex = 0;
-    },
-    //记录当前所选规格的索引值
-    chooseSpecs(index) {
-      this.specsIndex = index;
-    },
-    //多规格商品加入购物车
-    addSpecs(supplierid, categoryid, dish, attr) {
-      this.ADD_CART({
-        supplierid: supplierid,
-        categoryid: categoryid,
-        dish: dish,
-        attr: attr
-      });
-      this.showChooseList();
-    },
-    //显示提示，无法减去商品
-    showReduceTip() {
-      this.showDeleteTip = true;
-      clearTimeout(this.timer);
-      this.timer = setTimeout(() => {
-        clearTimeout(this.timer);
-        this.showDeleteTip = false;
-      }, 3000);
-    },
-    //显示下落圆球
-    showMoveDotFun(showMoveDot, elLeft, elBottom) {
-      this.showMoveDot = [...this.showMoveDot, ...showMoveDot];
-      this.elLeft = elLeft;
-      this.elBottom = elBottom;
-    },
-    beforeEnter(el) {
-      el.style.transform = `translate3d(0,${37 + this.elBottom - this.windowHeight}px,0)`;
-      el.children[0].style.transform = `translate3d(${this.elLeft - 30}px,0,0)`;
-      el.children[0].style.opacity = 0;
-    },
-    afterEnter(el) {
-      el.style.transform = `translate3d(0,0,0)`;
-      el.children[0].style.transform = `translate3d(0,0,0)`;
-      el.style.transition = 'transform .55s cubic-bezier(0.3, -0.25, 0.7, -0.15)';
-      el.children[0].style.transition = 'transform .55s linear';
-      this.showMoveDot = this.showMoveDot.map(item => false);
-      el.children[0].style.opacity = 1;
-      el.children[0].addEventListener('transitionend', () => {
-        this.listenInCart();
-      })
-      el.children[0].addEventListener('webkitAnimationEnd', () => {
-        this.listenInCart();
-      })
-    },
-    goback() {
-      this.$router.go(-1);
-    }
-  },
-  watch: {
-    //showLoading变化时说明组件已经获取初始化数据，在下一帧nextTick进行后续操作
-    showLoading: function(value) {
-      if (!value) {
-        this.$nextTick(() => {
-          this.getFoodListHeight();
-          this.initCategoryNum();
-        })
-      }
-    },
-    shopCart: function(value) {
-      this.initCategoryNum();
-    },
-    //购物车列表发生变化，没有商铺时，隐藏
-    cartFoodList: function(value) {
-      if (!value.length) {
-        this.showCartList = false;
-      }
-    },
-    //商品、评论切换状态
-    changeShowType: function(value) {
-      if (value === 'rating') {
-        this.$nextTick(() => {
-          this.ratingScroll = new BScroll('#ratingContainer', {
-            probeType: 3,
-            deceleration: 0.003,
-            bounce: false,
-            swipeTime: 2000,
-            click: true,
-          });
-          this.ratingScroll.on('scroll', (pos) => {
-            if (Math.abs(Math.round(pos.y)) >= Math.abs(Math.round(this.ratingScroll.maxScrollY))) {
-              this.loaderMoreRating();
-              this.ratingScroll.refresh();
-            }
-          })
-        })
-      }
-    }
-  }
+			const wrapMenuHeight = this.$refs.wrapperMenu.clientHeight;
+			this.foodScroll.on('scroll', (pos) => {
+				if (!this.$refs.wrapperMenu) {
+					return
+				}
+				this.shopListTop.forEach((item, index) => {
+					if (this.menuIndexChange && Math.abs(Math.round(pos.y)) >= item) {
+						this.menuIndex = index;
+						const menuList = this.$refs.wrapperMenu.querySelectorAll('.activity_menu');
+						const el = menuList[0];
+						wrapperMenu.scrollToElement(el, 800, 0, -(wrapMenuHeight / 2 - 50));
+					}
+				})
+			})
+		},
+		//控制活动详情页的显示隐藏
+		showActivitiesFun() {
+			this.showActivities = !this.showActivities;
+		},
+		//点击左侧食品列表标题，相应列表移动到最顶层
+		chooseMenu(index) {
+			this.menuIndex = index;
+			//menuIndexChange解决运动时listenScroll依然监听的bug
+			this.menuIndexChange = false;
+			this.foodScroll.scrollTo(0, -this.shopListTop[index], 400);
+			this.foodScroll.on('scrollEnd', () => {
+				this.menuIndexChange = true;
+			})
+		},
+		showTitleDetail(index) {
+			if (this.TitleDetailIndex == index) {
+				this.TitleDetailIndex = null;
+			} else {
+				this.TitleDetailIndex = index;
+			}
+		},
+		//加入购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
+		addToCart(supplierid, dishcategoryid, dish, attr) {
+			this.ADD_CART({
+				supplierid: supplierid,
+				dishcategoryid: dishcategoryid,
+				dish: dish,
+				attr: attr,
+			});
+		},
+		//移出购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
+		removeOutCart(supplierid, dishcategoryid, dish, attr) {
+			this.REDUCE_CART({
+				supplierid: supplierid,
+				dishcategoryid: dishcategoryid,
+				dish: dish,
+				attr: attr,
+			});
+		},
+		/**
+		 * 初始化和shopCart变化时，
+		 重新获取购物车改变过的数据，
+		 赋值 categoryNum，totalPrice，cartFoodList，
+		 整个数据流是自上而下的形式，所有的购物车数据都交给vuex统一管理，
+		 包括购物车组件中自身的商品数量，使整个数据流更加清晰
+		 */
+		initCategoryNum() {
+			let self = this
+			let newArr = [];
+			let cartFoodNum = 0;
+			self.totalPrice = 0;
+			self.cartFoodList = [];
+			if (self.shopCart) {
+				for (let category of this.supplier.dishcategorys) {
+					if (!self.shopCart[category.id]) {
+						continue;
+					}
+					for (let dish of category.dishs) {
+						if (!self.shopCart[category.id][dish.id]) {
+							continue
+						}
+						for (let attr of dish.dishattrs) {
+							if (!self.shopCart[category.id][dish.id][attr.id]) {
+								continue
+							}
+							if (!self.shopCart[category.id][dish.id][attr.id]['selected']) {
+								continue
+							}
+							let item = self.shopCart[category.id][dish.id][attr.id]['selected'];
+							self.cartFoodList.push(item)
+						}
+					}
+				}
+			}
+			this.totalPrice = this.totalPrice.toFixed(2);
+			this.categoryNum = [...newArr];
+		},
+		//控制购物列表是否显示
+		toggleCartList() {
+			this.cartFoodList.length ? this.showCartList = !this.showCartList : true;
+		},
+		//清除购物车
+		clearCart() {
+			this.toggleCartList();
+			this.CLEAR_CART(this.supplier.id);
+		},
+		//监听圆点是否进入购物车
+		listenInCart() {
+			if (!this.receiveInCart) {
+				this.receiveInCart = true;
+				this.$refs.cartContainer.addEventListener('animationend', () => {
+					this.receiveInCart = false;
+				})
+				this.$refs.cartContainer.addEventListener('webkitAnimationEnd', () => {
+					this.receiveInCart = false;
+				})
+			}
+		},
+		//获取不同类型的评论列表
+		async changeTgeIndex(index, name) {
+			this.ratingTageIndex = index;
+			this.ratingOffset = 0;
+			this.ratingTagName = name;
+			let res = await getRatingList(this.supplier.id, this.ratingOffset, name);
+			this.ratingList = [...res];
+			this.$nextTick(() => {
+				this.ratingScroll.refresh();
+			})
+		},
+		//加载更多评论
+		async loaderMoreRating() {
+			if (this.preventRepeatRequest) {
+				return
+			}
+			this.loadRatings = true;
+			this.preventRepeatRequest = true;
+			this.ratingOffset += 10;
+			let ratingDate = await getRatingList(this.supplier.id, this.ratingOffset, this.ratingTagName);
+			this.ratingList = [...this.ratingList, ...ratingDate];
+			this.loadRatings = false;
+			if (ratingDate.length >= 10) {
+				this.preventRepeatRequest = false;
+			}
+		},
+		//隐藏动画
+		hideLoading() {
+			this.showLoading = false;
+		},
+		//显示规格列表
+		showChooseList(dish) {
+			if (dish) {
+				this.selecteddish = dish;
+			}
+			this.showSpecs = !this.showSpecs;
+			this.specsIndex = 0;
+		},
+		//记录当前所选规格的索引值
+		chooseSpecs(index) {
+			this.specsIndex = index;
+		},
+		//多规格商品加入购物车
+		addSpecs(supplierid, categoryid, dish, attr) {
+			this.ADD_CART({
+				supplierid: supplierid,
+				categoryid: categoryid,
+				dish: dish,
+				attr: attr
+			});
+			this.showChooseList();
+		},
+		//显示提示，无法减去商品
+		showReduceTip() {
+			this.showDeleteTip = true;
+			clearTimeout(this.timer);
+			this.timer = setTimeout(() => {
+				clearTimeout(this.timer);
+				this.showDeleteTip = false;
+			}, 3000);
+		},
+		//显示下落圆球
+		showMoveDotFun(showMoveDot, elLeft, elBottom) {
+			this.showMoveDot = [...this.showMoveDot, ...showMoveDot];
+			this.elLeft = elLeft;
+			this.elBottom = elBottom;
+		},
+		beforeEnter(el) {
+			el.style.transform = `translate3d(0,${37 + this.elBottom - this.windowHeight}px,0)`;
+			el.children[0].style.transform = `translate3d(${this.elLeft - 30}px,0,0)`;
+			el.children[0].style.opacity = 0;
+		},
+		afterEnter(el) {
+			el.style.transform = `translate3d(0,0,0)`;
+			el.children[0].style.transform = `translate3d(0,0,0)`;
+			el.style.transition = 'transform .55s cubic-bezier(0.3, -0.25, 0.7, -0.15)';
+			el.children[0].style.transition = 'transform .55s linear';
+			this.showMoveDot = this.showMoveDot.map(item => false);
+			el.children[0].style.opacity = 1;
+			el.children[0].addEventListener('transitionend', () => {
+				this.listenInCart();
+			})
+			el.children[0].addEventListener('webkitAnimationEnd', () => {
+				this.listenInCart();
+			})
+		},
+		goback() {
+			this.$router.go(-1);
+		}
+	},
+	watch: {
+		//showLoading变化时说明组件已经获取初始化数据，在下一帧nextTick进行后续操作
+		showLoading: function(value) {
+			if (!value) {
+				this.$nextTick(() => {
+					this.getFoodListHeight();
+					this.initCategoryNum();
+				})
+			}
+		},
+		shopCart: function(value) {
+			this.initCategoryNum();
+		},
+		//购物车列表发生变化，没有商铺时，隐藏
+		cartFoodList: function(value) {
+			if (!value.length) {
+				this.showCartList = false;
+			}
+		},
+		//商品、评论切换状态
+		changeShowType: function(value) {
+			if (value === 'rating') {
+				this.$nextTick(() => {
+					this.ratingScroll = new BScroll('#ratingContainer', {
+						probeType: 3,
+						deceleration: 0.003,
+						bounce: false,
+						swipeTime: 2000,
+						click: true,
+					});
+					this.ratingScroll.on('scroll', (pos) => {
+						if (Math.abs(Math.round(pos.y)) >= Math.abs(Math.round(this.ratingScroll.maxScrollY))) {
+							this.loaderMoreRating();
+							this.ratingScroll.refresh();
+						}
+					})
+				})
+			}
+		}
+	}
 }
 </script>
 

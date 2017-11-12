@@ -51,15 +51,10 @@ export default {
     let category = shop[categoryid] = (shop[categoryid] || {}); //分类
     let dishcontainer = category[dish.id] = (category[dish.id] || {}); //菜品
     let attrcontainer = dishcontainer[attr.id] = (dishcontainer[attr.id] || {}); //规格
-    attrcontainer['selected'] = Object.assign({}, attrcontainer['selected'])
-    if (attrcontainer['selected']['num']) {
-      attrcontainer['selected']['num']++
+    if (attrcontainer['num']) {
+      attrcontainer['num']++
     } else {
-      attrcontainer['selected'] = {
-        num: 1,
-        dish: dish,
-        attr: attr
-      }
+      attrcontainer['num'] = 1;
     }
     state.cartList = {
       ...cart
@@ -75,11 +70,10 @@ export default {
     let category = shop[categoryid] = (shop[categoryid] || {}); //分类
     let dishcontainer = category[dish.id] = (category[dish.id] || {}); //菜品
     let attrcontainer = dishcontainer[attr.id] = (dishcontainer[attr.id] || {}); //规格
-    attrcontainer['selected'] = Object.assign({}, attrcontainer['selected'])
-    if (attrcontainer['selected']['num']) {
-      attrcontainer['selected']['num'] = attrcontainer['selected']['num'] - 1
-      if (attrcontainer['selected']['num'] <= 0) {
-        attrcontainer['selected'] = null
+    if (attrcontainer['num']) {
+      attrcontainer['num'] = attrcontainer['num'] - 1
+      if (attrcontainer['num'] <= 0) {
+        attrcontainer['num'] = null
       }
     }
     setStore('buyCart', state.cartList);

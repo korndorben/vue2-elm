@@ -9,7 +9,7 @@
                 </span>
             </transition>
             <transition name="fade">
-                <span class="cart_num" v-if="dish.dishattrs[0]['selected']">{{dish.dishattrs[0]['selected']['num']}}</span>
+                <span class="cart_num" v-if="dish.dishattrs[0]['selected']">{{dish.dishattrs[0]['selected']['num']}}buyCart.vue</span>
             </transition>
             <svg class="add_icon" @touchstart="addToCart(dish.supplierid,dish.dishcategoryid, dish, dish.dishattrs[0], $event)">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-add"></use>
@@ -18,7 +18,7 @@
         <section v-else class="choose_specification">
             <section class="choose_icon_container">
                 <transition name="showReduce">
-                    <svg class="specs_reduce_icon" v-if="foodNum" @click="showReduceTip">
+                    <svg class="specs_reduce_icon" v-if="dish.dishattrs[0]['selected']" @click="showReduceTip">
                         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-minus"></use>
                     </svg>
                 </transition>
@@ -33,95 +33,67 @@
 
 <script>
 import {
-  mapState,
-  mapMutations
+	mapState,
+	mapMutations
 } from 'vuex'
 export default {
-  data() {
-    return {
-      showMoveDot: [], //控制下落的小圆点显示隐藏
-    }
-  },
-  mounted() {
+	data() {
+		return {
+			showMoveDot: [], //控制下落的小圆点显示隐藏
+		}
+	},
+	mounted() {
 
-  },
-  computed: {
-    ...mapState([
-      'cartList'
-    ]),
-    /**
-     * 监听cartList变化，更新当前商铺的购物车信息shopCart，同时返回一个新的对象
-     */
-    shopCart: function() {
-      return Object.assign({}, this.cartList[this.supplier.id]);
-    },
-    //shopCart变化的时候重新计算当前商品的数量
-    foodNum: function() {
-      let dishcategoryid = this.dish.dishcategoryid;
-      let id = this.dish.id;
-      if (this.shopCart && this.shopCart[dishcategoryid] && this.shopCart[dishcategoryid][id]) {
-        let num = 0;
-        Object.values(this.shopCart[dishcategoryid][id]).forEach((item, index) => {
-          num += item.num;
-        })
-        return num;
-      } else {
-        return 0;
-      }
-    },
-  },
-  props: ['dish', 'supplier'],
-  methods: {
-    ...mapMutations([
-      'ADD_CART', 'REDUCE_CART',
-    ]),
-    //移出购物车
-    removeOutCart(dishcategoryid, id, attrid, name, price, specs, packing_fee, sku_id, stock) {
-      if (this.foodNum > 0) {
-        this.REDUCE_CART({
-          shopid: this.supplier.id,
-          dishcategoryid,
-          id,
-          attrid,
-          name,
-          price,
-          specs,
-          packing_fee,
-          sku_id,
-          stock
-        });
-      }
-    },
-    //加入购物车，计算按钮位置。
-    addToCart(dishcategoryid, id, attrid, name, price, specs, packing_fee, sku_id, stock, event) {
-      this.ADD_CART({
-        shopid: this.supplier.id,
-        dishcategoryid,
-        id,
-        attrid,
-        name,
-        price,
-        specs,
-        packing_fee,
-        sku_id,
-        stock
-      });
-      let elLeft = event.target.getBoundingClientRect().left;
-      let elBottom = event.target.getBoundingClientRect().bottom;
-      this.showMoveDot.push(true);
-      this.$emit('showMoveDot', this.showMoveDot, elLeft, elBottom);
+	},
+	computed: {
+		...mapState([
+			'cartList'
+		]),
+		/**
+		 * 监听cartList变化，更新当前商铺的购物车信息shopCart，同时返回一个新的对象
+		 */
+		shopCart: function() {
+			return Object.assign({}, this.cartList[this.supplier.id]);
+		},
+	},
+	props: ['dish', 'supplier'],
+	methods: {
+		...mapMutations([
+			'ADD_CART', 'REDUCE_CART',
+		]),
+		//移出购物车
+		removeOutCart(supplierid, categoryid, dish, attr) {
+			this.REDUCE_CART({
+				supplierid: supplierid,
+				categoryid: categoryid,
+				dish: dish,
+				attr: attr
+			});
+		},
+		//加入购物车，计算按钮位置。
+		addToCart(supplierid, categoryid, dish, attr, event) {
+			this.ADD_CART({
+				supplierid: supplierid,
+				categoryid: categoryid,
+				dish: dish,
+				attr: attr
+			});
+			let elLeft = event.target.getBoundingClientRect().left;
+			let elBottom = event.target.getBoundingClientRect().bottom;
+			this.showMoveDot.push(true);
+			this.$emit('showMoveDot', this.showMoveDot, elLeft, elBottom);
 
-    },
-    //显示规格列表
-    showChooseList(foodScroll) {
-      this.$emit('showChooseList', foodScroll)
-    },
-    //点击多规格商品的减按钮，弹出提示
-    showReduceTip() {
-      this.$emit('showReduceTip')
-    },
+		},
+		//显示规格列表
+		showChooseList(foodScroll) {
+			this.$emit('showChooseList', foodScroll)
+		},
+		//点击多规格商品的减按钮，弹出提示
+		showReduceTip() {
+			this.$emit('showReduceTip')
+		},
 
-  },
+	},
 }
 </script>
 
