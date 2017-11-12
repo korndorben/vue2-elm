@@ -51,10 +51,10 @@ export default {
     let category = shop[categoryid] = (shop[categoryid] || {}); //分类
     let dishcontainer = category[dish.id] = (category[dish.id] || {}); //菜品
     let attrcontainer = dishcontainer[attr.id] = (dishcontainer[attr.id] || {}); //规格
-    if (attrcontainer['num']) {
-      attrcontainer['num']++
+    if (attrcontainer['quality']) {
+      attrcontainer['quality']++
     } else {
-      attrcontainer['num'] = 1;
+      attrcontainer['quality'] = 1;
     }
     state.cartList = {
       ...cart
@@ -70,10 +70,10 @@ export default {
     let category = shop[categoryid] = (shop[categoryid] || {}); //分类
     let dishcontainer = category[dish.id] = (category[dish.id] || {}); //菜品
     let attrcontainer = dishcontainer[attr.id] = (dishcontainer[attr.id] || {}); //规格
-    if (attrcontainer['num']) {
-      attrcontainer['num'] = attrcontainer['num'] - 1
-      if (attrcontainer['num'] <= 0) {
-        attrcontainer['num'] = null
+    if (attrcontainer['quality']) {
+      attrcontainer['quality'] = attrcontainer['quality'] - 1
+      if (attrcontainer['quality'] <= 0) {
+        attrcontainer['quality'] = null
       }
     }
     setStore('buyCart', state.cartList);

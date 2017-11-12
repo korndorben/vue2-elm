@@ -2,28 +2,28 @@
     <section class="cart_module">
         <section v-if="!dish.dishattrs.length" class="cart_button">
             <transition name="showReduce">
-                <span @click="removeOutCart(dish.supplierid,dish.dishcategoryid, dish, dish.dishattrs[0])" v-if="dish.dishattrs[0]['selected']">
+                <span @click="removeOutCart(dish.dishattrs[0])" v-if="dish.dishattrs[0].quality">
                     <svg>
                         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-minus"></use>
                     </svg>
                 </span>
             </transition>
             <transition name="fade">
-                <span class="cart_num" v-if="dish.dishattrs[0]['selected']">{{dish.dishattrs[0]['selected']['num']}}buyCart.vue</span>
+                <span class="cart_num" v-if="dish.dishattrs.quality">{{dish.dishattrs[0].quality}}buyCart.vue</span>
             </transition>
-            <svg class="add_icon" @touchstart="addToCart(dish.supplierid,dish.dishcategoryid, dish, dish.dishattrs[0], $event)">
+            <svg class="add_icon" @touchstart="addToCart(dish.dishattrs[0], $event)">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-add"></use>
             </svg>
         </section>
         <section v-else class="choose_specification">
             <section class="choose_icon_container">
                 <transition name="showReduce">
-                    <svg class="specs_reduce_icon" v-if="dish.dishattrs[0]['selected']" @click="showReduceTip">
+                    <svg class="specs_reduce_icon" v-if="dish.dishattrs[0].quality" @click="showReduceTip">
                         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-minus"></use>
                     </svg>
                 </transition>
                 <transition name="fade">
-                    <span class="cart_num" v-if="dish.dishattrs[0]['selected']">{{dish.dishattrs[0]['selected']['num']}}</span>
+                    <span class="cart_num" v-if="dish.dishattrs[0].quality">{{dish.dishattrs[0].quality}}</span>
                 </transition>
                 <span class="show_chooselist" @click="showChooseList(dish)">选规格</span>
             </section>
@@ -62,22 +62,23 @@ export default {
 			'ADD_CART', 'REDUCE_CART',
 		]),
 		//移出购物车
-		removeOutCart(supplierid, categoryid, dish, attr) {
-			this.REDUCE_CART({
-				supplierid: supplierid,
-				categoryid: categoryid,
-				dish: dish,
-				attr: attr
-			});
+		removeOutCart(attr) {
+            if (attr.quality) {
+				attr.quality--
+					if (attr.quality <= 0) {
+						attr.quality = 0
+					}
+			}
+			// this.RECORD_SUPPLIER(this.supplier)
 		},
 		//加入购物车，计算按钮位置。
-		addToCart(supplierid, categoryid, dish, attr, event) {
-			this.ADD_CART({
-				supplierid: supplierid,
-				categoryid: categoryid,
-				dish: dish,
-				attr: attr
-			});
+		addToCart(attr, event) {
+            if (attr.quality) {
+				attr.quality++
+			} else {
+				self.$set(attr, 'quality', 1)
+			}
+			// this.RECORD_SUPPLIER(this.supplier)
 			let elLeft = event.target.getBoundingClientRect().left;
 			let elBottom = event.target.getBoundingClientRect().bottom;
 			this.showMoveDot.push(true);

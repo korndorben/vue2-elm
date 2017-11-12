@@ -77,8 +77,8 @@
                                 <li v-for="(item,index) in menuList" :key="index">
                                     <header class="menu_detail_header">
                                         <section class="menu_detail_header_left">
-                                            <strong class="menu_item_title">{{item.name}}</strong>
-                                            <span class="menu_item_description">{{item.intro}}</span>
+                                            <strong class="menu_item_title">{{item.name}} b{{item.quality}}b</strong>
+                                            <span class="menu_item_description">{{item.intro}}b{{item.quality}}b</span>
                                         </section>
                                         <span class="menu_detail_header_right" @click="showTitleDetail(index)"></span>
                                         <p class="description_tip" v-if="index == TitleDetailIndex">
@@ -94,7 +94,7 @@
                                             </section>
                                             <section class="menu_food_description">
                                                 <h3 class="food_description_head">
-                                                    <strong class="description_foodname">{{dish.name}}</strong>
+                                                    <strong class="description_foodname">1{{dish.name}}</strong>
                                                 </h3>
                                                 <p class="food_description_content">{{dish.intro}}</p>
                                                 <p class="food_description_sale_rating">
@@ -160,13 +160,13 @@
                                             <span>{{item.attr.price}}</span>
                                         </div>
                                         <section class="cart_list_control">
-                                            <span @click="removeOutCart(item.dish.supplierid, item.dish.dishcategoryid,item.dish, item.attr)">
+                                            <span @click="removeOutCart(item.attr)">
                                                 <svg>
                                                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-minus"></use>
                                                 </svg>
                                             </span>
                                             <span class="cart_num">{{item.attr}}</span>
-                                            <svg class="cart_add" @click="addToCart(item.dish.supplierid, item.dish.dishcategoryid,item.dish, item.attr)">
+                                            <svg class="cart_add" @click="addToCart(item.attr)">
                                                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-add"></use>
                                             </svg>
                                         </section>
@@ -269,7 +269,7 @@
                             <span>¥ </span>
                             <span>{{selecteddish.dishattrs[specsIndex].price}}</span>
                         </div>
-                        <div class="specs_addto_cart" @click="addSpecs(selecteddish.supplierid,selecteddish.dishcategoryid, selecteddish, selecteddish.dishattrs[specsIndex])">加入购物车</div>
+                        <div class="specs_addto_cart" @click="addSpecs(selecteddish.dishattrs[specsIndex])">加入购物车</div>
                     </footer>
                 </div>
             </transition>
@@ -422,6 +422,8 @@ export default {
 		totalNum: function() {
 			let num = 0;
 			this.cartFoodList.forEach(item => {
+				console.log('item');
+				console.log(item);
 				num += item.num
 			})
 			return num
@@ -521,22 +523,36 @@ export default {
 			}
 		},
 		//加入购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
-		addToCart(supplierid, dishcategoryid, dish, attr) {
-			this.ADD_CART({
-				supplierid: supplierid,
-				dishcategoryid: dishcategoryid,
-				dish: dish,
-				attr: attr,
-			});
+		addToCart(attr) {
+			if (attr.quality) {
+				attr.quality++
+			} else {
+				self.$set(attr, 'quality', 1)
+			}
+			// this.RECORD_SUPPLIER(this.supplier)
+			// this.ADD_CART({
+			// 	supplierid: supplierid,
+			// 	dishcategoryid: dishcategoryid,
+			// 	dish: dish,
+			// 	attr: attr,
+			// });
 		},
 		//移出购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
-		removeOutCart(supplierid, dishcategoryid, dish, attr) {
-			this.REDUCE_CART({
-				supplierid: supplierid,
-				dishcategoryid: dishcategoryid,
-				dish: dish,
-				attr: attr,
-			});
+		removeOutCart(attr) {
+			if (attr.quality) {
+				attr.quality--
+					if (attr.quality <= 0) {
+						attr.quality = 0
+					}
+			}
+			// this.RECORD_SUPPLIER(this.supplier)
+            console.log(this.supplier);
+			// this.REDUCE_CART({
+			// 	supplierid: supplierid,
+			// 	dishcategoryid: dishcategoryid,
+			// 	dish: dish,
+			// 	attr: attr,
+			// });
 		},
 		/**
 		 * 初始化和shopCart变化时，
@@ -551,25 +567,11 @@ export default {
 			let cartFoodNum = 0;
 			self.totalPrice = 0;
 			self.cartFoodList = [];
-			if (self.shopCart) {
-				for (let category of this.supplier.dishcategorys) {
-					if (!self.shopCart[category.id]) {
-						continue;
-					}
-					for (let dish of category.dishs) {
-						if (!self.shopCart[category.id][dish.id]) {
-							continue
-						}
-						for (let attr of dish.dishattrs) {
-							if (!self.shopCart[category.id][dish.id][attr.id]) {
-								continue
-							}
-							if (!self.shopCart[category.id][dish.id][attr.id]['selected']) {
-								continue
-							}
-							let item = self.shopCart[category.id][dish.id][attr.id]['selected'];
-							self.cartFoodList.push(item)
-						}
+			for (let category of self.supplier.dishcategorys) {
+				self.$set(category, 'quality', category.id)
+				for (let dish of category.dishs) {
+					for (let attr of dish.dishattrs) {
+						self.$set(attr, 'quality')
 					}
 				}
 			}
@@ -640,7 +642,7 @@ export default {
 			this.specsIndex = index;
 		},
 		//多规格商品加入购物车
-		addSpecs(supplierid, categoryid, dish, attr) {
+		addSpecs(attr) {
 			this.ADD_CART({
 				supplierid: supplierid,
 				categoryid: categoryid,
