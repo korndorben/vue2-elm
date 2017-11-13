@@ -16,7 +16,7 @@
                         </section>
                         <section class="description_right">
                             <p class="description_title ellipsis">{{shopDetailData.name}}</p>
-                            <p class="description_text">商家配送／{{shopDetailData.order_lead_time}}分钟送达／配送费¥{{shopDetailData.float_delivery_fee}}</p>
+                            <p class="description_text">商家配送／配送费¥{{shopDetailData.float_delivery_fee}}</p>
                             <p class="description_promotion ellipsis">公告：{{promotionInfo}}</p>
                         </section>
                         <!-- <svg width="14" height="14" xmlns="http://www.w3.org/2000/svg" version="1.1" class="description_arrow" >
@@ -26,7 +26,7 @@
                     <!-- </router-link> -->
                     <footer class="description_footer" v-if="shopDetailData.activities.length" @click="showActivitiesFun">
                         <p class="ellipsis">
-                            <span class="tip_icon" :style="{backgroundColor: '#' + shopDetailData.activities[0].icon_color, borderColor: '#' + shopDetailData.activities[0].icon_color}">{{shopDetailData.activities[0].icon_name}}</span>
+                            <span class="tip_icon" :style="{backgroundColor: '#' + shopDetailData.activities[0].icon_color, borderColor: '#ff6600'}">{{shopDetailData.activities[0].icon_name}}</span>
                             <span>{{shopDetailData.activities[0].description}}（APP专享）</span>
                         </p>
                         <p>{{shopDetailData.activities.length}}个活动</p>
@@ -98,7 +98,7 @@
                                         </p>
                                     </header>
                                     <section v-for="(foods,foodindex) in item.foods" :key="foodindex" class="menu_detail_list">
-                                        <router-link  :to="{path: 'shop/foodDetail', query:{image_path:foods.image_path, description: foods.description, month_sales: foods.month_sales, name: foods.name, rating: foods.rating, rating_count: foods.rating_count, satisfy_rate: foods.satisfy_rate, foods, shopId}}" tag="div" class="menu_detail_link">
+                                        <div class="menu_detail_link">
                                             <section class="menu_food_img">
                                                 <img src="http://localhost:3000/upload/logo.1.png">
                                             </section>
@@ -117,12 +117,12 @@
                                                     <span>好评率{{foods.satisfy_rate}}%</span>
                                                 </p>
                                             </section>
-                                        </router-link>
+                                        </div>
                                         <footer class="menu_detail_footer">
                                             <section class="food_price">
                                                 <span>¥</span>
                                                 <span>{{foods.specfoods[0].price}}</span>
-                                                <!-- <span v-if="foods.specifications.length">起</span> -->
+                                                <span v-if="foods.specifications.length">起</span>
                                             </section>
                                             <buy-cart :shopId='shopId' :foods='foods' @moveInCart="listenInCart" @showChooseList="showChooseList" @showReduceTip="showReduceTip" @showMoveDot="showMoveDotFun"></buy-cart>
                                         </footer>
@@ -396,7 +396,7 @@ export default {
 	},
 	computed: {
 		...mapState([
-			'latitude', 'longitude', 'cartList'
+			'cartList'
 		]),
 		promotionInfo: function() {
 			return this.shopDetailData.promotion_info || '欢迎光临，用餐高峰期请提前下单，谢谢。'
@@ -432,87 +432,15 @@ export default {
 		]),
 		//初始化时获取基本数据
 		async initData() {
-			// if (!this.latitude) {
-			//     //获取位置信息
-			//     let res = await msiteAdress(this.geohash);
-			//     // 记录当前经度纬度进入vuex
-			//     this.RECORD_ADDRESS(res);
-			// }
 			let data = await fetchql.query({
 				operationName: '',
-				query: `{ supplier(id: 1) { id name address latitude:lat longitude:lng phone:hotline status:isenable category:name isnew:isenable is_premium:isenable image_path:name description:intro dishcategorys { name description:intro id restaurant_id:supplierid type:businesstype is_selected:isenable foods:dishs { id tips:name item_id:id category_id:dishcategoryid restaurant_id:supplierid image_path:name name pinyin_name:pinyin satisfy_rate:id satisfy_count:id is_essential:isenable server_utc:created rating_count:id month_sales:id description:intro pinyin_name:pinyin is_featured:isenable rating:id specifications:dishattrs { id specs_name:name name item_id:dishid sku_id:id food_id:id restaurant_id:supplierid stock:id checkout_mode:id is_essential:isenable recent_popularity:id sold_out:isenable price:price promotion_stock:id recent_rating:id packing_fee:id pinyin_name:name original_price:price } specfoods:dishattrs { id specs_name:name name item_id:dishid sku_id:id food_id:id restaurant_id:supplierid stock:id checkout_mode:id is_essential:isenable recent_popularity:id sold_out:isenable price:price promotion_stock:id recent_rating:id packing_fee:id pinyin_name:name original_price:price } } } activities:activities { id name icon_name:name description:name icon_color:name } opening_hours:markets { id begintime endtime } } } `,
+				query: ``,
 				variables: {}
 			});
 			//获取商铺信息
 			// this.shopDetailData = await shopDetails(this.shopId, this.latitude, this.longitude);
 			// this.shopDetailData = data.data.supplier[0]
-			this.shopDetailData = JSON.parse(`{
-                "name":"测试修22225",
-                "address":"北京市海淀区岭南路36号广东大厦5层",
-                "id":1148,
-                "latitude":39.92775,
-                "longitude":116.30162,
-                "location":[
-                    121.49424,
-                    31.30122
-                ],
-                "phone":"15761621234",
-                "category":"异国料理/西餐",
-
-                "status":0,
-                "recent_order_num":827,
-                "rating_count":485,
-                "rating":4.1,
-                "promotion_info":"dghgfdgf",
-                "piecewise_agent_fee":{
-                    "tips":"配送费约¥5"
-                },
-                "opening_hours":[
-                    "8:30/20:30"
-                ],
-                "license":{
-                    "catering_service_license_image":"15e3898ec2b5718.jpeg",
-                    "business_license_image":"15e3898f5d05717.jpeg"
-                },
-                "is_new":true,
-                "is_premium":true,
-                "image_path":"15fa3a071f210067.jpg",
-                "identification":{
-                    "registered_number":"",
-                    "registered_address":"",
-                    "operation_period":"",
-                    "licenses_scope":"",
-                    "licenses_number":"",
-                    "licenses_date":"",
-                    "legal_person":"",
-                    "identificate_date":null,
-                    "identificate_agency":"",
-                    "company_name":""
-                },
-                "float_minimum_order_amount":20,
-                "float_delivery_fee":5,
-                "distance":"",
-                "order_lead_time":"",
-                "description":"vbn11",
-                "delivery_mode":{
-                    "color":"57A9FF",
-                    "id":1,
-                    "is_solid":true,
-                    "text":"蜂鸟专送"
-                },
-                "activities":[
-                    {
-                        "icon_name":"减",
-                        "name":"满减优惠",
-                        "description":"满30减5，满60减8",
-                        "icon_color":"f07373",
-                        "id":1,
-                        "_id":"59a816cbebe2e53edc090e36"
-                    }
-                ],
-                "__v":0
-            }
-`);
+			this.shopDetailData = JSON.parse(`{ "name":"测试修22225", "address":"北京市海淀区岭南路36号广东大厦5层", "id":1148, "promotion_info":"dghgfdgf", "image_path":"15fa3a071f210067.jpg", "float_minimum_order_amount":20, "float_delivery_fee":5, "order_lead_time":"", "description":"vbn11", "activities":[ { "icon_name":"减", "name":"满减优惠", "description":"满30减5，满60减8", "icon_color":"f07373", "id":1, "_id":"59a816cbebe2e53edc090e36" } ] }`);
 			//获取商铺食品列表
 			this.menuList = JSON.parse(`[
     {
@@ -527,14 +455,8 @@ export default {
                 "item_id":429,
                 "category_id":878,
                 "restaurant_id":1148,
-                "activity":{
-                    "image_text_color":"f1884f",
-                    "icon_color":"f07373",
-                    "image_text":"电饭锅地方"
-                },
                 "image_path":"15e38c785a95721.jpeg",
                 "name":"水淀",
-                "__v":0,
                 "specfoods":[
                     {
                         "specs_name":"默认",
@@ -545,49 +467,21 @@ export default {
                         "restaurant_id":1148,
                         "_id":"59ad3927ebe2e53edc0c08a4",
                         "specs":[
-
+                            "小份"
                         ],
                         "stock":1000,
-                        "checkout_mode":1,
-                        "is_essential":false,
-                        "recent_popularity":384,
-                        "sold_out":false,
                         "price":20,
-                        "promotion_stock":-1,
-                        "recent_rating":4.7,
                         "packing_fee":0,
-                        "pinyin_name":"",
                         "original_price":0
                     }
                 ],
                 "satisfy_rate":43,
-                "satisfy_count":113,
-                "attributes":[
-                    {
-                        "icon_color":"5ec452",
-                        "icon_name":"新"
-                    },
-                    {
-                        "icon_color":"f07373",
-                        "icon_name":"招牌"
-                    }
-                ],
-                "is_essential":false,
-                "server_utc":"2017-08-31T13:54:04.771Z",
                 "specifications":[
 
                 ],
                 "rating_count":454,
                 "month_sales":666,
                 "description":"互粉咕叽咕叽个结果",
-                "attrs":[
-
-                ],
-                "display_times":[
-
-                ],
-                "pinyin_name":"",
-                "is_featured":0,
                 "rating":4.6
             },
             {
@@ -596,11 +490,6 @@ export default {
                 "item_id":430,
                 "category_id":878,
                 "restaurant_id":1148,
-                "activity":{
-                    "image_text_color":"f1884f",
-                    "icon_color":"f07373",
-                    "image_text":"规范的损公肥私代购"
-                },
                 "image_path":"15e3b8952c85756.png",
                 "name":"xcv",
                 "__v":0,
@@ -621,19 +510,12 @@ export default {
                             }
                         ],
                         "stock":1000,
-                        "checkout_mode":1,
-                        "is_essential":false,
-                        "recent_popularity":480,
-                        "sold_out":false,
                         "price":20,
-                        "promotion_stock":-1,
-                        "recent_rating":4.5,
                         "packing_fee":0,
-                        "pinyin_name":"",
                         "original_price":0
                     },
                     {
-                        "specs_name":"",
+                        "specs_name":"aasdsd",
                         "name":"xcv",
                         "item_id":430,
                         "sku_id":1991,
@@ -648,595 +530,31 @@ export default {
                             }
                         ],
                         "stock":1000,
-                        "checkout_mode":1,
-                        "is_essential":false,
-                        "recent_popularity":459,
-                        "sold_out":false,
                         "price":20,
-                        "promotion_stock":-1,
-                        "recent_rating":2,
                         "packing_fee":0,
-                        "pinyin_name":"",
                         "original_price":0
                     }
                 ],
                 "satisfy_rate":67,
-                "satisfy_count":411,
-                "attributes":[
-                    {
-                        "icon_color":"5ec452",
-                        "icon_name":"新"
-                    },
-                    {
-                        "icon_color":"f07373",
-                        "icon_name":"招牌"
-                    }
-                ],
-                "is_essential":false,
-                "server_utc":"2017-08-31T13:54:04.771Z",
+
                 "specifications":[
                     {
                         "name":"规格",
                         "values":[
                             "默认",
-                            ""
+                            "asd"
                         ]
                     }
                 ],
                 "rating_count":677,
                 "month_sales":399,
                 "description":"该电饭锅的规范代购广告电饭锅",
-                "attrs":[
-
-                ],
-                "display_times":[
-
-                ],
-                "pinyin_name":"",
-                "is_featured":0,
                 "rating":4.3
-            },
-            {
-                "_id":"59b8035e26794d095c6719f8",
-                "tips":"940评价 月售589份",
-                "item_id":468,
-                "category_id":878,
-                "restaurant_id":1148,
-                "activity":null,
-                "image_path":"15e76c918086664.jpg",
-                "name":"312",
-                "__v":0,
-                "specfoods":[
-                    {
-                        "specs_name":"默认",
-                        "name":"312",
-                        "item_id":468,
-                        "sku_id":2032,
-                        "food_id":2034,
-                        "restaurant_id":1148,
-                        "_id":"59b8035e26794d095c6719f9",
-                        "specs":[
-
-                        ],
-                        "stock":1000,
-                        "checkout_mode":1,
-                        "is_essential":false,
-                        "recent_popularity":632,
-                        "sold_out":false,
-                        "price":20,
-                        "promotion_stock":-1,
-                        "recent_rating":4.8,
-                        "packing_fee":0,
-                        "pinyin_name":"",
-                        "original_price":0
-                    }
-                ],
-                "satisfy_rate":19,
-                "satisfy_count":988,
-                "attributes":[
-
-                ],
-                "is_essential":false,
-                "server_utc":"2017-09-12T08:09:38.055Z",
-                "specifications":[
-
-                ],
-                "rating_count":940,
-                "month_sales":589,
-                "description":"",
-                "attrs":[
-
-                ],
-                "display_times":[
-
-                ],
-                "pinyin_name":"",
-                "is_featured":0,
-                "rating":4.1
-            },
-            {
-                "_id":"59b807c126794d095c671bdd",
-                "tips":"891评价 月售846份",
-                "item_id":470,
-                "category_id":878,
-                "restaurant_id":1148,
-                "activity":null,
-                "image_path":"15e76de465d6666.jpg",
-                "name":"翔",
-                "__v":0,
-                "specfoods":[
-                    {
-                        "specs_name":"默认",
-                        "name":"翔",
-                        "item_id":470,
-                        "sku_id":2036,
-                        "food_id":2038,
-                        "restaurant_id":1148,
-                        "_id":"59b807c126794d095c671bde",
-                        "specs":[
-
-                        ],
-                        "stock":1000,
-                        "checkout_mode":1,
-                        "is_essential":false,
-                        "recent_popularity":665,
-                        "sold_out":false,
-                        "price":20,
-                        "promotion_stock":-1,
-                        "recent_rating":3.2,
-                        "packing_fee":0,
-                        "pinyin_name":"",
-                        "original_price":0
-                    }
-                ],
-                "satisfy_rate":34,
-                "satisfy_count":102,
-                "attributes":[
-
-                ],
-                "is_essential":false,
-                "server_utc":"2017-09-12T08:09:38.055Z",
-                "specifications":[
-
-                ],
-                "rating_count":891,
-                "month_sales":846,
-                "description":"",
-                "attrs":[
-
-                ],
-                "display_times":[
-
-                ],
-                "pinyin_name":"",
-                "is_featured":0,
-                "rating":4.8
-            },
-            {
-                "_id":"59ccb4f0287971031352e9c0",
-                "tips":"540评价 月售434份",
-                "item_id":559,
-                "category_id":878,
-                "restaurant_id":1148,
-                "activity":null,
-                "image_path":"15ec7a2c6a97527.jpg",
-                "name":"11",
-                "__v":0,
-                "specfoods":[
-                    {
-                        "specs_name":"默认",
-                        "name":"11",
-                        "item_id":559,
-                        "sku_id":2263,
-                        "food_id":2264,
-                        "restaurant_id":1148,
-                        "_id":"59cdb369287971031353a8e6",
-                        "specs":[
-                            {
-                                "name":"规格",
-                                "value":"默认",
-                                "_id":"59cdb369287971031353a8e7"
-                            }
-                        ],
-                        "stock":1000,
-                        "checkout_mode":1,
-                        "is_essential":false,
-                        "recent_popularity":656,
-                        "sold_out":false,
-                        "price":20,
-                        "promotion_stock":-1,
-                        "recent_rating":3.4,
-                        "packing_fee":0,
-                        "pinyin_name":"",
-                        "original_price":0
-                    },
-                    {
-                        "specs_name":"sss",
-                        "name":"11",
-                        "item_id":559,
-                        "sku_id":2264,
-                        "food_id":2265,
-                        "restaurant_id":1148,
-                        "_id":"59cdb369287971031353a8e4",
-                        "specs":[
-                            {
-                                "name":"规格",
-                                "value":"sss",
-                                "_id":"59cdb369287971031353a8e5"
-                            }
-                        ],
-                        "stock":1000,
-                        "checkout_mode":1,
-                        "is_essential":false,
-                        "recent_popularity":780,
-                        "sold_out":false,
-                        "price":20,
-                        "promotion_stock":-1,
-                        "recent_rating":3.5,
-                        "packing_fee":0,
-                        "pinyin_name":"",
-                        "original_price":0
-                    }
-                ],
-                "satisfy_rate":20,
-                "satisfy_count":843,
-                "attributes":[
-
-                ],
-                "is_essential":false,
-                "server_utc":"2017-09-22T03:33:26.067Z",
-                "specifications":[
-                    {
-                        "name":"规格",
-                        "values":[
-                            "默认",
-                            "sss"
-                        ]
-                    }
-                ],
-                "rating_count":540,
-                "month_sales":434,
-                "description":"",
-                "attrs":[
-
-                ],
-                "display_times":[
-
-                ],
-                "pinyin_name":"",
-                "is_featured":0,
-                "rating":4.1
             }
         ],
         "type":1,
         "icon_url":"5da3872d782f707b4c82ce4607c73d1ajpeg",
-        "is_selected":true,
         "__v":22
-    },
-    {
-        "name":"优惠",
-        "description":"美味又实惠, 大家快来抢!",
-        "id":879,
-        "restaurant_id":1148,
-        "foods":[
-            {
-                "_id":"59c868de28797103134dec8b",
-                "tips":"75评价 月售46份",
-                "item_id":521,
-                "category_id":879,
-                "restaurant_id":1148,
-                "activity":{
-                    "image_text":"放的歌和人途径ლ(′◉❥◉｀ლ)",
-                    "icon_color":"f07373",
-                    "image_text_color":"f1884f"
-                },
-                "image_path":"15f3592f1ea8747.jpeg",
-                "name":"很干净规范化",
-                "__v":0,
-                "specfoods":[
-                    {
-                        "specs_name":"默认",
-                        "name":"很干净规范化",
-                        "item_id":521,
-                        "sku_id":2437,
-                        "food_id":2438,
-                        "restaurant_id":1148,
-                        "_id":"59e8d9e98b0b3516d5860789",
-                        "specs":[
-                            {
-                                "name":"规格",
-                                "value":"默认",
-                                "_id":"59e8d9e98b0b3516d586078a"
-                            }
-                        ],
-                        "stock":1000,
-                        "checkout_mode":1,
-                        "is_essential":false,
-                        "recent_popularity":88,
-                        "sold_out":false,
-                        "price":20,
-                        "promotion_stock":-1,
-                        "recent_rating":4.9,
-                        "packing_fee":0,
-                        "pinyin_name":"",
-                        "original_price":0
-                    },
-                    {
-                        "specs_name":"换个房太阳",
-                        "name":"很干净规范化",
-                        "item_id":521,
-                        "sku_id":2438,
-                        "food_id":2439,
-                        "restaurant_id":1148,
-                        "_id":"59e8d9e98b0b3516d5860787",
-                        "specs":[
-                            {
-                                "name":"规格",
-                                "value":"换个房太阳",
-                                "_id":"59e8d9e98b0b3516d5860788"
-                            }
-                        ],
-                        "stock":1000,
-                        "checkout_mode":1,
-                        "is_essential":false,
-                        "recent_popularity":440,
-                        "sold_out":false,
-                        "price":20,
-                        "promotion_stock":-1,
-                        "recent_rating":3.9,
-                        "packing_fee":2,
-                        "pinyin_name":"",
-                        "original_price":0
-                    },
-                    {
-                        "specs_name":"ssssss",
-                        "name":"很干净规范化",
-                        "item_id":521,
-                        "sku_id":2439,
-                        "food_id":2440,
-                        "restaurant_id":1148,
-                        "_id":"59e8d9e98b0b3516d5860785",
-                        "specs":[
-                            {
-                                "name":"规格",
-                                "value":"ssssss",
-                                "_id":"59e8d9e98b0b3516d5860786"
-                            }
-                        ],
-                        "stock":1000,
-                        "checkout_mode":1,
-                        "is_essential":false,
-                        "recent_popularity":29,
-                        "sold_out":false,
-                        "price":20,
-                        "promotion_stock":-1,
-                        "recent_rating":4.9,
-                        "packing_fee":0,
-                        "pinyin_name":"",
-                        "original_price":0
-                    }
-                ],
-                "satisfy_rate":48,
-                "satisfy_count":1,
-                "attributes":[
-                    {
-                        "icon_name":"招牌",
-                        "icon_color":"f07373"
-                    }
-                ],
-                "is_essential":false,
-                "server_utc":"2017-09-22T03:33:26.067Z",
-                "specifications":[
-                    {
-                        "values":[
-                            "默认",
-                            "换个房太阳",
-                            "ssssss"
-                        ],
-                        "name":"规格"
-                    }
-                ],
-                "rating_count":75,
-                "month_sales":46,
-                "description":"更符合规范",
-                "attrs":[
-
-                ],
-                "display_times":[
-
-                ],
-                "pinyin_name":"",
-                "is_featured":0,
-                "rating":4.6
-            },
-            {
-                "_id":"59ddd736a164195e1dd8a9a4",
-                "tips":"342评价 月售137份",
-                "item_id":614,
-                "category_id":879,
-                "restaurant_id":1148,
-                "activity":{
-                    "image_text":"1111111111",
-                    "icon_color":"f07373",
-                    "image_text_color":"f1884f"
-                },
-                "image_path":"15f0a908e508324.png",
-                "name":"1111111111111111111",
-                "__v":0,
-                "specfoods":[
-                    {
-                        "specs_name":"默认",
-                        "name":"1111111111111111111",
-                        "item_id":614,
-                        "sku_id":2479,
-                        "food_id":2479,
-                        "restaurant_id":1148,
-                        "_id":"59f002cd8b0b3516d58c0fc5",
-                        "specs":[
-
-                        ],
-                        "stock":1000,
-                        "checkout_mode":1,
-                        "is_essential":false,
-                        "recent_popularity":806,
-                        "sold_out":false,
-                        "price":20,
-                        "promotion_stock":-1,
-                        "recent_rating":0.8,
-                        "packing_fee":0,
-                        "pinyin_name":"",
-                        "original_price":0
-                    }
-                ],
-                "satisfy_rate":40,
-                "satisfy_count":274,
-                "attributes":[
-                    {
-                        "icon_name":"新",
-                        "icon_color":"5ec452"
-                    },
-                    {
-                        "icon_name":"招牌",
-                        "icon_color":"f07373"
-                    }
-                ],
-                "is_essential":false,
-                "server_utc":"2017-10-11T07:27:32.656Z",
-                "specifications":[
-
-                ],
-                "rating_count":342,
-                "month_sales":137,
-                "description":"111111111",
-                "attrs":[
-
-                ],
-                "display_times":[
-
-                ],
-                "pinyin_name":"",
-                "is_featured":0,
-                "rating":4
-            }
-        ],
-        "type":1,
-        "icon_url":"4735c4342691749b8e1a531149a46117jpeg",
-        "is_selected":true,
-        "__v":7
-    },
-    {
-        "name":"888",
-        "description":"4",
-        "restaurant_id":1148,
-        "id":1138,
-        "foods":[
-            {
-                "_id":"59c9fb7428797103134f9305",
-                "tips":"525评价 月售490份",
-                "item_id":534,
-                "category_id":1138,
-                "restaurant_id":1148,
-                "activity":null,
-                "image_path":"15ebcfdfc887318.jpg",
-                "name":"44",
-                "__v":0,
-                "specfoods":[
-                    {
-                        "specs_name":"默认",
-                        "name":"44",
-                        "item_id":534,
-                        "sku_id":2216,
-                        "food_id":2217,
-                        "restaurant_id":1148,
-                        "_id":"59c9fb7428797103134f9308",
-                        "specs":[
-                            {
-                                "name":"规格",
-                                "value":"默认",
-                                "_id":"59c9fb7428797103134f9309"
-                            }
-                        ],
-                        "stock":1000,
-                        "checkout_mode":1,
-                        "is_essential":false,
-                        "recent_popularity":310,
-                        "sold_out":false,
-                        "price":20,
-                        "promotion_stock":-1,
-                        "recent_rating":1.4,
-                        "packing_fee":0,
-                        "pinyin_name":"",
-                        "original_price":0
-                    },
-                    {
-                        "specs_name":"33",
-                        "name":"44",
-                        "item_id":534,
-                        "sku_id":2217,
-                        "food_id":2218,
-                        "restaurant_id":1148,
-                        "_id":"59c9fb7428797103134f9306",
-                        "specs":[
-                            {
-                                "name":"规格",
-                                "value":"33",
-                                "_id":"59c9fb7428797103134f9307"
-                            }
-                        ],
-                        "stock":1000,
-                        "checkout_mode":1,
-                        "is_essential":false,
-                        "recent_popularity":922,
-                        "sold_out":false,
-                        "price":20,
-                        "promotion_stock":-1,
-                        "recent_rating":2.1,
-                        "packing_fee":0,
-                        "pinyin_name":"",
-                        "original_price":0
-                    }
-                ],
-                "satisfy_rate":68,
-                "satisfy_count":191,
-                "attributes":[
-                    {
-                        "icon_color":"5ec452",
-                        "icon_name":"新"
-                    },
-                    {
-                        "icon_color":"f07373",
-                        "icon_name":"招牌"
-                    }
-                ],
-                "is_essential":false,
-                "server_utc":"2017-09-22T03:33:26.067Z",
-                "specifications":[
-                    {
-                        "values":[
-                            "默认",
-                            "33"
-                        ],
-                        "name":"规格"
-                    }
-                ],
-                "rating_count":525,
-                "month_sales":490,
-                "description":"",
-                "attrs":[
-
-                ],
-                "display_times":[
-
-                ],
-                "pinyin_name":"",
-                "is_featured":0,
-                "rating":4.2
-            }
-        ],
-        "type":1,
-        "icon_url":"",
-        "is_selected":true,
-        "__v":1
     }
 ]`)
             // this.menuList = this.shopDetailData.dishcategorys

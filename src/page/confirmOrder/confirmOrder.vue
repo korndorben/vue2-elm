@@ -2,50 +2,7 @@
     <div class="confirmOrderContainer">
         <section v-if="!showLoading">
             <head-top head-title="确认订单" goBack="true" signin-up='confirmOrder'></head-top>
-            <router-link :to='{path: "/confirmOrder/chooseAddress", query: {id: checkoutData.cart.id, sig: checkoutData.sig}}' class="address_container">
-                <div class="address_empty_left">
-                    <svg class="location_icon">
-                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#location"></use>
-                    </svg>
-                    <div class="add_address" v-if="!choosedAddress">请添加一个收获地址</div>
-                    <div v-else class="address_detail_container">
-                        <header>
-                            <span>{{choosedAddress.name}}</span>
-                            <span>{{choosedAddress.sex == 1? '先生':'女士'}}</span>
-                            <span>{{choosedAddress.phone}}</span>
-                        </header>
-                        <div class="address_detail">
-                            <span v-if="choosedAddress.tag" :style="{backgroundColor: iconColor(choosedAddress.tag)}">{{choosedAddress.tag}}</span>
-                            <p>{{choosedAddress.address_detail}}</p>
-                        </div>
-                    </div>
-                </div>
-                <svg class="address_empty_right">
-                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
-                </svg>
-            </router-link>
-            <section class="delivery_model container_style">
-                <p class="deliver_text">送达时间</p>
-                <section class="deliver_time">
-                    <p>尽快送达 | 预计 {{checkoutData.delivery_reach_time}}</p>
-                    <p v-if="checkoutData.cart.is_deliver_by_fengniao">蜂鸟专送</p>
-                </section>
-            </section>
-            <section class="pay_way container_style">
-                <header class="header_style">
-                    <span>支付方式</span>
-                    <div class="more_type" @click="showPayWayFun">
-                        <span>在线支付</span>
-                        <svg class="address_empty_right">
-                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
-                        </svg>
-                    </div>
-                </header>
-                <section class="hongbo">
-                    <span>红包</span>
-                    <span>暂时只在饿了么 APP 中支持</span>
-                </section>
-            </section>
+
             <section class="food_list">
                 <header v-if="checkoutData.cart.restaurant_info">
                     <img :src="imgBaseUrl + checkoutData.cart.restaurant_info.image_path">
@@ -82,6 +39,17 @@
                 </div>
             </section>
             <section class="pay_way container_style">
+                <header class="header_style">
+                    <span>支付方式</span>
+                    <div class="more_type" @click="showPayWayFun">
+                        <span>在线支付</span>
+                        <svg class="address_empty_right">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
+                        </svg>
+                    </div>
+                </header>
+            </section>
+            <section class="pay_way container_style">
                 <router-link :to='{path: "/confirmOrder/remark", query: {id: checkoutData.cart.id, sig: checkoutData.sig}}' class="header_style">
                     <span>订单备注</span>
                     <div class="more_type">
@@ -91,7 +59,7 @@
                         </svg>
                     </div>
                 </router-link>
-                <router-link :to="checkoutData.invoice.is_available? '/confirmOrder/invoice': ''" class="hongbo" :class="{support_is_available: checkoutData.invoice.is_available}">
+                <!-- <router-link :to="checkoutData.invoice.is_available? '/confirmOrder/invoice': ''" class="hongbo" :class="{support_is_available: checkoutData.invoice.is_available}">
                     <span>发票抬头</span>
                     <span>
                         {{checkoutData.invoice.status_text}}
@@ -99,7 +67,7 @@
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
                         </svg>
                     </span>
-                </router-link>
+                </router-link> -->
             </section>
             <section class="confrim_order">
                 <p>待支付 ¥{{checkoutData.cart.total}}</p>
@@ -165,7 +133,7 @@
         },
         mounted(){
             // if (this.geohash) {
-            //     this.initData();
+                this.initData();
             //     this.SAVE_GEOHASH(this.geohash);
             // }
             // if (!(this.userInfo && this.userInfo.user_id)) {
@@ -224,7 +192,8 @@
                     })
                 })
                 //检验订单是否满足条件
-                this.checkoutData = await checkout(this.geohash, [newArr], this.shopId);
+                // this.checkoutData = await checkout(this.geohash, [newArr], this.shopId);
+                this.checkoutData = JSON.parse(`{"__v":0,"id":23742,"delivery_reach_time":"01:06","sig":"922316","_id":"5a09c1d0deb3f2627afbb852","is_support_ninja":1,"is_support_coupon":false,"deliver_times_v2":[],"deliver_times":[],"payments":[{"select_state":1,"name":"在线支付","id":1,"disabled_reason":"","description":"（商家仅支持在线支付）","promotion":[],"is_online_payment":true},{"select_state":-1,"name":"货到付款","id":2,"disabled_reason":"商家仅支持在线支付","description":"（商家不支持货到付款）","promotion":[],"is_online_payment":false}],"invoice":{"status_text":"不需要开发票","is_available":true},"cart":{"id":23742,"deliver_amount":4,"is_deliver_by_fengniao":true,"original_total":443,"phone":"15761621234","restaurant_id":1148,"restaurant_info":{"_id":"59a816cbebe2e53edc090e32","name":"测试修22225","address":"北京市海淀区岭南路36号广东大厦5层","id":1148,"latitude":39.92775,"longitude":116.30162,"location":[121.49424,31.30122],"phone":"15761621234","category":"异国料理/西餐","__v":0,"supports":[{"description":"已加入“外卖保”计划，食品安全有保障","icon_color":"999999","icon_name":"保","id":7,"name":"外卖保","_id":"59a816cbebe2e53edc090e35"},{"description":"准时必达，超时秒赔","icon_color":"57A9FF","icon_name":"准","id":9,"name":"准时达","_id":"59a816cbebe2e53edc090e34"},{"description":"该商家支持开发票，请在下单时填写好发票抬头","icon_color":"999999","icon_name":"票","id":4,"name":"开发票","_id":"59a816cbebe2e53edc090e33"}],"status":0,"recent_order_num":827,"rating_count":485,"rating":4.1,"promotion_info":"dghgfdgf","piecewise_agent_fee":{"tips":"配送费约¥5"},"opening_hours":["8:30/20:30"],"license":{"catering_service_license_image":"15e3898ec2b5718.jpeg","business_license_image":"15e3898f5d05717.jpeg"},"is_new":true,"is_premium":true,"image_path":"15fa3a071f210067.jpg","identification":{"registered_number":"","registered_address":"","operation_period":"","licenses_scope":"","licenses_number":"","licenses_date":"","legal_person":"","identificate_date":null,"identificate_agency":"","company_name":""},"float_minimum_order_amount":20,"float_delivery_fee":5,"distance":"","order_lead_time":"","description":"vbn11","delivery_mode":{"color":"57A9FF","id":1,"is_solid":true,"text":"蜂鸟专送"},"activities":[{"icon_name":"减","name":"满减优惠","description":"满30减5，满60减8","icon_color":"f07373","id":1,"_id":"59a816cbebe2e53edc090e36"}]},"restaurant_minimum_order_amount":20,"total":443,"service_fee_explanation":0,"restaurant_status":1,"promise_delivery_time":0,"ontime_status":0,"must_pay_online":0,"must_new_user":0,"is_ontime_available":0,"is_online_paid":1,"is_address_too_far":false,"extra":[{"description":"","_id":"5a09c1d0deb3f2627afbb853","type":0,"quantity":1,"price":379,"name":"餐盒"}],"groups":[[{"id":1945,"name":"水淀","packing_fee":0,"price":20,"quantity":3,"sku_id":1943,"stock":1000,"_id":"5a09c1d0deb3f2627afbb854","specs":[""],"new_specs":[],"extra":[null],"attrs":[]}]]}}`)
                 this.SAVE_CART_ID_SIG({cart_id: this.checkoutData.cart.id, sig:  this.checkoutData.sig})
                 this.initAddress();
                 this.showLoading = false;

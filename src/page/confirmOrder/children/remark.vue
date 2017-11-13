@@ -56,7 +56,8 @@
             ]),
             //初始化信息
             async initData(){
-                this.remarkList = await getRemark(this.id, this.sig);
+                // this.remarkList = await getRemark(this.id, this.sig);
+                this.remarkList = JSON.parse(`{"remarks":[["不要辣","少点辣","多点辣"],["不要香菜"],["不要洋葱"],["多点醋"],["多点葱"],["去冰","少冰"]],"__v":0}`)
                 this.showLoading = false;
             },
             //选择备注
@@ -72,10 +73,10 @@
         }
     }
 </script>
-  
+
 <style lang="scss" scoped>
     @import 'src/style/mixin';
-  
+
     .rating_page{
         position: fixed;
         top: 0;
@@ -146,5 +147,5 @@
         line-height: 1.8rem;
         border-radius: 0.2rem;
     }
-    
+
 </style>
