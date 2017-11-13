@@ -43,8 +43,8 @@
         </div>
       </header>
       <section data-v-4e0d5034="" class="hongbo">
-          <span data-v-4e0d5034="">优惠+积分</span>
-          <span data-v-4e0d5034="">积分抵扣 <b>1</b> 元</span>
+        <span data-v-4e0d5034="">优惠+积分</span>
+        <span data-v-4e0d5034="">积分抵扣 <b>1</b> 元</span>
       </section>
     </section>
     <section class="pay_way container_style">
@@ -209,16 +209,6 @@ export default {
     //确认订单
     async confrimOrder() {
       //用户未登录时弹出提示框
-      if (!(this.userInfo && this.userInfo.user_id)) {
-        this.showAlert = true;
-        this.alertText = '请登录';
-        return
-        //未选择地址则提示
-      } else if (!this.choosedAddress) {
-        this.showAlert = true;
-        this.alertText = '请添加一个收获地址';
-        return
-      }
       //保存订单
       this.SAVE_ORDER_PARAM({
         user_id: this.userInfo.user_id,
