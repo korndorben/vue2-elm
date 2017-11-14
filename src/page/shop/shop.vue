@@ -121,8 +121,8 @@
                                         <footer class="menu_detail_footer">
                                             <section class="food_price">
                                                 <span>¥</span>
-                                                <span>{{foods.specfoods[0].price}}</span>
-                                                <span v-if="foods.specifications.length">起</span>
+                                                <span>{{foods.specfoods.map(x=>x.price).sort()[0]}}</span>
+                                                <span v-if="foods.specfoods.length">起</span>
                                             </section>
                                             <buy-cart :shopId='shopId' :foods='foods' @moveInCart="listenInCart" @showChooseList="showChooseList" @showReduceTip="showReduceTip" @showMoveDot="showMoveDotFun"></buy-cart>
                                         </footer>
@@ -256,7 +256,7 @@
                 </section>
             </transition>
         </section>
-        <section>
+        <section><!--多规格 选择弹窗-->
             <transition name="fade">
                 <div class="specs_cover" @click="showChooseList" v-if="showSpecs"></div>
             </transition>
@@ -270,10 +270,10 @@
                         </svg>
                     </header>
                     <section class="specs_details">
-                        <h5 class="specs_details_title">{{choosedFoods.specifications[0].name}}</h5>
+                        <h5 class="specs_details_title">多规格{{choosedFoods.specfoods[0].name}}</h5>
                         <ul>
-                            <li v-for="(item, itemIndex) in choosedFoods.specifications[0].values" :class="{specs_activity: itemIndex == specsIndex}" @click="chooseSpecs(itemIndex)">
-                                {{item}}
+                            <li v-for="(item, itemIndex) in choosedFoods.specfoods" :class="{specs_activity: itemIndex == specsIndex}" @click="chooseSpecs(itemIndex)">
+                                {{item.name}} ￥{{item.price}}
                             </li>
                         </ul>
                     </section>
@@ -282,7 +282,7 @@
                             <span>¥ </span>
                             <span>{{choosedFoods.specfoods[specsIndex].price}}</span>
                         </div>
-                        <div class="specs_addto_cart" @click="addSpecs(choosedFoods.category_id, choosedFoods.item_id, choosedFoods.specfoods[specsIndex].food_id, choosedFoods.specfoods[specsIndex].name, choosedFoods.specfoods[specsIndex].price, choosedFoods.specifications[0].values[specsIndex], choosedFoods.specfoods[specsIndex].packing_fee, choosedFoods.specfoods[specsIndex].sku_id, choosedFoods.specfoods[specsIndex].stock)">加入购物车</div>
+                        <div class="specs_addto_cart" @click="addSpecs(choosedFoods.category_id, choosedFoods.item_id, choosedFoods.specfoods[specsIndex].food_id, choosedFoods.specfoods[specsIndex].name, choosedFoods.specfoods[specsIndex].price, '')">加入购物车</div>
                     </footer>
                 </div>
             </transition>
@@ -466,9 +466,6 @@ export default {
                         "food_id":1945,
                         "restaurant_id":1148,
                         "_id":"59ad3927ebe2e53edc0c08a4",
-                        "specs":[
-                            "小份"
-                        ],
                         "stock":1000,
                         "price":20,
                         "packing_fee":0,
@@ -476,9 +473,7 @@ export default {
                     }
                 ],
                 "satisfy_rate":43,
-                "specifications":[
-
-                ],
+                "specifications":[],
                 "rating_count":454,
                 "month_sales":666,
                 "description":"互粉咕叽咕叽个结果",
@@ -492,43 +487,41 @@ export default {
                 "restaurant_id":1148,
                 "image_path":"15e3b8952c85756.png",
                 "name":"xcv",
-                "__v":0,
                 "specfoods":[
                     {
-                        "specs_name":"默认",
-                        "name":"xcv",
+                        "specs_name":"大份",
+                        "name":"大份name",
                         "item_id":430,
                         "sku_id":1990,
                         "food_id":1992,
                         "restaurant_id":1148,
                         "_id":"59b0bad51bf4526252609589",
-                        "specs":[
-                            {
-                                "name":"规格",
-                                "value":"默认",
-                                "_id":"59b0bad51bf452625260958a"
-                            }
-                        ],
                         "stock":1000,
-                        "price":20,
+                        "price":30,
                         "packing_fee":0,
                         "original_price":0
                     },
                     {
-                        "specs_name":"aasdsd",
-                        "name":"xcv",
+                        "specs_name":"小份",
+                        "name":"小份name",
+                        "item_id":430,
+                        "sku_id":1990,
+                        "food_id":1992,
+                        "restaurant_id":1148,
+                        "_id":"59b0bad51bf4526252609589",
+                        "stock":1000,
+                        "price":10,
+                        "packing_fee":0,
+                        "original_price":0
+                    },
+                    {
+                        "specs_name":"中份",
+                        "name":"中份specs_name",
                         "item_id":430,
                         "sku_id":1991,
                         "food_id":1993,
                         "restaurant_id":1148,
                         "_id":"59b0bad51bf4526252609587",
-                        "specs":[
-                            {
-                                "name":"规格",
-                                "value":"",
-                                "_id":"59b0bad51bf4526252609588"
-                            }
-                        ],
                         "stock":1000,
                         "price":20,
                         "packing_fee":0,
@@ -536,7 +529,6 @@ export default {
                     }
                 ],
                 "satisfy_rate":67,
-
                 "specifications":[
                     {
                         "name":"规格",
@@ -762,7 +754,7 @@ export default {
 			this.specsIndex = index;
 		},
 		//多规格商品加入购物车
-		addSpecs(category_id, item_id, food_id, name, price, specs, packing_fee, sku_id, stock) {
+		addSpecs(category_id, item_id, food_id, name, price, specs) {
 			this.ADD_CART({
 				shopid: this.shopId,
 				category_id,
@@ -771,9 +763,6 @@ export default {
 				name,
 				price,
 				specs,
-				packing_fee,
-				sku_id,
-				stock
 			});
 			this.showChooseList();
 		},

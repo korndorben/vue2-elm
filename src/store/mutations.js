@@ -56,9 +56,6 @@ export default {
 		name,
 		price,
 		specs,
-		packing_fee,
-		sku_id,
-		stock
 	}) {
 		let cart = state.cartList;
 		let shop = cart[shopid] = (cart[shopid] || {});
@@ -73,9 +70,6 @@ export default {
 					"name" : name,
 					"price" : price,
 					"specs" : specs,
-					"packing_fee" : packing_fee,
-					"sku_id" : sku_id,
-					"stock" : stock
 			};
 		}
 		state.cartList = {...cart};
@@ -168,7 +162,7 @@ export default {
 	//保存geohash
 	[SAVE_GEOHASH](state, geohash) {
 		state.geohash = geohash;
-		
+
 	},
 	//确认订单页添加新的的地址
 	[CONFIRM_ADDRESS](state, newAddress) {

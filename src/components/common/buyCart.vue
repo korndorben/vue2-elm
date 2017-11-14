@@ -1,15 +1,15 @@
  <template>
     <section class="cart_module">
-        <section v-if="!foods.specifications.length" class="cart_button">
+        <section v-if="foods.specfoods.length<=1" class="cart_button">
             <transition name="showReduce">
-                <svg v-if="foodNum" class="add_icon" @touchstart="removeOutCart(foods.category_id, foods.item_id, foods.specfoods[0].food_id, foods.specfoods[0].name, foods.specfoods[0].price, '', foods.specfoods[0].packing_fee, foods.specfoods[0].sku_id, foods.specfoods[0].stock, $event)">
+                <svg v-if="foodNum" class="add_icon" @touchstart="removeOutCart(foods.category_id, foods.item_id, foods.specfoods[0].food_id, foods.specfoods[0].name, foods.specfoods[0].price, '', $event)">
                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-minus"></use>
                 </svg>
             </transition>
             <transition name="fade">
                 <span class="cart_num" v-if="foodNum">{{foodNum}}</span>
             </transition>
-            <svg class="add_icon" @touchstart="addToCart(foods.category_id, foods.item_id, foods.specfoods[0].food_id, foods.specfoods[0].name, foods.specfoods[0].price, '', foods.specfoods[0].packing_fee, foods.specfoods[0].sku_id, foods.specfoods[0].stock, $event)">
+            <svg class="add_icon" @touchstart="addToCart(foods.category_id, foods.item_id, foods.specfoods[0].food_id, foods.specfoods[0].name, foods.specfoods[0].price,'' , $event)">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-add"></use>
             </svg>
         </section>
@@ -74,7 +74,7 @@ export default {
 			'ADD_CART', 'REDUCE_CART',
 		]),
 		//移出购物车
-		removeOutCart(category_id, item_id, food_id, name, price, specs, packing_fee, sku_id, stock) {
+		removeOutCart(category_id, item_id, food_id, name, price, specs) {
 			if (this.foodNum > 0) {
 				this.REDUCE_CART({
 					shopid: this.shopId,
@@ -84,14 +84,11 @@ export default {
 					name,
 					price,
 					specs,
-					packing_fee,
-					sku_id,
-					stock
 				});
 			}
 		},
 		//加入购物车，计算按钮位置。
-		addToCart(category_id, item_id, food_id, name, price, specs, packing_fee, sku_id, stock, event) {
+		addToCart(category_id, item_id, food_id, name, price, specs, event) {
 			this.ADD_CART({
 				shopid: this.shopId,
 				category_id,
@@ -100,9 +97,6 @@ export default {
 				name,
 				price,
 				specs,
-				packing_fee,
-				sku_id,
-				stock
 			});
 			let elLeft = event.target.getBoundingClientRect().left;
 			let elBottom = event.target.getBoundingClientRect().bottom;
