@@ -15,7 +15,7 @@ if ('addEventListener' in document) {
 Vue.use(VueRouter)
 const router = new VueRouter({
 	routes,
-	mode: routerMode,
+	// mode: 'history',
 	strict: process.env.NODE_ENV !== 'production',
 	scrollBehavior (to, from, savedPosition) {
 	    if (savedPosition) {
@@ -33,4 +33,3 @@ new Vue({
 	router,
 	store,
 }).$mount('#app')
-
