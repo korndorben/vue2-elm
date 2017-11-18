@@ -1,15 +1,15 @@
  <template>
     <section class="cart_module">
-        <section v-if="foods.specfoods.length<=1" class="cart_button">
+        <section v-if="dish.specfoods.length<=1" class="cart_button">
             <transition name="showReduce">
-                <svg v-if="foodNum" class="add_icon" @touchstart="removeOutCart(foods.category_id, foods.item_id, foods.specfoods[0].food_id, foods.specfoods[0].name, foods.specfoods[0].price, '', $event)">
+                <svg v-if="foodNum" class="add_icon" @touchstart="removeOutCart(dish.category_id, dish.item_id, dish.specfoods[0].food_id, dish.specfoods[0].name, dish.specfoods[0].price, '', $event)">
                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-minus"></use>
                 </svg>
             </transition>
             <transition name="fade">
                 <span class="cart_num" v-if="foodNum">{{foodNum}}</span>
             </transition>
-            <svg class="add_icon" @touchstart="addToCart(foods.category_id, foods.item_id, foods.specfoods[0].food_id, foods.specfoods[0].name, foods.specfoods[0].price,'' , $event)">
+            <svg class="add_icon" @touchstart="addToCart(dish.category_id, dish.item_id, dish.specfoods[0].food_id, dish.specfoods[0].name, dish.specfoods[0].price,'' , $event)">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-add"></use>
             </svg>
         </section>
@@ -23,7 +23,7 @@
                 <transition name="fade">
                     <span class="cart_num" v-if="foodNum">{{foodNum}}</span>
                 </transition>
-                <span class="show_chooselist" @click="showChooseList(foods)">选规格</span>
+                <span class="show_chooselist" @click="showChooseList(dish)">选规格</span>
             </section>
         </section>
     </section>
@@ -55,8 +55,8 @@ export default {
 		},
 		//shopCart变化的时候重新计算当前商品的数量
 		foodNum: function() {
-			let category_id = this.foods.category_id;
-			let item_id = this.foods.item_id;
+			let category_id = this.dish.category_id;
+			let item_id = this.dish.item_id;
 			if (this.shopCart && this.shopCart[category_id] && this.shopCart[category_id][item_id]) {
 				let num = 0;
 				Object.values(this.shopCart[category_id][item_id]).forEach((item, index) => {
@@ -68,7 +68,7 @@ export default {
 			}
 		},
 	},
-	props: ['foods', 'shopId'],
+	props: ['dish', 'shopId'],
 	methods: {
 		...mapMutations([
 			'ADD_CART', 'REDUCE_CART',

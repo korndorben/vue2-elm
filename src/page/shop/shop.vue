@@ -76,7 +76,7 @@
                     <section class="menu_container">
                         <section class="menu_left" id="wrapper_menu" ref="wrapperMenu">
                             <ul>
-                                <li v-if="item.foods.length>0" v-for="(item,index) in menuList" :key="index" class="menu_left_li" :class="{activity_menu: index == menuIndex}" @click="chooseMenu(index)">
+                                <li v-if="item.dishs.length>0" v-for="(item,index) in menuList" :key="index" class="menu_left_li" :class="{activity_menu: index == menuIndex}" @click="chooseMenu(index)">
                                     <img src="http://localhost:3000/upload/logo.1.png" v-if="item.icon_url">
                                     <span>{{item.name}}</span>
                                     <span class="category_num" v-if="categoryNum[index]&&item.type==1">{{categoryNum[index]}}</span>
@@ -85,46 +85,46 @@
                         </section>
                         <section class="menu_right" ref="menuFoodList">
                             <ul>
-                                <li v-for="(item,index) in menuList" :key="index" v-if="item.foods.length>0">
+                                <li v-for="(category,index) in menuList" :key="index" v-if="category.dishs.length>0">
                                     <header class="menu_detail_header">
                                         <section class="menu_detail_header_left">
-                                            <span class="menu_item_title">{{item.name}}</span>
-                                            <span class="menu_item_description">{{item.description}}</span>
+                                            <span class="menu_item_title">{{category.name}}</span>
+                                            <span class="menu_item_description">{{category.description}}</span>
                                         </section>
                                         <span class="menu_detail_header_right" @click="showTitleDetail(index)"></span>
                                         <p class="description_tip" v-if="index == TitleDetailIndex">
-                                            <span>{{item.name}}</span>
-                                            {{item.description}}
+                                            <span>{{category.name}}</span>
+                                            {{category.description}}
                                         </p>
                                     </header>
-                                    <section v-for="(foods,foodindex) in item.foods" :key="foodindex" class="menu_detail_list">
+                                    <section v-for="(dish,foodindex) in category.dishs" :key="foodindex" class="menu_detail_list">
                                         <div class="menu_detail_link">
                                             <section class="menu_food_img">
                                                 <img src="http://localhost:3000/upload/logo.1.png">
                                             </section>
                                             <section class="menu_food_description">
                                                 <h3 class="food_description_head">
-                                                    <span class="description_foodname">{{foods.name}}</span>
-                                                    <!-- <ul v-if="foods.attributes.length" class="attributes_ul"> -->
-                                                        <!-- 显示新品<li v-for="(attribute, foodindex) in foods.attributes" :key="foodindex" :style="{color: '#' + attribute.icon_color,borderColor:'#' +attribute.icon_color}" :class="{attribute_new: attribute.icon_name == '新'}"> -->
+                                                    <span class="description_foodname">{{dish.name}}</span>
+                                                    <!-- <ul v-if="dish.attributes.length" class="attributes_ul"> -->
+                                                        <!-- 显示新品<li v-for="(attribute, foodindex) in dish.attributes" :key="foodindex" :style="{color: '#' + attribute.icon_color,borderColor:'#' +attribute.icon_color}" :class="{attribute_new: attribute.icon_name == '新'}"> -->
                                                         <!-- <p :style="{color: attribute.icon_name == '新'? '#fff' : '#' + attribute.icon_color}">{{attribute.icon_name == '新'? '新品':attribute.icon_name}}</p> -->
                                                         <!-- </li> -->
                                                     <!-- </ul> -->
                                                 </h3>
-                                                <p class="food_description_content">{{foods.description}}</p>
+                                                <p class="food_description_content">{{dish.description}}</p>
                                                 <p class="food_description_sale_rating">
-                                                    <span>月售{{foods.month_sales}}份</span>
-                                                    <span>好评率{{foods.satisfy_rate}}%</span>
+                                                    <span>月售{{dish.month_sales}}份</span>
+                                                    <span>好评率{{dish.satisfy_rate}}%</span>
                                                 </p>
                                             </section>
                                         </div>
                                         <footer class="menu_detail_footer">
                                             <section class="food_price">
                                                 <span>¥</span>
-                                                <span>{{foods.specfoods.map(x=>x.price).sort()[0]}}</span>
-                                                <span v-if="foods.specfoods.length">起</span>
+                                                <span>{{dish.specfoods.map(x=>x.price).sort()[0]}}</span>
+                                                <span v-if="dish.specfoods.length">起</span>
                                             </section>
-                                            <buy-cart :shopId='shopId' :foods='foods' @moveInCart="listenInCart" @showChooseList="showChooseList" @showReduceTip="showReduceTip" @showMoveDot="showMoveDotFun"></buy-cart>
+                                            <buy-cart :shopId='shopId' :dish='dish' @moveInCart="listenInCart" @showChooseList="showChooseList" @showReduceTip="showReduceTip" @showMoveDot="showMoveDotFun"></buy-cart>
                                         </footer>
                                     </section>
                                 </li>
@@ -435,7 +435,7 @@ export default {
     async initData() {
       let supplierdata = await fetchql.query({
         operationName: '',
-        query: `query($id:Int!){ supplier(id:$id){ id name address promotion_info:intro image_path:name float_minimum_order_amount:id float_delivery_fee:id order_lead_time:id description:intro activities { id icon_name:name name description:name icon_color:name } dishcategories { id name description:intro restaurant_id:supplierid foods:dishs { id tips:intro item_id:id category_id:dishcategoryid restaurant_id:supplierid image_path:name name specfoods:dishattrs { id specs_name:name name item_id:dishid sku_id:id food_id:id restaurant_id:supplierid stock:id price packing_fee:price original_price:price satisfy_rate:id rating_count:id month_sales:id description:name rating:id } } icon_url:name } } }`,
+        query: `query($id:Int!){ supplier(id:$id){ id name address promotion_info:intro image_path:name float_minimum_order_amount:id float_delivery_fee:id order_lead_time:id description:intro activities { id icon_name:name name description:name icon_color:name } dishcategories { id name description:intro restaurant_id:supplierid dishs { id tips:intro item_id:id category_id:dishcategoryid restaurant_id:supplierid image_path:name name specfoods:dishattrs { id specs_name:name name item_id:dishid sku_id:id food_id:id restaurant_id:supplierid stock:id price packing_fee:price original_price:price satisfy_rate:id rating_count:id month_sales:id description:name rating:id } } icon_url:name } } }`,
         variables: {
           id: 1
         }
@@ -446,7 +446,7 @@ export default {
       this.shopDetailData = supplierdata.data.supplier[0]
       // this.shopDetailData = JSON.parse(`{ "name":"测试修22225", "address":"北京市海淀区岭南路36号广东大厦5层", "id":1148, "promotion_info":"dghgfdgf", "image_path":"15fa3a071f210067.jpg", "float_minimum_order_amount":20, "float_delivery_fee":5, "order_lead_time":"", "description":"vbn11", "activities":[ { "icon_name":"减", "name":"满减优惠", "description":"满30减5，满60减8", "icon_color":"f07373", "id":1, "_id":"59a816cbebe2e53edc090e36" } ] }`);
       //获取商铺食品列表
-      // this.menuList = JSON.parse(`[ { "name":"热销榜", "description":"大家喜欢吃，才叫真好吃。", "id":878, "restaurant_id":1148, "foods":[ { "_id":"59a822b0ebe2e53edc091364", "tips":"454评价 月售666份", "item_id":429, "category_id":878, "restaurant_id":1148, "image_path":"15e38c785a95721.jpeg", "name":"水淀", "specfoods":[ { "specs_name":"默认", "name":"水淀", "item_id":429, "sku_id":1943, "food_id":1945, "restaurant_id":1148, "_id":"59ad3927ebe2e53edc0c08a4", "stock":1000, "price":20, "packing_fee":0, "original_price":0 } ], "satisfy_rate":43, "rating_count":454, "month_sales":666, "description":"互粉咕叽咕叽个结果", "rating":4.6 }, { "_id":"59a822d8ebe2e53edc0913b2", "tips":"677评价 月售399份", "item_id":430, "category_id":878, "restaurant_id":1148, "image_path":"15e3b8952c85756.png", "name":"xcv", "specfoods":[ { "specs_name":"大份", "name":"大份name", "item_id":430, "sku_id":1990, "food_id":1992, "restaurant_id":1148, "_id":"59b0bad51bf4526252609589", "stock":1000, "price":30, "packing_fee":0, "original_price":0 }, { "specs_name":"小份", "name":"小份name", "item_id":430, "sku_id":1990, "food_id":1992, "restaurant_id":1148, "_id":"59b0bad51bf4526252609589", "stock":1000, "price":10, "packing_fee":0, "original_price":0 }, { "specs_name":"中份", "name":"中份specs_name", "item_id":430, "sku_id":1991, "food_id":1993, "restaurant_id":1148, "_id":"59b0bad51bf4526252609587", "stock":1000, "price":20, "packing_fee":0, "original_price":0 } ], "satisfy_rate":67, "rating_count":677, "month_sales":399, "description":"该电饭锅的规范代购广告电饭锅", "rating":4.3 } ], "type":1, "icon_url":"5da3872d782f707b4c82ce4607c73d1ajpeg", "__v":22 } ]`)
+      //   this.menuList = JSON.parse(`[ { "name":"热销榜", "description":"大家喜欢吃，才叫真好吃。", "id":878, "restaurant_id":1148, "foods":[ { "_id":"59a822b0ebe2e53edc091364", "tips":"454评价 月售666份", "item_id":429, "category_id":878, "restaurant_id":1148, "image_path":"15e38c785a95721.jpeg", "name":"水淀", "specfoods":[ { "specs_name":"默认", "name":"水淀", "item_id":429, "sku_id":1943, "food_id":1945, "restaurant_id":1148, "_id":"59ad3927ebe2e53edc0c08a4", "stock":1000, "price":20, "packing_fee":0, "original_price":0 } ], "satisfy_rate":43, "rating_count":454, "month_sales":666, "description":"互粉咕叽咕叽个结果", "rating":4.6 }, { "_id":"59a822d8ebe2e53edc0913b2", "tips":"677评价 月售399份", "item_id":430, "category_id":878, "restaurant_id":1148, "image_path":"15e3b8952c85756.png", "name":"xcv", "specfoods":[ { "specs_name":"大份", "name":"大份name", "item_id":430, "sku_id":1990, "food_id":1992, "restaurant_id":1148, "_id":"59b0bad51bf4526252609589", "stock":1000, "price":30, "packing_fee":0, "original_price":0 }, { "specs_name":"小份", "name":"小份name", "item_id":430, "sku_id":1990, "food_id":1992, "restaurant_id":1148, "_id":"59b0bad51bf4526252609589", "stock":1000, "price":10, "packing_fee":0, "original_price":0 }, { "specs_name":"中份", "name":"中份specs_name", "item_id":430, "sku_id":1991, "food_id":1993, "restaurant_id":1148, "_id":"59b0bad51bf4526252609587", "stock":1000, "price":20, "packing_fee":0, "original_price":0 } ], "satisfy_rate":67, "rating_count":677, "month_sales":399, "description":"该电饭锅的规范代购广告电饭锅", "rating":4.3 } ], "type":1, "icon_url":"5da3872d782f707b4c82ce4607c73d1ajpeg", "__v":22 } ]`)
 
       this.menuList = this.shopDetailData.dishcategories
       // for (let category of this.menuList) {
@@ -558,28 +558,25 @@ export default {
       let cartFoodNum = 0;
       this.totalPrice = 0;
       this.cartFoodList = [];
-      this.menuList.forEach((item, index) => {
-          console.log(item);
-        // if (this.shopCart && item.foods.length && this.shopCart[item.foods[0].category_id]) {
-        if (this.shopCart && this.shopCart[item.foods[0].category_id]) {
+      this.menuList.forEach((category, index) => {
+        if (this.shopCart && this.shopCart[category.id]) {
           let num = 0;
-          Object.keys(this.shopCart[item.foods[0].category_id]).forEach(itemid => {
-            Object.keys(this.shopCart[item.foods[0].category_id][itemid]).forEach(foodid => {
-              let foodItem = this.shopCart[item.foods[0].category_id][itemid][foodid];
+          Object.keys(this.shopCart[category.id]).forEach(dishid => {
+            Object.keys(this.shopCart[category.id][dishid]).forEach(dishattrid => {
+              // console.log(dishattrid);
+              let foodItem = this.shopCart[category.id][dishid][dishattrid];
               num += foodItem.num;
-              if (item.type == 1) {
-                this.totalPrice += foodItem.num * foodItem.price;
-                if (foodItem.num > 0) {
-                  this.cartFoodList[cartFoodNum] = {};
-                  this.cartFoodList[cartFoodNum].category_id = item.foods[0].category_id;
-                  this.cartFoodList[cartFoodNum].item_id = itemid;
-                  this.cartFoodList[cartFoodNum].food_id = foodid;
-                  this.cartFoodList[cartFoodNum].num = foodItem.num;
-                  this.cartFoodList[cartFoodNum].price = foodItem.price;
-                  this.cartFoodList[cartFoodNum].name = foodItem.name;
-                  this.cartFoodList[cartFoodNum].specs = foodItem.specs;
-                  cartFoodNum++;
-                }
+              this.totalPrice += foodItem.num * foodItem.price;
+              if (foodItem.num > 0) {
+                this.cartFoodList[cartFoodNum] = {};
+                this.cartFoodList[cartFoodNum].category_id = category.id;
+                this.cartFoodList[cartFoodNum].dish_id = dishid;
+                this.cartFoodList[cartFoodNum].attr_id = dishattrid;
+                this.cartFoodList[cartFoodNum].num = foodItem.num;
+                this.cartFoodList[cartFoodNum].price = foodItem.price;
+                this.cartFoodList[cartFoodNum].name = foodItem.name;
+                this.cartFoodList[cartFoodNum].specs = foodItem.specs;
+                cartFoodNum++;
               }
             })
           })
