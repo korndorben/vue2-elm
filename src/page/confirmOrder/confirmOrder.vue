@@ -174,52 +174,43 @@ export default {
           "total_fee": 10
         }
       })
-    //   console.log(result.data.wechath5pay);
-    //   return
+      //   console.log(result.data.wechath5pay);
+      //   return
       WeixinJSBridge.invoke(
-        'getBrandWCPayRequest', Object.assign({}, result.data.wechath5pay),
+        'getBrandWCPayRequest', result.data.wechath5pay,
         function(res) {
-          if (res.err_msg == "get_brand_wcpay_request:ok") {} // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+          if (res.err_msg == "get_brand_wcpay_request:ok") {
+            console.log('成功了');
+          } // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
         }
       );
-    // }
-    if (typeof WeixinJSBridge == "undefined") {
-      if (document.addEventListener) {
-        document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-      } else if (document.attachEvent) {
-        document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
-        document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
-      }
-    } else {
-      onBridgeReady();
-    }
-  },
+    },
 
-  //初始化数据
-  async initData() {
-    let newArr = new Array;
-    Object.values(this.shopCart).forEach(categoryItem => {
-      Object.values(categoryItem).forEach(itemValue => {
-        Object.values(itemValue).forEach(item => {
-          newArr.push({
-            attrs: [],
-            extra: {},
-            id: item.id,
-            name: item.name,
-            packing_fee: item.packing_fee,
-            price: item.price,
-            quantity: item.num,
-            sku_id: item.sku_id,
-            specs: [item.specs],
-            stock: item.stock,
+    //初始化数据
+    async initData() {
+      let newArr = new Array;
+      Object.values(this.shopCart).forEach(categoryItem => {
+        Object.values(categoryItem).forEach(itemValue => {
+          Object.values(itemValue).forEach(item => {
+            newArr.push({
+              attrs: [],
+              extra: {},
+              id: item.id,
+              name: item.name,
+              packing_fee: item.packing_fee,
+              price: item.price,
+              quantity: item.num,
+              sku_id: item.sku_id,
+              specs: [item.specs],
+              stock: item.stock,
+            })
           })
         })
       })
-    })
-    //检验订单是否满足条件
-    // this.checkoutData = await checkout(this.geohash, [newArr], this.shopId);
-    this.checkoutData = JSON.parse(
-      `{
+      //检验订单是否满足条件
+      // this.checkoutData = await checkout(this.geohash, [newArr], this.shopId);
+      this.checkoutData = JSON.parse(
+        `{
                     "id":23742,
                     "delivery_reach_time":"01:06",
                     "sig":"922316",
@@ -409,50 +400,50 @@ export default {
                     }
                 }
 `
-    )
-    this.SAVE_CART_ID_SIG({
-      cart_id: this.checkoutData.cart.id,
-      sig: this.checkoutData.sig
-    })
-    this.showLoading = false;
-  },
+      )
+      this.SAVE_CART_ID_SIG({
+        cart_id: this.checkoutData.cart.id,
+        sig: this.checkoutData.sig
+      })
+      this.showLoading = false;
+    },
 
-  //显示付款方式
-  showPayWayFun() {
-    this.showPayWay = !this.showPayWay;
-  },
-  //选择付款方式
-  choosePayWay(is_online_payment, id) {
-    if (is_online_payment) {
+    //显示付款方式
+    showPayWayFun() {
       this.showPayWay = !this.showPayWay;
-      this.payWayId = id;
-    }
+    },
+    //选择付款方式
+    choosePayWay(is_online_payment, id) {
+      if (is_online_payment) {
+        this.showPayWay = !this.showPayWay;
+        this.payWayId = id;
+      }
+    },
+    //确认订单
+    async confrimOrder() {
+      //用户未登录时弹出提示框
+      //保存订单
+      this.SAVE_ORDER_PARAM({
+        user_id: this.userInfo.user_id,
+        cart_id: this.checkoutData.cart.id,
+        address_id: this.choosedAddress.id,
+        description: this.remarklist,
+        entities: this.checkoutData.cart.groups,
+        geohash: this.geohash,
+        sig: this.checkoutData.sig,
+      });
+      //发送订单信息
+      let orderRes = await placeOrders(this.userInfo.user_id, this.checkoutData.cart.id, this.choosedAddress.id, this.remarklist, this.checkoutData.cart.groups, this.geohash, this.checkoutData.sig);
+      //第一次下单的手机号需要进行验证，否则直接下单成功
+      if (orderRes.need_validation) {
+        this.NEED_VALIDATION(orderRes);
+        this.$router.push('/confirmOrder/userValidation');
+      } else {
+        this.ORDER_SUCCESS(orderRes);
+        this.$router.push('/confirmOrder/payment');
+      }
+    },
   },
-  //确认订单
-  async confrimOrder() {
-    //用户未登录时弹出提示框
-    //保存订单
-    this.SAVE_ORDER_PARAM({
-      user_id: this.userInfo.user_id,
-      cart_id: this.checkoutData.cart.id,
-      address_id: this.choosedAddress.id,
-      description: this.remarklist,
-      entities: this.checkoutData.cart.groups,
-      geohash: this.geohash,
-      sig: this.checkoutData.sig,
-    });
-    //发送订单信息
-    let orderRes = await placeOrders(this.userInfo.user_id, this.checkoutData.cart.id, this.choosedAddress.id, this.remarklist, this.checkoutData.cart.groups, this.geohash, this.checkoutData.sig);
-    //第一次下单的手机号需要进行验证，否则直接下单成功
-    if (orderRes.need_validation) {
-      this.NEED_VALIDATION(orderRes);
-      this.$router.push('/confirmOrder/userValidation');
-    } else {
-      this.ORDER_SUCCESS(orderRes);
-      this.$router.push('/confirmOrder/payment');
-    }
-  },
-},
 }
 </script>
 
