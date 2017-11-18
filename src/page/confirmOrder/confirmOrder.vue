@@ -144,19 +144,19 @@ export default {
       'cartList', 'remarkText', 'inputText'
     ]),
     //备注页返回的信息进行处理
-    remarklist: function() {
-      let str = new String;
-      if (this.remarkText) {
-        Object.values(this.remarkText).forEach(item => {
-          str += item[1] + '、';
-        })
-      }
-      //是否有自定义备注，分开处理
-      if (this.inputText) {
-        return str + this.inputText;
-      } else {
-        return str.substr(0, str.lastIndexOf('，'));
-      }
+    remarklist: function (){
+        let str = new String;
+        if (this.remarkText) {
+            Object.values(this.remarkText).forEach(item => {
+                str += item[1] + '，';
+            })
+        }
+        //是否有自定义备注，分开处理
+        if (this.inputText) {
+            return str + this.inputText;
+        }else{
+            return str.substr(0, str.lastIndexOf('，')) ;
+        }
     },
   },
   methods: {
