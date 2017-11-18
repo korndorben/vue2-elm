@@ -105,7 +105,14 @@ import {
   imgBaseUrl
 } from 'src/config/env'
 import fetchql from '../../fetchql'
-
+/*
+经过的星期数，两位数能表示两年
+customerid-6
+时间5 (Date.now()/1000)%86400<<0
+2位的星期差
+2位自增
+99-(((Date.now()-new Date(2017,10,18))/1000<<0)/(3600*24*7)<<0)
+*/
 export default {
   data() {
     return {
@@ -421,6 +428,11 @@ export default {
     },
     //确认订单
     async confrimOrder() {
+        // let mealorder={};
+        // mealorder.id=0;
+        // mealorder.customerid=1;
+        // mealorder.code=
+
       //用户未登录时弹出提示框
       //保存订单
       this.SAVE_ORDER_PARAM({
