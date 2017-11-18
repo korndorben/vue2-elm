@@ -1,192 +1,225 @@
 <template>
 <div class="confirmOrderContainer">
-	<section v-if="!showLoading">
-		<head-top head-title="确认订单" goBack="true" signin-up='confirmOrder'></head-top>
+  <section v-if="!showLoading">
+    <head-top head-title="确认订单" goBack="true" signin-up='confirmOrder'></head-top>
 
-		<section class="food_list">
-			<header v-if="checkoutData.cart.restaurant_info">
-				<img src="http://localhost:3000/upload/logo.1.png">
-				<span>{{checkoutData.cart.restaurant_info.name}}</span>
-			</header>
-			<ul class="food_list_ul" v-if="checkoutData.cart.groups">
-				<li v-for="item in checkoutData.cart.groups[0]" :key="item.id" class="food_item_style">
-					<p class="food_name ellipsis">{{item.name}} x {{item.quantity}}</p>
-					<div class="num_price">
-						<span></span>
-						<span>¥{{item.price}}</span>
-					</div>
-				</li>
-			</ul>
-			<div class="food_item_style" v-if="checkoutData.cart.extra">
-				<p class="food_name ellipsis">{{checkoutData.cart.extra[0].name}}</p>
-				<div class="num_price">
-					<span></span>
-					<span>¥ {{checkoutData.cart.extra[0].price}}</span>
-				</div>
-			</div>
-			<div class="food_item_style total_price">
-				<p class="food_name ellipsis">订单 ¥{{checkoutData.cart.total}}</p>
-				<div class="num_price">
-					<span></span>
-					<span>待支付 ¥{{checkoutData.cart.total}}</span>
-				</div>
-			</div>
-		</section>
-		<section class="pay_way container_style">
-			<header class="header_style">
-				<span>支付方式</span>
-				<div class="more_type" @click="showPayWayFun">
-					<span>在线支付</span>
-					<svg class="address_empty_right">
+    <section class="food_list">
+      <header v-if="checkoutData.cart.restaurant_info">
+        <img src="http://localhost:3000/upload/logo.1.png">
+        <span>{{checkoutData.cart.restaurant_info.name}}</span>
+      </header>
+      <ul class="food_list_ul" v-if="checkoutData.cart.groups">
+        <li v-for="item in checkoutData.cart.groups[0]" :key="item.id" class="food_item_style">
+          <p class="food_name ellipsis">{{item.name}} x {{item.quantity}}</p>
+          <div class="num_price">
+            <span></span>
+            <span>¥{{item.price}}</span>
+          </div>
+        </li>
+      </ul>
+      <div class="food_item_style" v-if="checkoutData.cart.extra">
+        <p class="food_name ellipsis">{{checkoutData.cart.extra[0].name}}</p>
+        <div class="num_price">
+          <span></span>
+          <span>¥ {{checkoutData.cart.extra[0].price}}</span>
+        </div>
+      </div>
+      <div class="food_item_style total_price">
+        <p class="food_name ellipsis">订单 ¥{{checkoutData.cart.total}}</p>
+        <div class="num_price">
+          <span></span>
+          <span>待支付 ¥{{checkoutData.cart.total}}</span>
+        </div>
+      </div>
+    </section>
+    <section class="pay_way container_style">
+      <header class="header_style">
+        <span>支付方式</span>
+        <div class="more_type" @click="showPayWayFun">
+          <span>在线支付</span>
+          <svg class="address_empty_right">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
                         </svg>
-				</div>
-			</header>
-			<section data-v-4e0d5034="" class="hongbo">
-				<span data-v-4e0d5034="">优惠+积分</span>
-				<span data-v-4e0d5034="">积分抵扣 1 元</span>
-			</section>
-		</section>
-		<section class="pay_way container_style">
-			<router-link :to='{path: "/confirmOrder/remark", query: {id: checkoutData.cart.id, sig: checkoutData.sig}}' class="header_style">
-				<span>订单备注</span>
-				<div class="more_type">
-					<span class="ellipsis">{{remarkText||inputText? remarklist: '口味、偏好等'}}</span>
-					<svg class="address_empty_right">
+        </div>
+      </header>
+      <section data-v-4e0d5034="" class="hongbo">
+        <span data-v-4e0d5034="">优惠+积分</span>
+        <span data-v-4e0d5034="">积分抵扣 1 元</span>
+      </section>
+    </section>
+    <section class="pay_way container_style">
+      <router-link :to='{path: "/confirmOrder/remark", query: {id: checkoutData.cart.id, sig: checkoutData.sig}}' class="header_style">
+        <span>订单备注</span>
+        <div class="more_type">
+          <span class="ellipsis">{{remarkText||inputText? remarklist: '口味、偏好等'}}</span>
+          <svg class="address_empty_right">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
                         </svg>
-				</div>
-			</router-link>
-		</section>
-		<section class="confrim_order">
-			<p>待支付 ¥{{checkoutData.cart.total}}</p>
-			<p @click="confrimOrder">确认下单</p>
-		</section>
-		<transition name="fade">
-			<div class="cover" v-if="showPayWay" @click="showPayWayFun"></div>
-		</transition>
-		<transition name="slid_up">
-			<div class="choose_type_Container" v-if="showPayWay">
-				<header>支付方式</header>
-				<ul>
-					<li v-for="item in checkoutData.payments" :key="item.id" :class="{choose: payWayId == item.id}">
-						<span>{{item.name}}<span v-if="!item.is_online_payment">{{item.description}}</span></span>
-						<svg class="address_empty_right" @click="choosePayWay(item.is_online_payment, item.id)">
+        </div>
+      </router-link>
+    </section>
+    <section class="confrim_order">
+      <p>待支付 ¥{{checkoutData.cart.total}}</p>
+      <p @click="onBridgeReady">确认下单</p>
+    </section>
+    <transition name="fade">
+      <div class="cover" v-if="showPayWay" @click="showPayWayFun"></div>
+    </transition>
+    <transition name="slid_up">
+      <div class="choose_type_Container" v-if="showPayWay">
+        <header>支付方式</header>
+        <ul>
+          <li v-for="item in checkoutData.payments" :key="item.id" :class="{choose: payWayId == item.id}">
+            <span>{{item.name}}<span v-if="!item.is_online_payment">{{item.description}}</span></span>
+            <svg class="address_empty_right" @click="choosePayWay(item.is_online_payment, item.id)">
                                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#select"></use>
                             </svg>
-					</li>
-				</ul>
-			</div>
-		</transition>
-	</section>
-	<loading v-if="showLoading"></loading>
-	<alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
-	<transition name="router-slid" mode="out-in">
-		<router-view></router-view>
-	</transition>
+          </li>
+        </ul>
+      </div>
+    </transition>
+  </section>
+  <loading v-if="showLoading"></loading>
+  <alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
+  <transition name="router-slid" mode="out-in">
+    <router-view></router-view>
+  </transition>
 </div>
 </template>
 
 <script>
 import {
-	mapState,
-	mapMutations
+  mapState,
+  mapMutations
 } from 'vuex'
 import headTop from 'src/components/header/head'
 import alertTip from 'src/components/common/alertTip'
 import loading from 'src/components/common/loading'
 import {
-	checkout,
-	getAddress,
-	placeOrders,
-	getAddressList
+  checkout,
+  getAddress,
+  placeOrders,
+  getAddressList
 } from 'src/service/getData'
 import {
-	imgBaseUrl
+  imgBaseUrl
 } from 'src/config/env'
+import fetchql from '../../fetchql'
 
 export default {
-	data() {
-		return {
-			geohash: '', //geohash位置信息
-			shopId: null, //商店id值
-			showLoading: true, //显示加载动画
-			checkoutData: null, //数据返回值
-			shopCart: null, //购物车数据
-			imgBaseUrl, //图片域名
-			showPayWay: false, //显示付款方式
-			payWayId: 1, //付款方式
-			showAlert: false, //弹出框
-			alertText: null, //弹出框内容
-		}
-	},
-	created() {
-		//获取上个页面传递过来的geohash值
-		// this.geohash = this.$route.query.geohash;
-		//获取上个页面传递过来的shopid值
-		this.shopId = this.$route.query.shopId;
-		this.INIT_BUYCART();
-		this.SAVE_SHOPID(this.shopId);
-		// //获取当前商铺购物车信息
-		this.shopCart = this.cartList[this.shopId];
-	},
-	mounted() {
-		this.initData();
-	},
-	components: {
-		headTop,
-		alertTip,
-		loading,
-	},
-	computed: {
-		...mapState([
-			'cartList', 'remarkText', 'inputText'
-		]),
-		//备注页返回的信息进行处理
-		remarklist: function() {
-			let str = new String;
-			if (this.remarkText) {
-				Object.values(this.remarkText).forEach(item => {
-					str += item[1] + '、';
-				})
-			}
-			//是否有自定义备注，分开处理
-			if (this.inputText) {
-				return str + this.inputText;
-			} else {
-				return str.substr(0, str.lastIndexOf('，'));
-			}
-		},
-	},
-	methods: {
-		...mapMutations([
-			'INIT_BUYCART', 'SAVE_CART_ID_SIG', 'SAVE_ORDER_PARAM', 'ORDER_SUCCESS', 'SAVE_SHOPID'
-		]),
-		//初始化数据
-		async initData() {
-			let newArr = new Array;
-			Object.values(this.shopCart).forEach(categoryItem => {
-				Object.values(categoryItem).forEach(itemValue => {
-					Object.values(itemValue).forEach(item => {
-						newArr.push({
-							attrs: [],
-							extra: {},
-							id: item.id,
-							name: item.name,
-							packing_fee: item.packing_fee,
-							price: item.price,
-							quantity: item.num,
-							sku_id: item.sku_id,
-							specs: [item.specs],
-							stock: item.stock,
-						})
-					})
-				})
-			})
-			//检验订单是否满足条件
-			// this.checkoutData = await checkout(this.geohash, [newArr], this.shopId);
-			this.checkoutData = JSON.parse(
-				`{
+  data() {
+    return {
+      geohash: '', //geohash位置信息
+      shopId: null, //商店id值
+      showLoading: true, //显示加载动画
+      checkoutData: null, //数据返回值
+      shopCart: null, //购物车数据
+      imgBaseUrl, //图片域名
+      showPayWay: false, //显示付款方式
+      payWayId: 1, //付款方式
+      showAlert: false, //弹出框
+      alertText: null, //弹出框内容
+    }
+  },
+  created() {
+    //获取上个页面传递过来的geohash值
+    // this.geohash = this.$route.query.geohash;
+    //获取上个页面传递过来的shopid值
+    this.shopId = this.$route.query.shopId;
+    this.INIT_BUYCART();
+    this.SAVE_SHOPID(this.shopId);
+    // //获取当前商铺购物车信息
+    this.shopCart = this.cartList[this.shopId];
+  },
+  mounted() {
+    this.initData();
+  },
+  components: {
+    headTop,
+    alertTip,
+    loading,
+  },
+  computed: {
+    ...mapState([
+      'cartList', 'remarkText', 'inputText'
+    ]),
+    //备注页返回的信息进行处理
+    remarklist: function() {
+      let str = new String;
+      if (this.remarkText) {
+        Object.values(this.remarkText).forEach(item => {
+          str += item[1] + '、';
+        })
+      }
+      //是否有自定义备注，分开处理
+      if (this.inputText) {
+        return str + this.inputText;
+      } else {
+        return str.substr(0, str.lastIndexOf('，'));
+      }
+    },
+  },
+  methods: {
+    ...mapMutations([
+      'INIT_BUYCART', 'SAVE_CART_ID_SIG', 'SAVE_ORDER_PARAM', 'ORDER_SUCCESS', 'SAVE_SHOPID'
+    ]),
+    async onBridgeReady() {
+      let result = await fetchql.query({
+        operationName: '',
+        query: 'mutation ($openid: String!, $body: String!, $out_trade_no: String!, $total_fee: Int!) { wechath5pay(openid: $openid, body: $body, out_trade_no: $out_trade_no, total_fee: $total_fee) { appId timeStamp nonceStr package signType paySign } } ',
+        variables: {
+          "openid": "oTIub0siUJpf6DDfRAmLduQcTHHc",
+          "body": "KFC",
+          "out_trade_no": "1123",
+          "total_fee": 10
+        }
+      })
+    //   console.log(result.data.wechath5pay);
+    //   return
+      WeixinJSBridge.invoke(
+        'getBrandWCPayRequest', Object.assign({}, result.data.wechath5pay),
+        function(res) {
+          if (res.err_msg == "get_brand_wcpay_request:ok") {} // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+        }
+      );
+    // }
+    if (typeof WeixinJSBridge == "undefined") {
+      if (document.addEventListener) {
+        document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+      } else if (document.attachEvent) {
+        document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+        document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+      }
+    } else {
+      onBridgeReady();
+    }
+  },
+
+  //初始化数据
+  async initData() {
+    let newArr = new Array;
+    Object.values(this.shopCart).forEach(categoryItem => {
+      Object.values(categoryItem).forEach(itemValue => {
+        Object.values(itemValue).forEach(item => {
+          newArr.push({
+            attrs: [],
+            extra: {},
+            id: item.id,
+            name: item.name,
+            packing_fee: item.packing_fee,
+            price: item.price,
+            quantity: item.num,
+            sku_id: item.sku_id,
+            specs: [item.specs],
+            stock: item.stock,
+          })
+        })
+      })
+    })
+    //检验订单是否满足条件
+    // this.checkoutData = await checkout(this.geohash, [newArr], this.shopId);
+    this.checkoutData = JSON.parse(
+      `{
                     "id":23742,
                     "delivery_reach_time":"01:06",
                     "sig":"922316",
@@ -376,50 +409,50 @@ export default {
                     }
                 }
 `
-			)
-			this.SAVE_CART_ID_SIG({
-				cart_id: this.checkoutData.cart.id,
-				sig: this.checkoutData.sig
-			})
-			this.showLoading = false;
-		},
+    )
+    this.SAVE_CART_ID_SIG({
+      cart_id: this.checkoutData.cart.id,
+      sig: this.checkoutData.sig
+    })
+    this.showLoading = false;
+  },
 
-		//显示付款方式
-		showPayWayFun() {
-			this.showPayWay = !this.showPayWay;
-		},
-		//选择付款方式
-		choosePayWay(is_online_payment, id) {
-			if (is_online_payment) {
-				this.showPayWay = !this.showPayWay;
-				this.payWayId = id;
-			}
-		},
-		//确认订单
-		async confrimOrder() {
-			//用户未登录时弹出提示框
-			//保存订单
-			this.SAVE_ORDER_PARAM({
-				user_id: this.userInfo.user_id,
-				cart_id: this.checkoutData.cart.id,
-				address_id: this.choosedAddress.id,
-				description: this.remarklist,
-				entities: this.checkoutData.cart.groups,
-				geohash: this.geohash,
-				sig: this.checkoutData.sig,
-			});
-			//发送订单信息
-			let orderRes = await placeOrders(this.userInfo.user_id, this.checkoutData.cart.id, this.choosedAddress.id, this.remarklist, this.checkoutData.cart.groups, this.geohash, this.checkoutData.sig);
-			//第一次下单的手机号需要进行验证，否则直接下单成功
-			if (orderRes.need_validation) {
-				this.NEED_VALIDATION(orderRes);
-				this.$router.push('/confirmOrder/userValidation');
-			} else {
-				this.ORDER_SUCCESS(orderRes);
-				this.$router.push('/confirmOrder/payment');
-			}
-		},
-	},
+  //显示付款方式
+  showPayWayFun() {
+    this.showPayWay = !this.showPayWay;
+  },
+  //选择付款方式
+  choosePayWay(is_online_payment, id) {
+    if (is_online_payment) {
+      this.showPayWay = !this.showPayWay;
+      this.payWayId = id;
+    }
+  },
+  //确认订单
+  async confrimOrder() {
+    //用户未登录时弹出提示框
+    //保存订单
+    this.SAVE_ORDER_PARAM({
+      user_id: this.userInfo.user_id,
+      cart_id: this.checkoutData.cart.id,
+      address_id: this.choosedAddress.id,
+      description: this.remarklist,
+      entities: this.checkoutData.cart.groups,
+      geohash: this.geohash,
+      sig: this.checkoutData.sig,
+    });
+    //发送订单信息
+    let orderRes = await placeOrders(this.userInfo.user_id, this.checkoutData.cart.id, this.choosedAddress.id, this.remarklist, this.checkoutData.cart.groups, this.geohash, this.checkoutData.sig);
+    //第一次下单的手机号需要进行验证，否则直接下单成功
+    if (orderRes.need_validation) {
+      this.NEED_VALIDATION(orderRes);
+      this.$router.push('/confirmOrder/userValidation');
+    } else {
+      this.ORDER_SUCCESS(orderRes);
+      this.$router.push('/confirmOrder/payment');
+    }
+  },
+},
 }
 </script>
 
