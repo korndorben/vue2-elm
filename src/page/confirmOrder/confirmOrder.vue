@@ -53,7 +53,7 @@
     </section>
     <section class="confrim_order">
       <p>待支付 ¥{{total}}</p>
-      <p @click="save">确认下单</p>
+      <p id="btnsave" @click="save">确认下单</p>
     </section>
     <transition name="fade">
       <div class="cover" v-if="showPayWay" @click="showPayWayFun"></div>
@@ -175,8 +175,8 @@ export default {
         customertotal = item.num * item.price * 100
       })
       let mealorder = {}
-      mealorder.supplierid = 1 || document.location.host.substring(4, document.location.host.indexOf('.nm.etao.cn'));
-      mealorder.openid = 'oTIub0siUJpf6DDfRAmLduQcTHHc' || document.location.pathname.substring(1, document.location.pathname.length - 1);
+      mealorder.supplierid = document.location.host.substring(4, document.location.host.indexOf('.nm.etao.cn'));
+      mealorder.openid = document.location.pathname.substring(1, document.location.pathname.length - 1);
       mealorder.pamentmethodid = 1
       mealorder.total = mealorder.customertotal = customertotal;
       mealorder.status = 0;
@@ -203,19 +203,20 @@ export default {
           mealorderdetail: mealorderdetail
         }
       })
+      location.href = `//nm.etao.cn/wechatpay/${result.data.id}.html`;
     },
-    async onBridgeReady() {
-      let result = await fetchql.query({
-        operationName: '',
-        query: 'mutation ($openid: String!, $body: String!, $out_trade_no: String!, $total_fee: Int!) { wechath5pay(openid: $openid, body: $body, out_trade_no: $out_trade_no, total_fee: $total_fee) { appId timeStamp nonceStr package signType paySign } } ',
-        variables: {
-          "openid": "oTIub0siUJpf6DDfRAmLduQcTHHc",
-          "body": "KFC",
-          "out_trade_no": "1123",
-          "total_fee": 10
-        }
-      })
-    },
+    // async onBridgeReady() {
+    //   let result = await fetchql.query({
+    //     operationName: '',
+    //     query: 'mutation ($openid: String!, $body: String!, $out_trade_no: String!, $total_fee: Int!) { wechath5pay(openid: $openid, body: $body, out_trade_no: $out_trade_no, total_fee: $total_fee) { appId timeStamp nonceStr package signType paySign } } ',
+    //     variables: {
+    //       "openid": "oTIub0siUJpf6DDfRAmLduQcTHHc",
+    //       "body": "KFC",
+    //       "out_trade_no": "1123",
+    //       "total_fee": 10
+    //     }
+    //   })
+    // },
 
     //初始化数据
     async initData() {
