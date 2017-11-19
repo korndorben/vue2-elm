@@ -382,7 +382,7 @@ export default {
     }
   },
   created() {
-    this.shopId = 1;
+    this.shopId = location.host.substring(4, location.host.indexOf('.nm.etao.cn')) * 1;
     this.INIT_BUYCART();
   },
   mounted() {

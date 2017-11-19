@@ -203,7 +203,8 @@ export default {
           mealorderdetail: mealorderdetail
         }
       })
-      location.href = `//nm.etao.cn/wechatpay/${result.data.id}.html`;
+	  console.log(result);
+      location.href = `//nm.etao.cn/wechatpay/${result.data.addmealorder.id}.html`;
     },
     // async onBridgeReady() {
     //   let result = await fetchql.query({
