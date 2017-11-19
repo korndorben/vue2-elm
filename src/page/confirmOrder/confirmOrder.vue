@@ -53,7 +53,7 @@
     </section>
     <section class="confrim_order">
       <p>待支付 ¥{{total}}</p>
-      <p @click="onBridgeReady">确认下单</p>
+      <p @click="save">确认下单</p>
     </section>
     <transition name="fade">
       <div class="cover" v-if="showPayWay" @click="showPayWayFun"></div>
@@ -119,7 +119,8 @@ export default {
       payWayId: 1, //付款方式
       showAlert: false, //弹出框
       alertText: null, //弹出框内容
-      products:[]
+      products: [],
+      mark: ''
     }
   },
   created() {
@@ -140,10 +141,12 @@ export default {
     ...mapState([
       'cartList', 'remarkText', 'inputText'
     ]),
-    total:function () {
-        let _total=0;
-        this.products.map(x=>_total+=x.price)
-        return _total;
+    total: function() {
+      let _total = 0;
+      this.products.forEach(x => {
+        _total += x.num * x.price
+      })
+      return _total;
     },
     //备注页返回的信息进行处理
     remarklist: function() {
@@ -155,42 +158,51 @@ export default {
       }
       //是否有自定义备注，分开处理
       if (this.inputText) {
-        return str + this.inputText;
+        this.mark = str + this.inputText;
       } else {
-        return str.substr(0, str.lastIndexOf('，'));
+        this.mark = str.substr(0, str.lastIndexOf('，'));
       }
+      return this.mark
     },
   },
   methods: {
     ...mapMutations([
       'INIT_BUYCART', 'SAVE_CART_ID_SIG', 'SAVE_ORDER_PARAM', 'ORDER_SUCCESS', 'SAVE_SHOPID'
     ]),
-    save() {
-      let supplierid = 1||document.location.host.substring(4, document.location.host.indexOf('.nm.etao.cn'));
-      let openid = 1||document.location.pathname.substring(1, document.location.pathname.length - 1);
-      let code = 'customerid' + (Date.now() / 1000) % 86400
-      //   let customertypeid = 1
-      let pamentmethodid = 1
-    //   let addressid = 0
-      let mealcode = 1
-      //   let deskcode = 1
-      //   let waiter = 1
-      //   let customercounts = ''
-      let total = checkoutData.cart.total * 100
-      //   let packagefee = 0
-      //   let deliveryfee = 0
-      //   let servicefee = 0
-      let customertotal = 10
-      //   let transactioncode = ''
-      //   let eattime = 1
-      let deliverymethod = 10
-      //   let status = 0
-      //   let paymentstatus = 0
-      let customernotes = this.remarklist()
-      let source = 'h5'
-      let isdelete = 0
-      let created = Date.now() / 1000 << 0
-
+    async save() {
+      let customertotal = 0
+      this.products.forEach(item => {
+        customertotal = item.num * item.price * 100
+      })
+      let mealorder = {}
+      mealorder.supplierid = 1 || document.location.host.substring(4, document.location.host.indexOf('.nm.etao.cn'));
+      mealorder.openid = 'oTIub0siUJpf6DDfRAmLduQcTHHc' || document.location.pathname.substring(1, document.location.pathname.length - 1);
+      mealorder.pamentmethodid = 1
+      mealorder.total = mealorder.customertotal = customertotal;
+      mealorder.status = 0;
+      mealorder.source = 1
+      mealorder.isdelete = false;
+      mealorder.created = Date.now() / 1000 << 0
+      mealorder.customernotes = this.mark || ''
+      let mealorderdetail = []
+      for (let item of this.products) {
+        let pro = {}
+        pro.dishid = item.dishid;
+        pro.dishattrid = item.dishattrid;
+        pro.price = item.price;
+        pro.memberprice = item.price;
+        pro.customertotal = item.price;
+        pro.quantity = item.num;
+        mealorderdetail.push(pro)
+      }
+      let result = await fetchql.query({
+        operationName: '',
+        query: 'mutation ($mealorder: mealorderparams!, $mealorderdetail: [mealorderdetailparams]!) { addmealorder(mealorder: $mealorder, mealorderdetail: $mealorderdetail) { id } } ',
+        variables: {
+          mealorder: mealorder,
+          mealorderdetail: mealorderdetail
+        }
+      })
     },
     async onBridgeReady() {
       let result = await fetchql.query({
@@ -215,7 +227,7 @@ export default {
           })
         })
       })
-      this.products=newArr
+      this.products = newArr
       //检验订单是否满足条件
       // this.checkoutData = await checkout(this.geohash, [newArr], this.shopId);
       this.checkoutData = JSON.parse(
