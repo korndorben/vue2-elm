@@ -27,73 +27,73 @@ import {
 	SAVE_ADDDETAIL,
 	SAVE_QUESTION,
 	ADD_ADDRESS,
-	BUY_CART,
+	BUY_CART
 } from './mutation-types.js'
-
-import {setStore, getStore} from '../config/mUtils'
-
-import {localapi, proapi} from 'src/config/env'
-
+import {setStore, getStore,} from '../config/mUtils'
+import {localapi, proapi,} from 'src/config/env'
 export default {
 	// 记录当前经度纬度
-	[RECORD_ADDRESS](state, {
-		latitude,
-		longitude
-	}) {
+	[RECORD_ADDRESS](state, {latitude, longitude,}) {
 		state.latitude = latitude;
 		state.longitude = longitude;
 	},
-
 	[RECORD_SHOPDETAIL](state, detail) {
 		state.shopDetail = detail;
 	},
 	// 加入购物车
 	[ADD_CART](state, {
-		shopid,
-		category_id,
-		item_id,
-		food_id,
-		name,
+		supplierid,
+		dishcategoryid,
+		dishid,
+		dishname,
+		dishattrid,
+		dishattrname,
 		price,
-		specs,
 	}) {
 		let cart = state.cartList;
-		let shop = cart[shopid] = (cart[shopid] || {});
-		let category = shop[category_id] = (shop[category_id] || {});
-		let item = category[item_id] = (category[item_id] || {});
-		if (item[food_id]) {
-			item[food_id]['num']++;
+		let shop = cart[supplierid] = (cart[supplierid] || {});
+		let category = shop[dishcategoryid] = (shop[dishcategoryid] || {});
+		let item = category[dishid] = (category[dishid] || {});
+		if (item[dishattrid]) {
+			item[dishattrid]['num']++;
 		} else {
-			item[food_id] = {
-					"num" : 1,
-					"id" : food_id,
-					"name" : name,
-					"price" : price,
-					"specs" : specs,
+			item[dishattrid] = {
+				"supplierid": supplierid,
+				"dishcategoryid": dishcategoryid,
+				"dishid": dishid,
+				"dishname": dishname,
+				"dishattrid": dishattrid,
+				"dishattrname": dishattrname,
+				"price": price,
+				"num": 1,
 			};
 		}
-		state.cartList = {...cart};
+		state.cartList = {
+			...cart
+		};
 		//存入localStorage
 		setStore('buyCart', state.cartList);
 	},
 	// 移出购物车
 	[REDUCE_CART](state, {
-		shopid,
-		category_id,
-		item_id,
-		food_id,
-		name,
+		supplierid,
+		dishcategoryid,
+		dishid,
+		dishname,
+		dishattrid,
+		dishattrname,
 		price,
-		specs,
 	}) {
 		let cart = state.cartList;
-		let shop = (cart[shopid] || {});
-		let category = (shop[category_id] || {});
-		let item = (category[item_id] || {});
-		if (item && item[food_id]) {
-			if (item[food_id]['num'] > 0) {
-				item[food_id]['num']--;
-				state.cartList = {...cart};
+		let shop = (cart[supplierid] || {});
+		let category = (shop[dishcategoryid] || {});
+		let item = (category[dishid] || {});
+		if (item && item[dishattrid]) {
+			if (item[dishattrid]['num'] > 0) {
+				item[dishattrid]['num']--;
+				state.cartList = {
+					...cart
+				};
 				//存入localStorage
 				setStore('buyCart', state.cartList);
 			} else {
@@ -112,7 +112,9 @@ export default {
 	//清空当前商品的购物车信息
 	[CLEAR_CART](state, shopid) {
 		state.cartList[shopid] = null;
-		state.cartList = {...state.cartList};
+		state.cartList = {
+			...state.cartList
+		};
 		setStore('buyCart', state.cartList);
 	},
 	// 记录用户信息
@@ -130,24 +132,23 @@ export default {
 			return
 		}
 		if (!info.message) {
-			state.userInfo = {...info};
+			state.userInfo = {
+				...info
+			};
 		} else {
 			state.userInfo = null;
 		}
 	},
 	//修改用户名
-	[RETSET_NAME](state,username) {
-		state.userInfo = Object.assign({}, state.userInfo,{username})
+	[RETSET_NAME](state, username) {
+		state.userInfo = Object.assign({}, state.userInfo, {username})
 	},
 	//保存商铺id
 	[SAVE_SHOPID](state, shopid) {
 		state.shopid = shopid;
 	},
 	//记录订单页面用户选择的备注, 传递给订单确认页面
-	[CONFIRM_REMARK](state, {
-		remarkText,
-		inputText
-	}) {
+	[CONFIRM_REMARK](state, {remarkText, inputText,}) {
 		state.remarkText = remarkText;
 		state.inputText = inputText;
 	},
@@ -162,17 +163,13 @@ export default {
 	//保存geohash
 	[SAVE_GEOHASH](state, geohash) {
 		state.geohash = geohash;
-
 	},
 	//确认订单页添加新的的地址
 	[CONFIRM_ADDRESS](state, newAddress) {
 		state.newAddress.push(newAddress);
 	},
 	//选择的地址
-	[CHOOSE_ADDRESS](state, {
-		address,
-		index
-	}) {
+	[CHOOSE_ADDRESS](state, {address, index,}) {
 		state.choosedAddress = address;
 		state.addressIndex = index;
 	},
@@ -181,10 +178,7 @@ export default {
 		state.needValidation = needValidation;
 	},
 	//保存下单后购物id 和 sig
-	[SAVE_CART_ID_SIG](state, {
-		cart_id,
-		sig
-	}) {
+	[SAVE_CART_ID_SIG](state, {cart_id, sig,}) {
 		state.cart_id = cart_id;
 		state.sig = sig;
 	},
@@ -219,20 +213,23 @@ export default {
 		state.removeAddress = newAdress
 	},
 	//添加地址name
-	[SAVE_ADDDETAIL](state, addAddress){
-		state.addAddress=addAddress;
+	[SAVE_ADDDETAIL](state, addAddress) {
+		state.addAddress = addAddress;
 	},
 	//保存所选问题标题和详情
 	[SAVE_QUESTION](state, question) {
-		state.question = {...question};
+		state.question = {
+			...question
+		};
 	},
 	//增加地址
 	[ADD_ADDRESS](state, obj) {
-		state.removeAddress = [obj, ...state.removeAddress];
+		state.removeAddress = [
+			obj, ...state.removeAddress,
+		];
 	},
 	//会员卡价格纪录
 	[BUY_CART](state, price) {
 		state.cartPrice = price;
-	},
-
+	}
 }

@@ -8,27 +8,20 @@
         <img src="http://localhost:3000/upload/logo.1.png">
         <span>{{checkoutData.cart.restaurant_info.name}}</span>
       </header>
-      <ul class="food_list_ul" v-if="checkoutData.cart.groups">
-        <li v-for="item in checkoutData.cart.groups[0]" :key="item.id" class="food_item_style">
-          <p class="food_name ellipsis">{{item.name}} x {{item.quantity}}</p>
+      <ul class="food_list_ul" v-if="products.length>0">
+        <li v-for="item in products" :key="item.dishattrid" class="food_item_style">
+          <p class="food_name ellipsis">{{item.dishname}} x {{item.num}}</p>
           <div class="num_price">
             <span></span>
             <span>¥{{item.price}}</span>
           </div>
         </li>
       </ul>
-      <div class="food_item_style" v-if="checkoutData.cart.extra">
-        <p class="food_name ellipsis">{{checkoutData.cart.extra[0].name}}</p>
-        <div class="num_price">
-          <span></span>
-          <span>¥ {{checkoutData.cart.extra[0].price}}</span>
-        </div>
-      </div>
       <div class="food_item_style total_price">
-        <p class="food_name ellipsis">订单 ¥{{checkoutData.cart.total}}</p>
+        <p class="food_name ellipsis">订单 ¥{{total}}</p>
         <div class="num_price">
           <span></span>
-          <span>待支付 ¥{{checkoutData.cart.total}}</span>
+          <span>待支付 ¥{{total}}</span>
         </div>
       </div>
     </section>
@@ -59,7 +52,7 @@
       </router-link>
     </section>
     <section class="confrim_order">
-      <p>待支付 ¥{{checkoutData.cart.total}}</p>
+      <p>待支付 ¥{{total}}</p>
       <p @click="onBridgeReady">确认下单</p>
     </section>
     <transition name="fade">
@@ -126,20 +119,17 @@ export default {
       payWayId: 1, //付款方式
       showAlert: false, //弹出框
       alertText: null, //弹出框内容
+      products:[]
     }
   },
   created() {
-    //获取上个页面传递过来的geohash值
-    // this.geohash = this.$route.query.geohash;
-    //获取上个页面传递过来的shopid值
-    this.shopId = this.$route.query.shopId;
+    this.shopId = 1;
     this.INIT_BUYCART();
-    this.SAVE_SHOPID(this.shopId);
-    // //获取当前商铺购物车信息
     this.shopCart = this.cartList[this.shopId];
   },
   mounted() {
     this.initData();
+    // console.log(this.$route);
   },
   components: {
     headTop,
@@ -150,26 +140,58 @@ export default {
     ...mapState([
       'cartList', 'remarkText', 'inputText'
     ]),
+    total:function () {
+        let _total=0;
+        this.products.map(x=>_total+=x.price)
+        return _total;
+    },
     //备注页返回的信息进行处理
-    remarklist: function (){
-        let str = new String;
-        if (this.remarkText) {
-            Object.values(this.remarkText).forEach(item => {
-                str += item[1] + '，';
-            })
-        }
-        //是否有自定义备注，分开处理
-        if (this.inputText) {
-            return str + this.inputText;
-        }else{
-            return str.substr(0, str.lastIndexOf('，')) ;
-        }
+    remarklist: function() {
+      let str = new String;
+      if (this.remarkText) {
+        Object.values(this.remarkText).forEach(item => {
+          str += item[1] + ',';
+        })
+      }
+      //是否有自定义备注，分开处理
+      if (this.inputText) {
+        return str + this.inputText;
+      } else {
+        return str.substr(0, str.lastIndexOf('，'));
+      }
     },
   },
   methods: {
     ...mapMutations([
       'INIT_BUYCART', 'SAVE_CART_ID_SIG', 'SAVE_ORDER_PARAM', 'ORDER_SUCCESS', 'SAVE_SHOPID'
     ]),
+    save() {
+      let supplierid = 1||document.location.host.substring(4, document.location.host.indexOf('.nm.etao.cn'));
+      let openid = 1||document.location.pathname.substring(1, document.location.pathname.length - 1);
+      let code = 'customerid' + (Date.now() / 1000) % 86400
+      //   let customertypeid = 1
+      let pamentmethodid = 1
+    //   let addressid = 0
+      let mealcode = 1
+      //   let deskcode = 1
+      //   let waiter = 1
+      //   let customercounts = ''
+      let total = checkoutData.cart.total * 100
+      //   let packagefee = 0
+      //   let deliveryfee = 0
+      //   let servicefee = 0
+      let customertotal = 10
+      //   let transactioncode = ''
+      //   let eattime = 1
+      let deliverymethod = 10
+      //   let status = 0
+      //   let paymentstatus = 0
+      let customernotes = this.remarklist()
+      let source = 'h5'
+      let isdelete = 0
+      let created = Date.now() / 1000 << 0
+
+    },
     async onBridgeReady() {
       let result = await fetchql.query({
         operationName: '',
@@ -181,16 +203,6 @@ export default {
           "total_fee": 10
         }
       })
-      //   console.log(result.data.wechath5pay);
-      //   return
-      WeixinJSBridge.invoke(
-        'getBrandWCPayRequest', result.data.wechath5pay,
-        function(res) {
-          if (res.err_msg == "get_brand_wcpay_request:ok") {
-            console.log('成功了');
-          } // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
-        }
-      );
     },
 
     //初始化数据
@@ -199,214 +211,83 @@ export default {
       Object.values(this.shopCart).forEach(categoryItem => {
         Object.values(categoryItem).forEach(itemValue => {
           Object.values(itemValue).forEach(item => {
-            newArr.push({
-              attrs: [],
-              extra: {},
-              id: item.id,
-              name: item.name,
-              packing_fee: item.packing_fee,
-              price: item.price,
-              quantity: item.num,
-              sku_id: item.sku_id,
-              specs: [item.specs],
-              stock: item.stock,
-            })
+            newArr.push(item)
           })
         })
       })
+      this.products=newArr
       //检验订单是否满足条件
       // this.checkoutData = await checkout(this.geohash, [newArr], this.shopId);
       this.checkoutData = JSON.parse(
         `{
-                    "id":23742,
-                    "delivery_reach_time":"01:06",
-                    "sig":"922316",
-                    "_id":"5a09c1d0deb3f2627afbb852",
-                    "is_support_ninja":1,
-                    "is_support_coupon":false,
-                    "deliver_times_v2":[
+            "payments":[
+                {
+                    "select_state":1,
+                    "name":"在线支付",
+                    "id":1,
+                    "disabled_reason":"",
+                    "description":"（商家仅支持在线支付）",
+                    "promotion":[
 
                     ],
-                    "deliver_times":[
+                    "is_online_payment":true
+                },
+                {
+                    "select_state":-1,
+                    "name":"货到付款",
+                    "id":2,
+                    "disabled_reason":"商家仅支持在线支付",
+                    "description":"（商家不支持货到付款）",
+                    "promotion":[
 
                     ],
-                    "payments":[
-                        {
-                            "select_state":1,
-                            "name":"在线支付",
-                            "id":1,
-                            "disabled_reason":"",
-                            "description":"（商家仅支持在线支付）",
-                            "promotion":[
-
-                            ],
-                            "is_online_payment":true
-                        },
-                        {
-                            "select_state":-1,
-                            "name":"货到付款",
-                            "id":2,
-                            "disabled_reason":"商家仅支持在线支付",
-                            "description":"（商家不支持货到付款）",
-                            "promotion":[
-
-                            ],
-                            "is_online_payment":false
-                        }
-                    ],
-                    "invoice":{
-                        "status_text":"不需要开发票",
-                        "is_available":true
-                    },
-                    "cart":{
-                        "id":23742,
-                        "deliver_amount":4,
-                        "is_deliver_by_fengniao":true,
-                        "original_total":443,
-                        "phone":"15761621234",
-                        "restaurant_id":1148,
-                        "restaurant_info":{
-                            "_id":"59a816cbebe2e53edc090e32",
-                            "name":"测试修22225",
-                            "address":"北京市海淀区岭南路36号广东大厦5层",
-                            "id":1148,
-                            "latitude":39.92775,
-                            "longitude":116.30162,
-                            "location":[
-                                121.49424,
-                                31.30122
-                            ],
-                            "phone":"15761621234",
-                            "category":"异国料理/西餐",
-                            "__v":0,
-                            "supports":[
-                                {
-                                    "description":"已加入“外卖保”计划，食品安全有保障",
-                                    "icon_color":"999999",
-                                    "icon_name":"保",
-                                    "id":7,
-                                    "name":"外卖保",
-                                    "_id":"59a816cbebe2e53edc090e35"
-                                },
-                                {
-                                    "description":"准时必达，超时秒赔",
-                                    "icon_color":"57A9FF",
-                                    "icon_name":"准",
-                                    "id":9,
-                                    "name":"准时达",
-                                    "_id":"59a816cbebe2e53edc090e34"
-                                },
-                                {
-                                    "description":"该商家支持开发票，请在下单时填写好发票抬头",
-                                    "icon_color":"999999",
-                                    "icon_name":"票",
-                                    "id":4,
-                                    "name":"开发票",
-                                    "_id":"59a816cbebe2e53edc090e33"
-                                }
-                            ],
-                            "status":0,
-                            "recent_order_num":827,
-                            "rating_count":485,
-                            "rating":4.1,
-                            "promotion_info":"dghgfdgf",
-                            "piecewise_agent_fee":{
-                                "tips":"配送费约¥5"
-                            },
-                            "opening_hours":[
-                                "8:30/20:30"
-                            ],
-                            "license":{
-                                "catering_service_license_image":"15e3898ec2b5718.jpeg",
-                                "business_license_image":"15e3898f5d05717.jpeg"
-                            },
-                            "is_new":true,
-                            "is_premium":true,
-                            "image_path":"15fa3a071f210067.jpg",
-                            "identification":{
-                                "registered_number":"",
-                                "registered_address":"",
-                                "operation_period":"",
-                                "licenses_scope":"",
-                                "licenses_number":"",
-                                "licenses_date":"",
-                                "legal_person":"",
-                                "identificate_date":null,
-                                "identificate_agency":"",
-                                "company_name":""
-                            },
-                            "float_minimum_order_amount":20,
-                            "float_delivery_fee":5,
-                            "distance":"",
-                            "order_lead_time":"",
-                            "description":"vbn11",
-                            "delivery_mode":{
-                                "color":"57A9FF",
-                                "id":1,
-                                "is_solid":true,
-                                "text":"蜂鸟专送"
-                            },
-                            "activities":[
-                                {
-                                    "icon_name":"减",
-                                    "name":"满减优惠",
-                                    "description":"满30减5，满60减8",
-                                    "icon_color":"f07373",
-                                    "id":1,
-                                    "_id":"59a816cbebe2e53edc090e36"
-                                }
-                            ]
-                        },
-                        "restaurant_minimum_order_amount":20,
-                        "total":443,
-                        "service_fee_explanation":0,
-                        "restaurant_status":1,
-                        "promise_delivery_time":0,
-                        "ontime_status":0,
-                        "must_pay_online":0,
-                        "must_new_user":0,
-                        "is_ontime_available":0,
-                        "is_online_paid":1,
-                        "is_address_too_far":false,
-                        "extra":[
-                            {
-                                "description":"",
-                                "_id":"5a09c1d0deb3f2627afbb853",
-                                "type":0,
-                                "quantity":1,
-                                "price":379,
-                                "name":"餐盒"
-                            }
-                        ],
-                        "groups":[
-                            [
-                                {
-                                    "id":1945,
-                                    "name":"水淀",
-                                    "packing_fee":0,
-                                    "price":20,
-                                    "quantity":3,
-                                    "sku_id":1943,
-                                    "stock":1000,
-                                    "_id":"5a09c1d0deb3f2627afbb854",
-                                    "specs":[
-                                        ""
-                                    ],
-                                    "new_specs":[
-
-                                    ],
-                                    "extra":[
-                                        null
-                                    ],
-                                    "attrs":[
-
-                                    ]
-                                }
-                            ]
-                        ]
-                    }
+                    "is_online_payment":false
                 }
-`
+            ],
+            "cart":{
+                "restaurant_info":{
+                    "name":"测试修22225",
+                    "activities":[
+                        {
+                            "icon_name":"减",
+                            "name":"满减优惠",
+                            "description":"满30减5，满60减8",
+                            "icon_color":"f07373",
+                            "id":1,
+                            "_id":"59a816cbebe2e53edc090e36"
+                        }
+                    ]
+                },
+                "restaurant_minimum_order_amount":20,
+                "total":443,
+                "groups":[
+                    [
+                        {
+                            "id":1945,
+                            "name":"水淀",
+                            "packing_fee":0,
+                            "price":20,
+                            "quantity":3,
+                            "sku_id":1943,
+                            "stock":1000,
+                            "_id":"5a09c1d0deb3f2627afbb854",
+                            "specs":[
+                                ""
+                            ],
+                            "new_specs":[
+
+                            ],
+                            "extra":[
+                                null
+                            ],
+                            "attrs":[
+
+                            ]
+                        }
+                    ]
+                ]
+            }
+        } `
       )
       this.SAVE_CART_ID_SIG({
         cart_id: this.checkoutData.cart.id,
@@ -428,10 +309,10 @@ export default {
     },
     //确认订单
     async confrimOrder() {
-        // let mealorder={};
-        // mealorder.id=0;
-        // mealorder.customerid=1;
-        // mealorder.code=
+      // let mealorder={};
+      // mealorder.id=0;
+      // mealorder.customerid=1;
+      // mealorder.code=
 
       //用户未登录时弹出提示框
       //保存订单
