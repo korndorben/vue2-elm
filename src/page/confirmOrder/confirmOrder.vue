@@ -176,7 +176,7 @@ export default {
       })
       let mealorder = {}
       mealorder.supplierid = document.location.host.substring(4, document.location.host.indexOf('.nm.etao.cn'));
-      mealorder.openid = document.location.pathname.substring(1, document.location.pathname.length - 1);
+      mealorder.openid = document.location.pathname.substring(9, document.location.pathname.length - 1);
       mealorder.pamentmethodid = 1
       mealorder.total = mealorder.customertotal = customertotal;
       mealorder.status = 0;
