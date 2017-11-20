@@ -106,7 +106,7 @@
                                         <footer class="menu_detail_footer">
                                             <section class="food_price">
                                                 <span>¥</span>
-                                                <span>{{dish.specfoods.map(x=>x.price).sort()[0]}}</span>
+                                                <span>{{fmt(dish.specfoods.map(x=>x.price).sort()[0])}}</span>
                                                 <span v-if="dish.specfoods.length">起</span>
                                             </section>
                                             <buy-cart :shopId='shopId' :dish='dish' @moveInCart="listenInCart" @showChooseList="showChooseList" @showReduceTip="showReduceTip" @showMoveDot="showMoveDotFun"></buy-cart>
@@ -127,11 +127,11 @@
                                 </svg>
                             </div>
                             <div class="cart_num">
-                                <div>¥ {{totalPrice}}</div>
+                                <div>¥ {{fmt(totalPrice)}}</div>
                             </div>
                         </section>
                         <section class="gotopay" :class="{gotopay_acitvity: minimumOrderAmount <= 0}">
-                            <span class="gotopay_button_style" v-if="minimumOrderAmount > 0">还差¥{{minimumOrderAmount}}起送</span>
+                            <span class="gotopay_button_style" v-if="minimumOrderAmount > 0">还差¥{{fmt(minimumOrderAmount)}}起送</span>
                             <router-link :to="{path:'/confirmOrder'}" class="gotopay_button_style" v-else >去结算</router-link>
                         </section>
                     </section>
@@ -156,7 +156,7 @@
                                         </div>
                                         <div class="cart_list_price">
                                             <span>¥</span>
-                                            <span>{{item.price}}</span>
+                                            <span>{{fmt(item.price)}}</span>
                                         </div>
                                         <section class="cart_list_control">
                                             <span @click="removeOutCart({
@@ -275,14 +275,14 @@
                         <h5 class="specs_details_title">多规格{{choosedFoods.specfoods[0].name}}</h5>
                         <ul>
                             <li v-for="(item, itemIndex) in choosedFoods.specfoods" :class="{specs_activity: itemIndex == specsIndex}" @click="chooseSpecs(itemIndex)">
-                                {{item.name}} ￥{{item.price}}
+                                {{item.name}} ￥{{fmt(item.price)}}
                             </li>
                         </ul>
                     </section>
                     <footer class="specs_footer">
                         <div class="specs_price">
                             <span>¥ </span>
-                            <span>{{choosedFoods.specfoods[specsIndex].price}}</span>
+                            <span>{{fmt(choosedFoods.specfoods[specsIndex].price)}}</span>
                         </div>
                         <div class="specs_addto_cart" @click="addSpecs({
                           supplierid: choosedFoods.supplierid,
@@ -431,6 +431,9 @@ export default {
     ...mapMutations([
       'RECORD_ADDRESS', 'ADD_CART', 'REDUCE_CART', 'INIT_BUYCART', 'CLEAR_CART', 'RECORD_SHOPDETAIL'
     ]),
+    fmt(price) {
+      return (price / 100).toFixed(2) * 1
+    },
     //初始化时获取基本数据
     async initData() {
       let supplierdata = await fetchql.query({

@@ -13,15 +13,15 @@
           <p class="food_name ellipsis">{{item.dishname}} x {{item.num}}</p>
           <div class="num_price">
             <span></span>
-            <span>¥{{item.price}}</span>
+            <span>¥{{fmt(item.price)}}</span>
           </div>
         </li>
       </ul>
       <div class="food_item_style total_price">
-        <p class="food_name ellipsis">订单 ¥{{total}}</p>
+        <p class="food_name ellipsis">订单 ¥{{fmt(total)}}</p>
         <div class="num_price">
           <span></span>
-          <span>待支付 ¥{{total}}</span>
+          <span>待支付 ¥{{fmt(total)}}</span>
         </div>
       </div>
     </section>
@@ -52,7 +52,7 @@
       </router-link>
     </section>
     <section class="confrim_order">
-      <p>待支付 ¥{{total}}</p>
+      <p>待支付 ¥{{fmt(total)}}</p>
       <p id="btnsave" @click="save">确认下单</p>
     </section>
     <transition name="fade">
@@ -169,14 +169,17 @@ export default {
     ...mapMutations([
       'INIT_BUYCART', 'SAVE_CART_ID_SIG', 'SAVE_ORDER_PARAM', 'ORDER_SUCCESS', 'SAVE_SHOPID'
     ]),
+	fmt(price) {
+      return (price / 100).toFixed(2) * 1
+    },
     async save() {
       let customertotal = 0
       this.products.forEach(item => {
-        customertotal = item.num * item.price * 100
+        customertotal = item.num * item.price
       })
       let mealorder = {}
       mealorder.supplierid = document.location.host.substring(4, document.location.host.indexOf('.nm.etao.cn'));
-      mealorder.openid = document.location.pathname.substring(9, document.location.pathname.length - 1);
+      mealorder.signedopenid = document.location.pathname.substring(5, document.location.pathname.length - 1);
       mealorder.pamentmethodid = 1
       mealorder.total = mealorder.customertotal = customertotal;
       mealorder.status = 0;
