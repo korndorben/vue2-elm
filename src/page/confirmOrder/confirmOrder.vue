@@ -169,7 +169,7 @@ export default {
     ...mapMutations([
       'INIT_BUYCART', 'SAVE_CART_ID_SIG', 'SAVE_ORDER_PARAM', 'ORDER_SUCCESS', 'SAVE_SHOPID'
     ]),
-	fmt(price) {
+    fmt(price) {
       return (price / 100).toFixed(2) * 1
     },
     async save() {
@@ -206,7 +206,7 @@ export default {
           mealorderdetail: mealorderdetail
         }
       })
-	  console.log(result);
+      console.log(result);
       location.href = `//nm.etao.cn/wechatpay/${result.data.addmealorder.id}.html`;
     },
     // async onBridgeReady() {
