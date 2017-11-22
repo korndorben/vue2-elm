@@ -26,6 +26,7 @@ module.exports = {
         assetsPublicPath: '/',
         context: [ //代理路径
             '/api/graphql',
+            '/graphql',
             '/shopping',
             '/ugc',
             '/v1',

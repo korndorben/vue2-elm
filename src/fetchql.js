@@ -2,7 +2,7 @@ import {default as _fetch} from 'whatwg-fetch'
 console.log(_fetch);
 const fetchql = {
     query: function({operationName, query, variables}) {
-        return fetch('/api/graphql', {
+        return fetch('/graphql', {
             method: 'post',
             headers: {
                 'Accept': 'application/json',
@@ -22,22 +22,5 @@ const fetchql = {
     }
 }
 export default fetchql
-// import FetchQL from 'fetchql/src/index.js'
-// export default new FetchQL({
-//     url: '/graphql', // GraphQL server address
-//     interceptors: [
-//         {
-//             request: function(url, config) {
-//                 let user = JSON.parse(sessionStorage.getItem('user'));
-//                 config.headers.authorization = user.token
-//                 return [url, config];
-//             }
-//         }
-//     ],
-//     headers: {}, // customized headers of all requests,
-//     onStart: function(requestQueueLength) {}, // callback of a new request queue
-//     onEnd: function(requestQueueLength) {}, // callback of a request queue finished
-//     omitEmptyVariables: true
-// })
 
 // export const baidukey = 'dAeaG6HwIFGlkbqtyKkyFGEC'

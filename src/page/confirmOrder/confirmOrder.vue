@@ -31,8 +31,8 @@
         <div class="more_type" @click="showPayWayFun">
           <span>在线支付</span>
           <svg class="address_empty_right">
-                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
-                        </svg>
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
+        	</svg>
         </div>
       </header>
       <section data-v-4e0d5034="" class="hongbo">
@@ -124,7 +124,11 @@ export default {
     }
   },
   created() {
-    this.shopId = 1;
+    this.shopId = location.host.substring(4, location.host.indexOf('.nm.etao.cn')) * 1;
+    if (Number.isNaN(this.shopId)) {
+      this.shopId = 1
+    }
+    console.log(this.shopId);
     this.INIT_BUYCART();
     this.shopCart = this.cartList[this.shopId];
   },
@@ -175,14 +179,19 @@ export default {
     async save() {
       let customertotal = 0
       this.products.forEach(item => {
-        customertotal = item.num * item.price
+        customertotal += item.num * item.price
       })
       let mealorder = {}
-      mealorder.supplierid = document.location.host.substring(4, document.location.host.indexOf('.nm.etao.cn'));
+      mealorder.supplierid = this.shopId || document.location.host.substring(4, document.location.host.indexOf('.nm.etao.cn'));
       mealorder.signedopenid = document.location.pathname.substring(5, document.location.pathname.length - 1);
+      if (mealorder.signedopenid.length !== '7e73fe8940ffdbadd584cca65a574e75'.length) {
+        mealorder.signedopenid = '7e73fe8940ffdbadd584cca65a574e75'
+      }
+      console.log(mealorder.signedopenid);
       mealorder.pamentmethodid = 1
-      mealorder.total = mealorder.customertotal = customertotal;
-      mealorder.status = 0;
+      mealorder.total = customertotal
+      mealorder.customertotal = customertotal
+      mealorder.status = 0
       mealorder.source = 1
       mealorder.isdelete = false;
       mealorder.created = Date.now() / 1000 << 0

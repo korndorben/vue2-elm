@@ -383,6 +383,10 @@ export default {
   },
   created() {
     this.shopId = location.host.substring(4, location.host.indexOf('.nm.etao.cn')) * 1;
+    if (Number.isNaN(this.shopId)) {
+      this.shopId = 1
+    }
+	console.log(this.shopId);
     this.INIT_BUYCART();
   },
   mounted() {
@@ -440,7 +444,7 @@ export default {
         operationName: '',
         query: `query($id:Int!){ supplier(id:$id){ id name address promotion_info:intro image_path:name float_minimum_order_amount:id float_delivery_fee:id order_lead_time:id description:intro activities { id icon_name:name name description:name icon_color:name } dishcategories { id dishcategoryid:id name description:intro restaurant_id:supplierid dishs { id tips:intro item_id:id dishcategoryid category_id:dishcategoryid restaurant_id:supplierid supplierid image_path:name name specfoods:dishattrs { id specs_name:name name item_id:dishid sku_id:id food_id:id restaurant_id:supplierid stock:id price packing_fee:price original_price:price satisfy_rate:id rating_count:id month_sales:id description:name rating:id } } icon_url:name } } }`,
         variables: {
-          id: 1
+          id: this.shopId
         }
       });
 
