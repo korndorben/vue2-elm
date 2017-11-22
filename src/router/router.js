@@ -45,6 +45,7 @@ const service = r => require.ensure([], () => r(require('../page/service/service
 const questionDetail = r => require.ensure([], () => r(require('../page/service/children/questionDetail')), 'questionDetail')
 const find = r => require.ensure([], () => r(require('../page/find/find')), 'find')
 const download = r => require.ensure([], () => r(require('../page/download/download')), 'download')
+const success = r => require.ensure([], () => r(require('../page/success/success')), 'success')
 
 
 
@@ -201,6 +202,11 @@ export default [{
         {
             path: '/download',
             component: download
+        },
+        //下载页
+        {
+            path: '/success/:orderid.html',
+            component: success
         },
         //服务中心
         {
