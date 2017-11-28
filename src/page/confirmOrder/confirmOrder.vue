@@ -188,7 +188,7 @@ export default {
         mealorder.signedopenid = '7e73fe8940ffdbadd584cca65a574e75'
       }
       console.log(mealorder.signedopenid);
-      mealorder.pamentmethodid = 1
+      mealorder.paymentmethodid = 1
       mealorder.total = customertotal
       mealorder.customertotal = customertotal
       mealorder.status = 0
