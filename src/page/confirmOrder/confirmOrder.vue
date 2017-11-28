@@ -191,7 +191,8 @@ export default {
       mealorder.paymentmethodid = 1
       mealorder.total = customertotal
       mealorder.customertotal = customertotal
-      mealorder.status = 0
+      mealorder.status = 100
+      mealorder.paymentstatus = 0
       mealorder.source = 1
       mealorder.isdelete = false;
       mealorder.created = Date.now() / 1000 << 0
