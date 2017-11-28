@@ -2,7 +2,7 @@ import {default as _fetch} from 'whatwg-fetch'
 console.log(_fetch);
 const fetchql = {
     query: function({operationName, query, variables}) {
-        return fetch('/graphql', {
+        return fetch('/api/graphql', {
             method: 'post',
             headers: {
                 'Accept': 'application/json',

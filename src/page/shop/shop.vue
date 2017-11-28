@@ -2,11 +2,11 @@
     <div>
         <section v-if="!showLoading" class="shop_container">
             <header class="shop_detail_header" ref="shopheader" :style="{zIndex: showActivities? '14':'10'}">
-                <img src="http://localhost:3000/upload/logo.1.png" class="header_cover_img">
+                <img :src="getImgPath(shopDetailData.image_path)" class="header_cover_img">
                 <section class="description_header">
                     <div class="description_top">
                         <section class="description_left">
-                            <img src="http://localhost:3000/upload/logo.1.png">
+                            <img :src="getImgPath(shopDetailData.image_path)">
                         </section>
                         <section class="description_right">
                             <p class="description_title ellipsis">{{shopDetailData.name}}</p>
@@ -90,7 +90,7 @@
                                     <section v-if="dish.specfoods.length>0" v-for="(dish,foodindex) in category.dishs" :key="foodindex" class="menu_detail_list">
                                         <div class="menu_detail_link">
                                             <section class="menu_food_img">
-                                                <img src="http://localhost:3000/upload/logo.1.png">
+                                                <img :src="getImgPath(dish.image_path)">
                                             </section>
                                             <section class="menu_food_description">
                                                 <h3 class="food_description_head">
@@ -442,7 +442,7 @@ export default {
     async initData() {
       let supplierdata = await fetchql.query({
         operationName: '',
-        query: `query($id:Int!){ supplier(id:$id){ id name address promotion_info:intro image_path:name float_minimum_order_amount:id float_delivery_fee:id order_lead_time:id description:intro activities { id icon_name:name name description:name icon_color:name } dishcategories { id dishcategoryid:id name description:intro restaurant_id:supplierid dishs { id tips:intro item_id:id dishcategoryid category_id:dishcategoryid restaurant_id:supplierid supplierid image_path:name name specfoods:dishattrs { id specs_name:name name item_id:dishid sku_id:id food_id:id restaurant_id:supplierid stock:id price packing_fee:price original_price:price satisfy_rate:id rating_count:id month_sales:id description:name rating:id } } icon_url:name } } }`,
+        query: `query ($id: Int!) { supplier(id: $id) { id name address promotion_info: intro image_path: logo float_minimum_order_amount: id float_delivery_fee: id order_lead_time: id description: intro activities { id icon_name: name name description: name icon_color: name } dishcategories { id dishcategoryid: id name description: intro restaurant_id: supplierid dishs { id tips: intro item_id: id dishcategoryid category_id: dishcategoryid restaurant_id: supplierid supplierid image_path: imgurl name specfoods: dishattrs { id specs_name: name name item_id: dishid sku_id: id food_id: id restaurant_id: supplierid stock: id price packing_fee: price original_price: price satisfy_rate: id rating_count: id month_sales: id description: name rating: id } } icon_url: name } } }`,
         variables: {
           id: this.shopId
         }
